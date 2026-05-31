@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Tarot Reader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
+            overflow: hidden; /* Prevent scrolling, keep it app-like */
+        }
+
+        h1, .tarot-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* The playing card styling */
+        .tarot-card {
+            width: 100px;
+            height: 160px;
+            border-radius: 8px;
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .tarot-card {
+                width: 120px;
+                height: 192px;
+            }
+        }
+
+        .tarot-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .tarot-card.flipped .tarot-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .tarot-card-front, .tarot-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            border: 2px solid #334155; /* Slate 700 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+        }
+
+        /* The back of the card (face down) */
+        .tarot-card-back {
+            background: linear-gradient(135deg, #1e293b 25%, #0f172a 25%, #0f172a 50%, #1e293b 50%, #1e293b 75%, #0f172a 75%, #0f172a 100%);
+            background-size: 20px 20px;
+            border-color: #475569;
+        }
+        
+        .tarot-card-back::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        /* The front of the card (face up) */
+        .tarot-card-front {
+            background-color: #f8fafc;
+            color: #0f172a;
+            transform: rotateY(180deg);
+        }
+
+        /* Specific Fanned Deck Styles */
+        .fan-card {
+            position: absolute;
+            bottom: -80px; /* Hide the bottom part */
+            left: 50%;
+            transform-origin: bottom center;
+            /* Transition for the fan out effect */
+            transition: transform 0.5s ease, margin-bottom 0.2s ease; 
+        }
+
+        .fan-card:hover {
+            margin-bottom: 20px; /* Pop up slightly on hover */
+            z-index: 100 !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Layout grids for spreads */
+        .spread-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .spread-grid-3 {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .spread-grid-5 {
+            display: grid;
+            grid-template-columns: repeat(3, auto);
+            grid-template-rows: repeat(3, auto);
+            gap: 1rem;
+            align-items: center;
+            justify-items: center;
+        }
+
+        /* Celtic Cross specific layout */
+        .spread-grid-10 {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            margin: 0 auto;
+        }
+
+        /* Celtic cross slot absolute positioning */
+        .cc-slot { position: absolute; transform: translate(-50%, -50%); }
+        .cc-1 { top: 50%; left: 35%; z-index: 1;} /* Present */
+        .cc-2 { top: 50%; left: 35%; transform: translate(-50%, -50%) rotate(90deg); z-index: 2;} /* Challenge */
+        .cc-3 { top: 85%; left: 35%; } /* Foundation */
+        .cc-4 { top: 50%; left: 15%; } /* Past */
+        .cc-5 { top: 15%; left: 35%; } /* Crown */
+        .cc-6 { top: 50%; left: 55%; } /* Future */
+        .cc-7 { top: 85%; left: 80%; } /* Self */
+        .cc-8 { top: 61.6%; left: 80%; } /* Environment */
+        .cc-9 { top: 38.3%; left: 80%; } /* Hopes/Fears */
+        .cc-10 { top: 15%; left: 80%; } /* Outcome */
+
+        /* Placeholders for cards in the spread */
+        .card-placeholder {
+            width: 100px;
+            height: 160px;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .card-placeholder { width: 120px; height: 192px; }
+        }
+
+    </style>
+</head>
+<body class="flex flex-col h-screen w-full">
+
+    <!-- TOP CONTROL BAR -->
+    <header class="flex-none bg-slate-900 border-b border-slate-800 p-4 shadow-md z-20">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <h1 class="text-xl md:text-2xl font-bold tarot-font tracking-wider text-amber-500">Digital Tarot</h1>
+            
+            <div class="flex items-center gap-4 flex-wrap">
+                <div class="flex flex-col">
+                    <label for="spread-select" class="text-xs text-slate-400 mb-1">Spread Layout</label>
+                    <select id="spread-select" class="bg-slate-800 text-white border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
+                        <option value="1">1 Card (Daily Draw)</option>
+                        <option value="3" selected>3 Cards (Past, Present, Future)</option>
+                        <option value="5">5 Cards (Story Cross)</option>
+                        <option value="10">10 Cards (Celtic Cross)</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col">
+                    <span class="text-xs text-slate-400 mb-1">Status</span>
+                    <span id="status-text" class="text-sm font-semibold text-slate-200 py-2">Drawn: 0 / 3</span>
+                </div>
+
+                <div class="flex gap-2 mt-5 md:mt-0">
+                    <button id="btn-shuffle" class="bg-amber-600 hover:bg-amber-500 text-slate-900 font-semibold px-4 py-2 rounded transition-colors text-sm">
+                        Shuffle Thoroughly
+                    </button>
+                    <button id="btn-reset" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2 rounded transition-colors text-sm">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SPREAD DISPLAY AREA (Middle) -->
+    <main class="flex-1 relative overflow-y-auto overflow-x-hidden bg-slate-900 z-10" id="spread-area">
+        <div class="spread-container" id="spread-container">
+            <!-- Placeholders and drawn cards will be injected here by JS -->
+        </div>
+    </main>
+
+    <!-- FANNED DECK AREA (Bottom) -->
+    <footer class="flex-none h-40 md:h-48 relative overflow-hidden bg-slate-900 border-t border-slate-800 z-20">
+        <div id="deck-fan" class="absolute w-full h-full bottom-0">
+            <!-- Deck cards will be generated here -->
+        </div>
+    </footer>
+
+    <script>
+        // 1. Define the 78 Tarot Cards
+        const suits = ['Wands', 'Cups', 'Swords', 'Pentacles'];
+        const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
+        const majorArcana = [
+            'The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor',
+            'The Hierophant', 'The Lovers', 'The Chariot', 'Strength', 'The Hermit',
+            'Wheel of Fortune', 'Justice', 'The Hanged Man', 'Death', 'Temperance',
+            'The Devil', 'The Tower', 'The Star', 'The Moon', 'The Sun',
+            'Judgement', 'The World'
+        ];
+
+        let baseDeck = [];
+        majorArcana.forEach((name, i) => baseDeck.push({ name: name, type: 'major', numeral: i }));
+        suits.forEach(suit => {
+            ranks.forEach(rank => baseDeck.push({ name: `${rank} of ${suit}`, type: 'minor', suit: suit }));
+        });
+
+        // Application State
+        let currentDeck = [];
+        let drawnCards = [];
+        let selectedSpreadCount = 3;
+        let isShuffling = false;
+
+        // DOM Elements
+        const deckFanEl = document.getElementById('deck-fan');
+        const spreadContainerEl = document.getElementById('spread-container');
+        const spreadSelectEl = document.getElementById('spread-select');
+        const statusTextEl = document.getElementById('status-text');
+        const btnShuffle = document.getElementById('btn-shuffle');
+        const btnReset = document.getElementById('btn-reset');
+
+        // Spread Layout Definitions (Positions and Labels)
+        const spreadLayouts = {
+            1: [{ id: '1', label: 'Focus / Outcome', class: '' }],
+            3: [
+                { id: '1', label: 'Past', class: '' },
+                { id: '2', label: 'Present', class: '' },
+                { id: '3', label: 'Future', class: '' }
+            ],
+            5: [
+                { id: '1', label: 'Center (Core)', gridRow: 2, gridCol: 2 },
+                { id: '2', label: 'Left (Past)', gridRow: 2, gridCol: 1 },
+                { id: '3', label: 'Right (Future)', gridRow: 2, gridCol: 3 },
+                { id: '4', label: 'Top (Conscious)', gridRow: 1, gridCol: 2 },
+                { id: '5', label: 'Bottom (Subconscious)', gridRow: 3, gridCol: 2 }
+            ],
+            10: [
+                { id: '1', label: '1. Present', ccClass: 'cc-1' },
+                { id: '2', label: '2. Challenge', ccClass: 'cc-2' },
+                { id: '3', label: '3. Foundation', ccClass: 'cc-3' },
+                { id: '4', label: '4. Past', ccClass: 'cc-4' },
+                { id: '5', label: '5. Crown', ccClass: 'cc-5' },
+                { id: '6', label: '6. Future', ccClass: 'cc-6' },
+                { id: '7', label: '7. Self', ccClass: 'cc-7' },
+                { id: '8', label: '8. Environment', ccClass: 'cc-8' },
+                { id: '9', label: '9. Hopes/Fears', ccClass: 'cc-9' },
+                { id: '10', label: '10. Outcome', ccClass: 'cc-10' }
+            ]
+        };
+
+        function initApp() {
+            selectedSpreadCount = parseInt(spreadSelectEl.value);
+            resetReading();
+            
+            // Event Listeners
+            spreadSelectEl.addEventListener('change', (e) => {
+                selectedSpreadCount = parseInt(e.target.value);
+                resetReading();
+            });
+            btnShuffle.addEventListener('click', shuffleDeck);
+            btnReset.addEventListener('click', resetReading);
+        }
+
+        function resetReading() {
+            currentDeck = [...baseDeck]; // Copy base deck
+            // Initial naive shuffle so it's never perfectly ordered
+            currentDeck.sort(() => Math.random() - 0.5); 
+            drawnCards = [];
+            renderSpreadArea();
+            renderFannedDeck();
+            updateStatus();
+        }
+
+        function shuffleDeck() {
+            if (isShuffling) return;
+            isShuffling = true;
+            btnShuffle.disabled = true;
+            btnShuffle.classList.add('opacity-50');
+
+            // Visual shuffle effect: collapse fan, randomize, expand fan
+            const cards = document.querySelectorAll('.fan-card');
+            cards.forEach(card => {
+                card.style.transform = `translate(-50%, 0) rotate(0deg)`; // Collapse to center
+            });
+
+            setTimeout(() => {
+                // Actual array shuffle (Fisher-Yates)
+                for (let i = currentDeck.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+                }
+                
+                renderFannedDeck(); // Re-render in new order and fan out
+                isShuffling = false;
+                btnShuffle.disabled = false;
+                btnShuffle.classList.remove('opacity-50');
+            }, 500); // Wait for collapse animation
+        }
+
+        function renderSpreadArea() {
+            spreadContainerEl.innerHTML = '';
+            spreadContainerEl.className = 'spread-container'; // Reset classes
+
+            const layout = spreadLayouts[selectedSpreadCount];
+            
+            // Apply specific grid containers based on spread count
+            if (selectedSpreadCount === 3) spreadContainerEl.classList.add('spread-grid-3');
+            if (selectedSpreadCount === 5) spreadContainerEl.classList.add('spread-grid-5');
+            if (selectedSpreadCount === 10) {
+                spreadContainerEl.innerHTML = '<div id="cc-wrapper" class="spread-grid-10"></div>';
+            }
+
+            const containerToUse = selectedSpreadCount === 10 ? document.getElementById('cc-wrapper') : spreadContainerEl;
+
+            layout.forEach((pos, index) => {
+                // Determine if a card has been drawn for this position
+                const drawnCard = drawnCards[index];
+                
+                const wrapper = document.createElement('div');
+                
+                // Positioning logic based on layout type
+                if (selectedSpreadCount === 5) {
+                    wrapper.style.gridColumn = pos.gridCol;
+                    wrapper.style.gridRow = pos.gridRow;
+                } else if (selectedSpreadCount === 10) {
+                    wrapper.className = `cc-slot ${pos.ccClass}`;
+                }
+
+                if (drawnCard) {
+                    // Render the drawn, face-up card
+                    wrapper.appendChild(createCardElement(drawnCard, true, pos.label));
+                } else {
+                    // Render placeholder
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'card-placeholder';
+                    placeholder.innerHTML = `<span class="mb-2 opacity-50">Card ${index + 1}</span><span class="font-semibold">${pos.label}</span>`;
+                    wrapper.appendChild(placeholder);
+                }
+                
+                // If not absolute positioned (Celtic Cross), we need a wrapper for flex/grid
+                if (selectedSpreadCount !== 10) {
+                    containerToUse.appendChild(wrapper);
+                } else {
+                     containerToUse.appendChild(wrapper);
+                }
+            });
+        }
+
+        function renderFannedDeck() {
+            deckFanEl.innerHTML = '';
+            const total = currentDeck.length;
+            const maxSpreadAngle = 100; // Total arc in degrees
+
+            currentDeck.forEach((card, index) => {
+                const el = document.createElement('div');
+                el.className = 'tarot-card fan-card';
+                
+                // Calculate rotation for the fan
+                // -50deg to +50deg
+                let angle = 0;
+                if (total > 1) {
+                    angle = (index / (total - 1)) * maxSpreadAngle - (maxSpreadAngle / 2);
+                }
+                
+                // Z-index so right cards overlap left slightly
+                el.style.zIndex = index;
+                
+                // Apply transform. Translate X -50% to center it before rotating
+                el.style.transform = `translate(-50%, 0) rotate(${angle}deg)`;
+
+                // Build the DOM for the face-down card
+                el.innerHTML = `
+                    <div class="tarot-card-inner">
+                        <div class="tarot-card-back"></div>
+                    </div>
+                `;
+
+                // Interaction
+                el.addEventListener('click', () => handleCardDraw(index));
+
+                deckFanEl.appendChild(el);
+            });
+        }
+
+        function handleCardDraw(deckIndex) {
+            if (isShuffling || drawnCards.length >= selectedSpreadCount) return;
+
+            // Remove card from deck, add to drawn cards
+            const drawnCard = currentDeck.splice(deckIndex, 1)[0];
+            drawnCards.push(drawnCard);
+
+            updateStatus();
+            
+            // Re-render both areas
+            renderSpreadArea();
+            renderFannedDeck();
+
+            // Check if reading is complete
+            if (drawnCards.length === selectedSpreadCount) {
+                setTimeout(() => {
+                    // Slight delay before announcing complete to allow card flip animation
+                    const status = document.getElementById('status-text');
+                    status.innerHTML = `<span class="text-amber-400">Reading Complete</span>`;
+                }, 600);
+            }
+        }
+
+        function updateStatus() {
+            statusTextEl.innerText = `Drawn: ${drawnCards.length} / ${selectedSpreadCount}`;
+        }
+
+        function createCardElement(cardData, isFaceUp, positionLabel) {
+            const el = document.createElement('div');
+            el.className = `tarot-card ${isFaceUp ? 'flipped' : ''}`;
+            
+            // Generate visual style based on suit/type
+            let textColor = '#0f172a';
+            let suitIcon = '✧';
+            
+            if (cardData.type === 'minor') {
+                if (cardData.suit === 'Wands') { textColor = '#b45309'; suitIcon = '🔥'; } // Amber 700
+                if (cardData.suit === 'Cups') { textColor = '#0369a1'; suitIcon = '🌊'; } // Sky 700
+                if (cardData.suit === 'Swords') { textColor = '#334155'; suitIcon = '⚔️'; } // Slate 700
+                if (cardData.suit === 'Pentacles') { textColor = '#15803d'; suitIcon = '🪙'; } // Green 700
+            } else {
+                textColor = '#4338ca'; // Indigo 700 for Major Arcana
+                suitIcon = '🔮';
+            }
+
+            el.innerHTML = `
+                <div class="tarot-card-inner">
+                    <div class="tarot-card-front" style="color: ${textColor}; border-color: ${textColor};">
+                        <div class="text-xs mb-1 uppercase tracking-widest opacity-70">${suitIcon}</div>
+                        <div class="text-center font-bold tarot-font leading-tight px-1" style="font-size: ${cardData.name.length > 12 ? '0.85rem' : '1rem'};">
+                            ${cardData.name}
+                        </div>
+                        <div class="text-[10px] mt-2 absolute bottom-2 w-full text-center text-slate-500 font-sans border-t border-slate-200 pt-1">
+                            ${positionLabel}
+                        </div>
+                    </div>
+                    <div class="tarot-card-back"></div>
+                </div>
+            `;
+            return el;
+        }
+
+        // Boot up the app
+        initApp();
+
+    </script>
+</body>
+</html>
