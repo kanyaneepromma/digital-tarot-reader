@@ -92,17 +92,29 @@
         /* Specific Fanned Deck Styles */
         .fan-card {
             position: absolute;
-            bottom: -80px; /* Hide the bottom part */
+            bottom: -50px; /* Raised up slightly to show more of the card */
             left: 50%;
             transform-origin: bottom center;
-            /* Transition for the fan out effect */
-            transition: transform 0.5s ease, margin-bottom 0.2s ease; 
+            /* Use a CSS variable for the angle so we can scale/translate smoothly on hover */
+            transform: translate(-50%, 0) rotate(var(--fan-angle, 0deg)) scale(1.2);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
 
         .fan-card:hover {
-            margin-bottom: 20px; /* Pop up slightly on hover */
             z-index: 100 !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.9);
+            /* Dramatic pop up and scale up on hover */
+            transform: translate(-50%, -35px) rotate(var(--fan-angle, 0deg)) scale(1.4);
+        }
+
+        @media (min-width: 768px) {
+            .fan-card {
+                bottom: -60px;
+                transform: translate(-50%, 0) rotate(var(--fan-angle, 0deg)) scale(1.3);
+            }
+            .fan-card:hover {
+                transform: translate(-50%, -50px) rotate(var(--fan-angle, 0deg)) scale(1.55);
+            }
         }
 
         /* Layout grids for spreads */
@@ -173,6 +185,33 @@
             .card-placeholder { width: 120px; height: 192px; }
         }
 
+        /* Sparkle & Wiggle Effects */
+        @keyframes popAndFade {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot)); opacity: 0; }
+        }
+
+        .sparkle {
+            position: absolute;
+            left: 50%;
+            bottom: 30px;
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 200;
+            animation: popAndFade 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes cuteWiggle {
+            0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
+            25% { transform: translate(-60%, -5px) rotate(-5deg); }
+            75% { transform: translate(-40%, -5px) rotate(5deg); }
+        }
+
+        .fan-shuffling .fan-card {
+            animation: cuteWiggle 0.2s ease-in-out infinite;
+        }
+
     </style>
 </head>
 <body class="flex flex-col h-screen w-full">
@@ -186,8 +225,8 @@
                 <div class="flex flex-col">
                     <label for="spread-select" class="text-xs text-slate-400 mb-1">Spread Layout</label>
                     <select id="spread-select" class="bg-slate-800 text-white border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-amber-500">
-                        <option value="1">1 Card (Daily Draw)</option>
-                        <option value="3" selected>3 Cards (Past, Present, Future)</option>
+                        <option value="1" selected>1 Card (Daily Draw)</option>
+                        <option value="3">3 Cards (Past, Present, Future)</option>
                         <option value="5">5 Cards (Story Cross)</option>
                         <option value="10">10 Cards (Celtic Cross)</option>
                     </select>
@@ -199,6 +238,9 @@
                 </div>
 
                 <div class="flex gap-2 mt-5 md:mt-0">
+                    <button id="btn-history" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded transition-colors text-sm">
+                        History
+                    </button>
                     <button id="btn-shuffle" class="bg-amber-600 hover:bg-amber-500 text-slate-900 font-semibold px-4 py-2 rounded transition-colors text-sm">
                         Shuffle Thoroughly
                     </button>
@@ -218,11 +260,43 @@
     </main>
 
     <!-- FANNED DECK AREA (Bottom) -->
-    <footer class="flex-none h-40 md:h-48 relative overflow-hidden bg-slate-900 border-t border-slate-800 z-20">
+    <footer class="flex-none h-56 md:h-72 relative overflow-hidden bg-slate-900 border-t border-slate-800 z-20 pt-4">
         <div id="deck-fan" class="absolute w-full h-full bottom-0">
             <!-- Deck cards will be generated here -->
         </div>
     </footer>
+
+    <!-- HISTORY MODAL -->
+    <div id="history-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex justify-center items-center p-4">
+        <div class="bg-slate-800 rounded-lg border border-slate-700 w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center p-4 border-b border-slate-700">
+                <h2 class="text-xl font-bold tarot-font text-amber-500">Reading History</h2>
+                <button id="btn-close-history" class="text-slate-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4 overflow-y-auto flex-1">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="text-xs uppercase bg-slate-700 text-slate-400">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 rounded-tl-lg">Date</th>
+                                <th scope="col" class="px-4 py-3">Time</th>
+                                <th scope="col" class="px-4 py-3">Spread Type</th>
+                                <th scope="col" class="px-4 py-3">Cards Drawn</th>
+                                <th scope="col" class="px-4 py-3 rounded-tr-lg text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr class="border-b border-slate-700"><td colspan="5" class="px-4 py-4 text-center italic text-slate-500">No readings yet this session.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // 1. Define the 78 Tarot Cards
@@ -245,8 +319,9 @@
         // Application State
         let currentDeck = [];
         let drawnCards = [];
-        let selectedSpreadCount = 3;
+        let selectedSpreadCount = 1;
         let isShuffling = false;
+        let readingHistory = []; // Add history state
 
         // DOM Elements
         const deckFanEl = document.getElementById('deck-fan');
@@ -255,6 +330,10 @@
         const statusTextEl = document.getElementById('status-text');
         const btnShuffle = document.getElementById('btn-shuffle');
         const btnReset = document.getElementById('btn-reset');
+        const btnHistory = document.getElementById('btn-history');
+        const btnCloseHistory = document.getElementById('btn-close-history');
+        const historyModal = document.getElementById('history-modal');
+        const historyTableBody = document.getElementById('history-table-body');
 
         // Spread Layout Definitions (Positions and Labels)
         const spreadLayouts = {
@@ -296,6 +375,8 @@
             });
             btnShuffle.addEventListener('click', shuffleDeck);
             btnReset.addEventListener('click', resetReading);
+            btnHistory.addEventListener('click', () => historyModal.classList.remove('hidden'));
+            btnCloseHistory.addEventListener('click', () => historyModal.classList.add('hidden'));
         }
 
         function resetReading() {
@@ -314,11 +395,18 @@
             btnShuffle.disabled = true;
             btnShuffle.classList.add('opacity-50');
 
+            // Cute status update
+            statusTextEl.innerHTML = `<span class="text-pink-400 font-bold animate-pulse">Shuffling... ✨😉✨</span>`;
+
             // Visual shuffle effect: collapse fan, randomize, expand fan
+            deckFanEl.classList.add('fan-shuffling');
             const cards = document.querySelectorAll('.fan-card');
             cards.forEach(card => {
-                card.style.transform = `translate(-50%, 0) rotate(0deg)`; // Collapse to center
+                card.style.setProperty('--fan-angle', '0deg'); // Collapse to center
             });
+
+            // Burst of sparkles!
+            spawnSparkles();
 
             setTimeout(() => {
                 // Actual array shuffle (Fisher-Yates)
@@ -327,11 +415,44 @@
                     [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
                 }
                 
+                deckFanEl.classList.remove('fan-shuffling');
                 renderFannedDeck(); // Re-render in new order and fan out
                 isShuffling = false;
                 btnShuffle.disabled = false;
                 btnShuffle.classList.remove('opacity-50');
-            }, 500); // Wait for collapse animation
+                
+                // Restore status text depending on state
+                if(drawnCards.length < selectedSpreadCount) {
+                     updateStatus();
+                } else {
+                     statusTextEl.innerHTML = `<span class="text-amber-400">Reading Complete</span>`;
+                }
+            }, 800); // Wait for collapse and wiggle animation
+        }
+
+        function spawnSparkles() {
+            const emojis = ['✨', '🌟', '💖', '😉', '💫', '🪄'];
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                // Randomize trajectory for the explosion
+                const angle = (Math.random() * Math.PI) - (Math.PI / 2); // -90 to +90 degrees
+                const distance = 60 + Math.random() * 150;
+                const tx = Math.sin(angle) * distance;
+                const ty = -Math.cos(angle) * distance - 80; // Go upwards
+                const rot = (Math.random() - 0.5) * 360;
+
+                sparkle.style.setProperty('--tx', `${tx}px`);
+                sparkle.style.setProperty('--ty', `${ty}px`);
+                sparkle.style.setProperty('--rot', `${rot}deg`);
+                
+                deckFanEl.appendChild(sparkle);
+                
+                // Cleanup after animation finishes
+                setTimeout(() => sparkle.remove(), 800);
+            }
         }
 
         function renderSpreadArea() {
@@ -386,14 +507,14 @@
         function renderFannedDeck() {
             deckFanEl.innerHTML = '';
             const total = currentDeck.length;
-            const maxSpreadAngle = 100; // Total arc in degrees
+            const maxSpreadAngle = 150; // Greatly increased arc for a much wider fan spread
 
             currentDeck.forEach((card, index) => {
                 const el = document.createElement('div');
                 el.className = 'tarot-card fan-card';
                 
                 // Calculate rotation for the fan
-                // -50deg to +50deg
+                // -75deg to +75deg
                 let angle = 0;
                 if (total > 1) {
                     angle = (index / (total - 1)) * maxSpreadAngle - (maxSpreadAngle / 2);
@@ -402,8 +523,8 @@
                 // Z-index so right cards overlap left slightly
                 el.style.zIndex = index;
                 
-                // Apply transform. Translate X -50% to center it before rotating
-                el.style.transform = `translate(-50%, 0) rotate(${angle}deg)`;
+                // Apply CSS variable for the angle
+                el.style.setProperty('--fan-angle', `${angle}deg`);
 
                 // Build the DOM for the face-down card
                 el.innerHTML = `
@@ -434,12 +555,59 @@
 
             // Check if reading is complete
             if (drawnCards.length === selectedSpreadCount) {
+                saveReadingToHistory();
                 setTimeout(() => {
                     // Slight delay before announcing complete to allow card flip animation
                     const status = document.getElementById('status-text');
                     status.innerHTML = `<span class="text-amber-400">Reading Complete</span>`;
                 }, 600);
             }
+        }
+
+        function saveReadingToHistory() {
+            const now = new Date(); // Automatically grabs user's local timezone
+            const spreadLabel = spreadSelectEl.options[spreadSelectEl.selectedIndex].text;
+            const cardNames = drawnCards.map(c => c.name).join(', ');
+            
+            const entry = {
+                date: now.toLocaleDateString(),
+                time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                type: spreadLabel,
+                cards: cardNames
+            };
+            
+            readingHistory.unshift(entry); // Add to beginning of array so newest is at the top
+            renderHistoryTable();
+        }
+
+        function renderHistoryTable() {
+            if (readingHistory.length === 0) {
+                historyTableBody.innerHTML = '<tr class="border-b border-slate-700"><td colspan="5" class="px-4 py-4 text-center italic text-slate-500">No readings yet this session.</td></tr>';
+                return;
+            }
+
+            historyTableBody.innerHTML = readingHistory.map((entry, index) => `
+                <tr class="border-b border-slate-700 hover:bg-slate-700 transition-colors">
+                    <td class="px-4 py-3 whitespace-nowrap">${entry.date}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">${entry.time}</td>
+                    <td class="px-4 py-3 font-medium text-amber-500">${entry.type}</td>
+                    <td class="px-4 py-3 leading-relaxed">${entry.cards}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
+                        <button onclick="deleteHistoryEntry(${index})" class="text-slate-500 hover:text-red-400 transition-colors p-2 rounded-full hover:bg-slate-600" title="Delete Reading">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteHistoryEntry(index) {
+            // Removes the specific item from the array based on its index
+            readingHistory.splice(index, 1);
+            // Re-render the table to reflect the removal
+            renderHistoryTable();
         }
 
         function updateStatus() {
