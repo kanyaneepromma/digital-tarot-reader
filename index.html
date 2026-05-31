@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Tarot Reader</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap');
 
@@ -186,22 +187,6 @@
         }
 
         /* Sparkle & Wiggle Effects */
-        @keyframes popAndFade {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            50% { opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot)); opacity: 0; }
-        }
-
-        .sparkle {
-            position: absolute;
-            left: 50%;
-            bottom: 30px;
-            font-size: 1.5rem;
-            pointer-events: none;
-            z-index: 200;
-            animation: popAndFade 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
         @keyframes cuteWiggle {
             0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
             25% { transform: translate(-60%, -5px) rotate(-5deg); }
@@ -405,7 +390,7 @@
                 card.style.setProperty('--fan-angle', '0deg'); // Collapse to center
             });
 
-            // Burst of sparkles!
+            // Trigger the beautiful physics-based confetti burst!
             spawnSparkles();
 
             setTimeout(() => {
@@ -431,28 +416,46 @@
         }
 
         function spawnSparkles() {
-            const emojis = ['✨', '🌟', '💖', '😉', '💫', '🪄'];
-            for (let i = 0; i < 20; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                
-                // Randomize trajectory for the explosion
-                const angle = (Math.random() * Math.PI) - (Math.PI / 2); // -90 to +90 degrees
-                const distance = 60 + Math.random() * 150;
-                const tx = Math.sin(angle) * distance;
-                const ty = -Math.cos(angle) * distance - 80; // Go upwards
-                const rot = (Math.random() - 0.5) * 360;
+            const duration = 1200;
+            const animationEnd = Date.now() + duration;
+            const defaults = { 
+                startVelocity: 25, 
+                spread: 120, 
+                ticks: 100, 
+                zIndex: 200, 
+                origin: { y: 0.85 } // Originate near the bottom where the deck is
+            };
 
-                sparkle.style.setProperty('--tx', `${tx}px`);
-                sparkle.style.setProperty('--ty', `${ty}px`);
-                sparkle.style.setProperty('--rot', `${rot}deg`);
+            // Convert our cute emojis into confetti shapes
+            const wink = confetti.shapeFromText({ text: '😉' });
+            const sparkle = confetti.shapeFromText({ text: '✨' });
+            const star = confetti.shapeFromText({ text: '🌟' });
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 25 * (timeLeft / duration);
                 
-                deckFanEl.appendChild(sparkle);
+                // Fire standard magical stars and circles in Tarot colors
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    colors: ['#fbbf24', '#f472b6', '#818cf8', '#ffffff'], // Amber, Pink, Indigo, White
+                    shapes: ['star', 'circle']
+                }));
                 
-                // Cleanup after animation finishes
-                setTimeout(() => sparkle.remove(), 800);
-            }
+                // Randomly sprinkle in the emojis
+                if (Math.random() > 0.4) {
+                    confetti(Object.assign({}, defaults, {
+                        particleCount: 2,
+                        shapes: [wink, sparkle, star],
+                        scalar: 2 // Make the emojis a bit larger
+                    }));
+                }
+            }, 100); // Fire a new burst every 100ms for a sustained fountain effect
         }
 
         function renderSpreadArea() {
