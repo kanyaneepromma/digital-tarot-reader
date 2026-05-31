@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         body {
@@ -44,23 +45,23 @@
         /* Dynamic Container Heights to give big spreads room to breathe */
         .spread-1 { min-height: 500px; }
         .spread-3 { min-height: 500px; }
-        .spread-5 { min-height: 800px; }
+        .spread-5 { min-height: 950px; } /* Increased height to un-can the mackerel! */
         .spread-10 { min-height: 1200px; } /* Celtic cross gets a massive vertical canvas */
 
         /* 1 Card Position */
         .cc-1-center { top: 50%; left: 50%; }
 
         /* 3 Card Positions */
-        .cc-3-left { top: 50%; left: 20%; }
+        .cc-3-left { top: 50%; left: 18%; } /* Spread these out a bit more too */
         .cc-3-center { top: 50%; left: 50%; }
-        .cc-3-right { top: 50%; left: 80%; }
+        .cc-3-right { top: 50%; left: 82%; }
 
-        /* 5 Card Positions */
-        .cc-5-top { top: 20%; left: 50%; }
-        .cc-5-bottom { top: 80%; left: 50%; }
-        .cc-5-left { top: 50%; left: 25%; }
+        /* 5 Card Positions - Expanded for breathing room */
+        .cc-5-top { top: 12%; left: 50%; }
+        .cc-5-bottom { top: 88%; left: 50%; }
+        .cc-5-left { top: 50%; left: 18%; }
         .cc-5-center { top: 50%; left: 50%; }
-        .cc-5-right { top: 50%; left: 75%; }
+        .cc-5-right { top: 50%; left: 82%; }
 
         /* 10 Card (Celtic Cross) Positions */
         .cc-1 { top: 40%; left: 35%; }
@@ -373,6 +374,7 @@
                             <th class="pb-3 pr-4 font-medium">Date & Time</th>
                             <th class="pb-3 pr-4 font-medium">Spread Type</th>
                             <th class="pb-3 pr-4 font-medium">Cards Drawn</th>
+                            <th class="pb-3 pr-4 font-medium text-center">Snapshot</th>
                             <th class="pb-3 font-medium text-center">Action</th>
                         </tr>
                     </thead>
@@ -385,6 +387,16 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div id="snapshot-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[110] hidden flex-col items-center justify-center p-4">
+    <button id="close-snapshot" class="absolute top-6 right-8 text-slate-400 hover:text-white text-4xl leading-none">&times;</button>
+    <h2 class="text-xl tarot-font text-amber-400 font-bold mb-6 tracking-widest">Spread Snapshot</h2>
+    <div class="relative max-w-5xl w-full flex justify-center overflow-auto max-h-[80vh]">
+        <!-- The snapshot image will be injected here -->
+        <img id="snapshot-image" src="" alt="Spread Snapshot" class="max-w-full h-auto rounded-xl shadow-[0_0_50px_rgba(251,191,36,0.15)] border border-slate-700">
     </div>
 </div>
 
@@ -537,7 +549,12 @@
             statusText.innerText = "Reading Complete";
             statusText.classList.add('text-amber-400');
             statusText.classList.remove('text-amber-50');
-            saveToHistory();
+            
+            // Wait 600ms for the final card's flip animation to finish, THEN take the photo
+            setTimeout(() => {
+                saveToHistory();
+            }, 600);
+            
         } else {
             statusText.innerText = `Drawn: ${drawnCards.length} / ${total}`;
             statusText.classList.remove('text-amber-400');
@@ -603,7 +620,7 @@
         updateStatus();
     }
 
-    function saveToHistory() {
+    async function saveToHistory() {
         const spreadName = spreads[currentSpreadSize].label;
         const cardNames = drawnCards.map(c => c.name).join(', ');
         
@@ -612,7 +629,22 @@
             hour: '2-digit', minute: '2-digit' 
         });
 
-        readingHistory.unshift({ id: Date.now(), date: timestamp, type: spreadName, cards: cardNames });
+        // 📸 Take a high-res snapshot of the spread layout
+        let imgData = "";
+        try {
+            const canvas = await html2canvas(document.getElementById('spread-area'), {
+                backgroundColor: null, // Keep the dark background transparent
+                scale: window.devicePixelRatio || 2 // High resolution
+            });
+            imgData = canvas.toDataURL('image/png');
+        } catch(e) {
+            console.error("Failed to capture snapshot", e);
+        }
+
+        readingHistory.unshift({ id: Date.now(), date: timestamp, type: spreadName, cards: cardNames, image: imgData });
+        
+        // Update the table in the background in case they open it
+        renderHistory();
     }
 
     function renderHistory() {
@@ -630,7 +662,10 @@
                 tr.innerHTML = `
                     <td class="py-4 pr-4 whitespace-nowrap text-amber-200/80">${item.date}</td>
                     <td class="py-4 pr-4 font-medium text-slate-300">${item.type}</td>
-                    <td class="py-4 pr-4 text-slate-400 italic">${item.cards}</td>
+                    <td class="py-4 pr-4 text-slate-400 italic text-xs leading-relaxed max-w-[200px] truncate" title="${item.cards}">${item.cards}</td>
+                    <td class="py-4 pr-4 text-center">
+                        ${item.image ? `<button onclick="viewSnapshot('${item.id}')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-md text-amber-300 text-xs tracking-wider uppercase transition-colors shadow-lg">View Image</button>` : '<span class="text-slate-600 text-xs">N/A</span>'}
+                    </td>
                     <td class="py-4 text-center">
                         <button onclick="deleteHistoryItem(${item.id})" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-full transition-all" title="Delete Reading">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -641,6 +676,15 @@
             });
         }
     }
+
+    window.viewSnapshot = function(id) {
+        const item = readingHistory.find(r => r.id == id);
+        if(item && item.image) {
+            document.getElementById('snapshot-image').src = item.image;
+            document.getElementById('snapshot-modal').classList.remove('hidden');
+            document.getElementById('snapshot-modal').classList.add('flex');
+        }
+    };
 
     window.deleteHistoryItem = function(id) {
         readingHistory = readingHistory.filter(item => item.id !== id);
@@ -705,6 +749,11 @@
     document.getElementById('close-history').addEventListener('click', () => {
         document.getElementById('history-modal').classList.add('hidden');
         document.getElementById('history-modal').classList.remove('flex');
+    });
+
+    document.getElementById('close-snapshot').addEventListener('click', () => {
+        document.getElementById('snapshot-modal').classList.add('hidden');
+        document.getElementById('snapshot-modal').classList.remove('flex');
     });
 
     // Re-render fan if window resizes so it always fits perfectly
