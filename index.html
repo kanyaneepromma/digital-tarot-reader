@@ -12,30 +12,40 @@
         body {
             font-family: 'Inter', sans-serif;
             background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            background-attachment: fixed;
             color: #f8fafc;
-            overflow: hidden; /* Prevent body scrolling, handle internally */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-y: auto;   /* Enable vertical scrolling for large spreads */
         }
         
         .tarot-font {
             font-family: 'Cinzel', serif;
         }
 
-        /* Strict Layout Grid */
+        /* The main scrollable container */
         #app-container {
-            display: grid;
-            grid-template-rows: auto 1fr 280px; /* Header, Spread Area, Deck Area */
-            height: 100vh;
-            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            /* Add huge padding at the bottom so the hovering deck doesn't cover the bottom cards */
+            padding-bottom: 320px; 
         }
 
         /* --- SPREAD POSITIONS --- */
         .spread-layout {
             position: relative;
             width: 100%;
-            height: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            transition: min-height 0.4s ease;
         }
+
+        /* Dynamic Container Heights to give big spreads room to breathe */
+        .spread-1 { min-height: 500px; }
+        .spread-3 { min-height: 500px; }
+        .spread-5 { min-height: 800px; }
+        .spread-10 { min-height: 1200px; } /* Celtic cross gets a massive vertical canvas */
 
         /* 1 Card Position */
         .cc-1-center { top: 50%; left: 50%; }
@@ -53,58 +63,58 @@
         .cc-5-right { top: 50%; left: 75%; }
 
         /* 10 Card (Celtic Cross) Positions */
-        .cc-1 { top: 50%; left: 35%; }
-        .cc-2 { top: 50%; left: 35%; transform: translate(-50%, -50%) rotate(90deg) !important; }
-        .cc-3 { top: 80%; left: 35%; }
-        .cc-4 { top: 50%; left: 15%; }
-        .cc-5 { top: 20%; left: 35%; }
-        .cc-6 { top: 50%; left: 55%; }
+        .cc-1 { top: 40%; left: 35%; }
+        .cc-2 { top: 40%; left: 35%; transform: translate(-50%, -50%) rotate(90deg) !important; }
+        .cc-3 { top: 68%; left: 35%; } 
+        .cc-4 { top: 40%; left: 15%; }
+        .cc-5 { top: 12%; left: 35%; } 
+        .cc-6 { top: 40%; left: 55%; }
         .cc-7 { top: 85%; left: 80%; }
-        .cc-8 { top: 61.6%; left: 80%; }
-        .cc-9 { top: 38.3%; left: 80%; }
-        .cc-10 { top: 15%; left: 80%; }
+        .cc-8 { top: 63.3%; left: 80%; }
+        .cc-9 { top: 41.6%; left: 80%; }
+        .cc-10 { top: 20%; left: 80%; }
 
         /* --- DYNAMIC CARD SIZING BASED ON SPREAD --- */
         .spread-10 .card-placeholder { width: 90px; height: 144px; font-size: 0.65rem; }
-        @media (min-width: 768px) { .spread-10 .card-placeholder { width: 110px; height: 176px; font-size: 0.75rem;} }
+        @media (min-width: 768px) { .spread-10 .card-placeholder { width: 130px; height: 208px; font-size: 0.8rem;} }
 
         .spread-5 .card-placeholder { width: 110px; height: 176px; }
-        @media (min-width: 768px) { .spread-5 .card-placeholder { width: 140px; height: 224px; } }
+        @media (min-width: 768px) { .spread-5 .card-placeholder { width: 160px; height: 256px; } }
 
         .spread-3 .card-placeholder { width: 130px; height: 208px; }
-        @media (min-width: 768px) { .spread-3 .card-placeholder { width: 180px; height: 288px; } }
+        @media (min-width: 768px) { .spread-3 .card-placeholder { width: 200px; height: 320px; } }
 
         /* 1-Card Spread (Center of the Universe!) */
         .spread-1 .card-placeholder { width: 220px; height: 352px; font-size: 1.25rem; }
         @media (min-width: 768px) { 
-            .spread-1 .card-placeholder { width: 280px; height: 448px; font-size: 1.5rem; }
-            .spread-1 .drawn-card-title { font-size: 2rem; padding: 1.5rem; line-height: 1.2; }
-            .spread-1 .drawn-card .suit-icon { font-size: 5rem; margin-bottom: 1.5rem; }
+            .spread-1 .card-placeholder { width: 320px; height: 512px; font-size: 1.5rem; }
+            .spread-1 .drawn-card-title { font-size: 2.5rem; padding: 1.5rem; line-height: 1.2; }
+            .spread-1 .drawn-card .suit-icon { font-size: 6rem; margin-bottom: 1.5rem; }
         }
 
         .card-placeholder {
-            border: 1px solid rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.4); /* Gold border */
             background: rgba(15, 23, 42, 0.6);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-            border-radius: 8px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #94a3b8;
-            font-size: 0.75rem;
+            color: #cbd5e1;
             text-align: center;
             padding: 0.5rem;
             position: absolute;
             transform: translate(-50%, -50%);
             transition: all 0.4s ease;
         }
+        
         .card-placeholder::before {
             content: '';
             position: absolute;
-            inset: 6px;
-            border: 1px dashed rgba(251, 191, 36, 0.2);
-            border-radius: 4px;
+            inset: 8px;
+            border: 1px dashed rgba(251, 191, 36, 0.3);
+            border-radius: 6px;
         }
 
         /* --- STUNNING DARK MYSTICAL CARD FACES --- */
@@ -112,8 +122,8 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            border: 2px solid #fbbf24; 
-            border-radius: 8px;
+            border: 2px solid #fbbf24; /* Gold border */
+            border-radius: 12px;
             position: absolute;
             top: 0; left: 0;
             display: flex;
@@ -125,12 +135,13 @@
             z-index: 10;
         }
         
+        /* Elegant inner gold border for the face */
         .drawn-card::after {
             content: '';
             position: absolute;
             inset: 6px;
             border: 1px solid rgba(251, 191, 36, 0.3);
-            border-radius: 4px;
+            border-radius: 6px;
             pointer-events: none;
         }
 
@@ -140,7 +151,7 @@
             font-size: 1.1rem;
             text-align: center;
             padding: 0.5rem;
-            color: #fef08a;
+            color: #fef08a; /* Glowing gold text */
             text-shadow: 0 2px 5px rgba(0,0,0,0.9);
             z-index: 2;
         }
@@ -156,7 +167,7 @@
             100% { transform: perspective(400px) rotateY(0deg) scale(1); opacity: 1; }
         }
 
-        /* --- MASSIVE FANNED DECK --- */
+        /* --- MASSIVE FANNED DECK (HUD Bottom) --- */
         .fan-container {
             position: relative;
             width: 100%;
@@ -164,32 +175,49 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
         }
         
         .fan-card {
             position: absolute;
-            bottom: -80px; /* Anchor low */
-            width: 130px;
-            height: 208px;
+            bottom: 0px; 
+            width: 70px;
+            height: 112px;
             background-color: #0f172a;
-            /* Beautiful Mystical Gold Geometric Pattern */
+            /* Beautiful Mystical Indigo Checkerboard Pattern (Matches User Screenshot) */
             background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath fill='%23fbbf24' fill-opacity='0.15' d='M15 0l15 15-15 15L0 15z'/%3E%3Cpath fill='%23fbbf24' fill-opacity='0.05' d='M15 5l10 10-10 10L5 15z'/%3E%3C/svg%3E"),
-                radial-gradient(ellipse at bottom, rgba(79, 70, 229, 0.4) 0%, #020617 100%);
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Crect width='15' height='15' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect x='15' y='15' width='15' height='15' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E"),
+                radial-gradient(ellipse at bottom, rgba(79, 70, 229, 0.6) 0%, #020617 100%);
             border: 2px solid #fbbf24;
-            border-radius: 8px;
-            transform-origin: bottom center;
+            border-radius: 6px;
+            transform-origin: center center;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s, border-color 0.3s;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.4);
+            box-shadow: -3px 0 12px rgba(0,0,0,0.7), inset 0 0 15px rgba(0,0,0,0.5);
         }
 
+        @media (min-width: 768px) {
+            .fan-card { width: 90px; height: 144px; border-radius: 8px; }
+        }
+
+        /* The beautiful hover pop-out effect */
         .fan-card:hover {
-            transform: scale(1.35) translateY(-50px) var(--base-rotation) !important;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.9), 0 0 30px rgba(251, 191, 36, 0.5);
-            z-index: 100 !important;
+            transform: var(--base-transform) translateY(-60px) scale(1.4) !important;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9), 0 0 30px rgba(251, 191, 36, 0.6);
+            z-index: 200 !important;
             border-color: #fef08a;
+        }
+
+        /* ANTI-BOUNCE INVISIBLE HITBOX 
+           Fills the gap created by moving the card up, stopping the "bouncing" overlap bug */
+        .fan-card::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -60px; /* Exactly counters the translateY(-60px) */
+            z-index: -1;
         }
 
         /* Disabled deck state */
@@ -208,11 +236,6 @@
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 1em;
-        }
-
-        .status-badge {
-            min-width: 160px; /* Ensure shuffling text fits */
-            flex-shrink: 0;
         }
 
         /* --- ANIMATIONS & EFFECTS --- */
@@ -247,7 +270,7 @@
             animation: flashRed 0.6s ease-in-out;
         }
 
-        /* Scrollbar for history */
+        /* Scrollbar for page and history */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -255,21 +278,22 @@
 
     </style>
 </head>
-<body class="bg-slate-950">
+<body>
 
 <div id="app-container">
     
-    <!-- HEADER (Top Row) -->
-    <header class="flex-none bg-slate-900/95 backdrop-blur-sm border-b border-amber-900/40 shadow-[0_4px_20px_rgba(0,0,0,0.4)] z-20 pt-5 pb-4 px-4 md:px-8">
+    <!-- TOP CONTROL BAR (Sticky Header - Stays at top when scrolling) -->
+    <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8">
         <div class="max-w-6xl mx-auto flex flex-col gap-5">
-            <!-- Title -->
+            <!-- Title Row -->
             <h1 class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
                 ✧ DIGITAL TAROT ✧
             </h1>
             
-            <!-- Controls -->
+            <!-- Controls Row (Perfectly Centered & Aligned) -->
             <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
                 
+                <!-- Spread Select -->
                 <div class="flex items-center gap-3">
                     <label for="spread-select" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
                     <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
@@ -280,17 +304,22 @@
                     </select>
                 </div>
 
+                <!-- Divider -->
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
+                <!-- Status -->
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
-                    <div class="status-badge h-9 flex items-center justify-center bg-slate-800/50 px-5 rounded-full border border-slate-700">
+                    <!-- min-w ensures the text never gets squished to ... -->
+                    <div class="h-9 flex items-center justify-center bg-slate-800/50 px-5 rounded-full border border-slate-700 min-w-[160px]">
                         <span id="status-text" class="text-sm font-semibold text-amber-50 whitespace-nowrap">Drawn: 0 / 1</span>
                     </div>
                 </div>
 
+                <!-- Divider -->
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
+                <!-- Buttons -->
                 <div class="flex items-center gap-3">
                     <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all">
                         History
@@ -302,20 +331,21 @@
                         Reset
                     </button>
                 </div>
+
             </div>
         </div>
     </header>
 
-    <!-- SPREAD AREA (Middle Row) -->
-    <main class="w-full h-full p-4 md:p-8 flex items-center justify-center relative overflow-hidden">
+    <!-- SPREAD DISPLAY AREA (Scrolling Canvas) -->
+    <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-8">
         <div id="spread-area" class="spread-layout spread-1">
             <!-- Placeholders injected via JS -->
         </div>
     </main>
 
-    <!-- DECK AREA (Bottom Row) -->
-    <footer class="w-full h-full relative" id="deck-area">
-        <div class="fan-container" id="fan-container">
+    <!-- DECK AREA (Hovering HUD at Bottom - Fixed so it floats over content) -->
+    <footer class="fixed bottom-0 left-0 w-full h-[280px] z-40 pointer-events-none" id="deck-area">
+        <div class="fan-container pointer-events-auto" id="fan-container">
             <!-- Fanned cards injected via JS -->
         </div>
     </footer>
@@ -378,7 +408,7 @@
     // --- STATE ---
     let activeDeck = [...tarotDeck];
     let drawnCards = [];
-    let readingHistory = []; // Stores objects: { date, type, cards }
+    let readingHistory = [];
     
     const spreads = {
         '1': { count: 1, label: '1 Card (Daily Draw)', classes: ['cc-1-center'], names: ['Focus / Outcome'] },
@@ -394,8 +424,7 @@
     const statusText = document.getElementById('status-text');
     const spreadArea = document.getElementById('spread-area');
     const fanContainer = document.getElementById('fan-container');
-    const deckArea = document.getElementById('deck-area');
-
+    
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -414,11 +443,11 @@
             slot.id = `slot-${i}`;
             
             const label = document.createElement('div');
-            label.className = 'font-semibold text-slate-400 mb-1';
+            label.className = 'font-semibold text-amber-200/50 mb-1 tracking-wider uppercase text-[0.65rem]';
             label.innerText = `Card ${i + 1}`;
             
             const meaning = document.createElement('div');
-            meaning.className = 'text-xs text-slate-500 mt-2';
+            meaning.className = 'text-slate-400 mt-2 font-bold';
             meaning.innerText = spread.names[i];
 
             slot.appendChild(label);
@@ -430,19 +459,38 @@
     function renderFan() {
         fanContainer.innerHTML = '';
         const cardsRemaining = activeDeck.length;
+        if (cardsRemaining === 0) return;
         
-        // Huge 150 degree sweep
-        const startAngle = -75;
-        const endAngle = 75;
-        const angleStep = cardsRemaining > 1 ? (endAngle - startAngle) / (cardsRemaining - 1) : 0;
+        // Calculate dynamic width based on screen size for a flat, table-like spread
+        const containerWidth = window.innerWidth;
+        const spreadWidth = Math.min(containerWidth - 40, 1100); 
 
         for (let i = 0; i < cardsRemaining; i++) {
             const card = document.createElement('div');
             card.className = 'fan-card';
             
-            const angle = startAngle + (i * angleStep);
-            card.style.setProperty('--base-rotation', `rotate(${angle}deg)`);
-            card.style.transform = `rotate(${angle}deg)`;
+            // Normalize index from -1 (far left) to 1 (far right)
+            let normalized = 0;
+            if (cardsRemaining > 1) {
+                normalized = (i / (cardsRemaining - 1)) * 2 - 1;
+            }
+            
+            // 1. Horizontal spread (Translate X)
+            const translateX = normalized * (spreadWidth / 2);
+            
+            // 2. Gentle downward curve at the edges (Translate Y) - creates a parabola
+            const translateY = (normalized * normalized) * 60; 
+            
+            // 3. Rotation (Cards fan out following the curve)
+            const angle = normalized * 35; // -35deg to +35deg
+            
+            // Apply the math to the card
+            const baseTransform = `translate(${translateX}px, ${translateY}px) rotate(${angle}deg)`;
+            card.style.setProperty('--base-transform', baseTransform);
+            card.style.transform = baseTransform;
+            
+            // Ensure cards stack correctly left-to-right
+            card.style.zIndex = i;
             
             card.onclick = () => drawCard(i);
             fanContainer.appendChild(card);
@@ -452,7 +500,7 @@
     }
 
     function drawCard(deckIndex) {
-        if (drawnCards.length >= parseInt(currentSpreadSize)) return;
+        if (drawnCards.length >= parseInt(currentSpreadSize)) return; // Safety check
 
         const drawnCardData = activeDeck.splice(deckIndex, 1)[0];
         drawnCards.push(drawnCardData);
@@ -521,12 +569,23 @@
         
         // Canvas Confetti Magic Burst
         confetti({
-            particleCount: 80,
-            spread: 100,
+            particleCount: 50,
+            spread: 120,
             origin: { y: 0.9 },
             colors: ['#fbbf24', '#fef08a', '#818cf8', '#c084fc'],
             shapes: ['star', 'circle'],
             scalar: 1.2
+        });
+        
+        // Emoji burst
+        confetti({
+            particleCount: 30,
+            scalar: 1.5,
+            origin: { y: 0.9 },
+            shapes: ['emoji'],
+            shapeOptions: {
+                emoji: { value: ['✨', '🌟', '😉', '🔮'] }
+            }
         });
 
         setTimeout(() => {
@@ -544,11 +603,10 @@
         updateStatus();
     }
 
-    // --- HISTORY SYSTEM (Local Timezone) ---
     function saveToHistory() {
         const spreadName = spreads[currentSpreadSize].label;
         const cardNames = drawnCards.map(c => c.name).join(', ');
-        // new Date().toLocaleString() automatically grabs the user's local timezone (e.g., Thailand)
+        
         const timestamp = new Date().toLocaleString(undefined, { 
             year: 'numeric', month: 'short', day: 'numeric', 
             hour: '2-digit', minute: '2-digit' 
@@ -589,7 +647,6 @@
         renderHistory();
     };
 
-    // --- FUNNY WARNING SYSTEM ---
     const funnyWarnings = [
         "Hold your horses! 🐎 The reading is full!",
         "Greedy! You already have your cards! 🙅‍♀️",
@@ -605,12 +662,10 @@
         
         textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
         
-        // Reset animations
         warningEl.classList.remove('warning-active');
         document.body.classList.remove('flash-screen');
-        void warningEl.offsetWidth; // Trigger reflow
+        void warningEl.offsetWidth; // reflow
         
-        // Start animations
         warningEl.classList.add('warning-active');
         document.body.classList.add('flash-screen');
         
@@ -632,7 +687,7 @@
         }
     }, true);
 
-    // --- EVENT LISTENERS ---
+    // Event Listeners (Restored to fix the missing button error!)
     spreadSelect.addEventListener('change', (e) => {
         currentSpreadSize = e.target.value;
         resetReading();
@@ -650,6 +705,13 @@
     document.getElementById('close-history').addEventListener('click', () => {
         document.getElementById('history-modal').classList.add('hidden');
         document.getElementById('history-modal').classList.remove('flex');
+    });
+
+    // Re-render fan if window resizes so it always fits perfectly
+    window.addEventListener('resize', () => {
+        if (drawnCards.length < parseInt(currentSpreadSize)) {
+            renderFan();
+        }
     });
 
     // INIT
