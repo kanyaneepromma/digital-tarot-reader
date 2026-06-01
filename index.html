@@ -319,6 +319,43 @@
 
         .glow-pulse { animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, cardGlow 1.2s ease-out forwards; }
 
+        /* --- HOLOGRAPHIC FOIL EFFECT FOR CLASSIC CARDS --- */
+        .holo-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+            /* Vibrant, undeniable rainbow gradient + a shiny white glare line */
+            background: 
+                linear-gradient(
+                    115deg,
+                    transparent 10%,
+                    rgba(255, 0, 0, 0.8) 20%,
+                    rgba(255, 165, 0, 0.8) 30%,
+                    rgba(255, 255, 0, 0.8) 40%,
+                    rgba(0, 255, 0, 0.8) 50%,
+                    rgba(0, 191, 255, 0.8) 60%,
+                    rgba(138, 43, 226, 0.8) 70%,
+                    transparent 80%
+                ),
+                linear-gradient(
+                    115deg,
+                    transparent 40%,
+                    rgba(255, 255, 255, 0.9) 50%,
+                    transparent 60%
+                );
+            background-size: 300% 300%;
+            /* 'hard-light' forces the rainbow to show up brilliantly on light backgrounds */
+            mix-blend-mode: hard-light; 
+            opacity: 0.45;
+            animation: holoRainbow 3.5s infinite linear;
+        }
+
+        @keyframes holoRainbow {
+            0% { background-position: 150% 150%; }
+            100% { background-position: -50% -50%; }
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -643,8 +680,9 @@
         if (useClassicArt) {
             const imgUrl = getClassicImageUrl(drawnCardData);
             return `
-                <div class="classic-container w-full h-full flex flex-col items-center justify-center bg-[#fdfbf7] border-4 border-[#e2d6b5] rounded-[10px] overflow-hidden p-1.5 md:p-2 shadow-inner z-10">
+                <div class="classic-container relative w-full h-full flex flex-col items-center justify-center bg-[#fdfbf7] border-4 border-[#e2d6b5] rounded-[10px] overflow-hidden p-1.5 md:p-2 shadow-inner z-10">
                     <img src="${imgUrl}" alt="${drawnCardData.name}" class="w-full h-full object-cover rounded-sm mix-blend-multiply" onerror="window.handleImageError(this)">
+                    <div class="holo-overlay"></div>
                 </div>
                 <div class="modern-container hidden w-full h-full flex-col items-center justify-start">
                     ${modernHtml}
