@@ -33,7 +33,6 @@
             padding-bottom: 320px; 
         }
 
-        /* --- SPREAD POSITIONS --- */
         .spread-layout {
             position: relative;
             width: 100%;
@@ -67,7 +66,6 @@
         .cc-9 { top: 41.6%; left: 80%; }
         .cc-10 { top: 20%; left: 80%; }
 
-        /* --- DYNAMIC CARD SIZING BASED ON SPREAD --- */
         .spread-10 .card-placeholder { width: 90px; height: 144px; font-size: 0.65rem; }
         @media (min-width: 768px) { .spread-10 .card-placeholder { width: 130px; height: 208px; font-size: 0.8rem;} }
 
@@ -108,7 +106,6 @@
             border-radius: 6px;
         }
 
-        /* --- STUNNING DARK MYSTICAL CARD FACES --- */
         .drawn-card {
             width: 100%;
             height: 100%;
@@ -200,7 +197,6 @@
             100% { transform: perspective(400px) rotateY(0deg) scale(1); opacity: 1; }
         }
 
-        /* --- VIBRANT RAINBOW HOLOGRAPHIC FOIL --- */
         .holo-overlay {
             position: absolute;
             inset: 0;
@@ -235,7 +231,6 @@
             100% { background-position: -50% -50%; }
         }
 
-        /* --- MASSIVE FANNED DECK --- */
         .fan-container {
             position: relative;
             width: 100%;
@@ -290,7 +285,6 @@
             background-size: 1em;
         }
 
-        /* --- ANIMATIONS & EFFECTS --- */
         @keyframes sweepAcross {
             0% { transform: translate(100vw, -10vh) rotate(60deg) scale(0.5); }
             15% { transform: translate(-20vw, 15vh) rotate(-30deg) scale(1.5); }
@@ -370,7 +364,12 @@
 
 <div id="app-container">
     
-    <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8">
+    <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8 relative">
+        <!-- Secret Admin Key in the top right corner -->
+        <button id="secret-api-btn" class="absolute top-4 right-4 text-xl opacity-20 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
+            🗝️
+        </button>
+
         <div class="max-w-6xl mx-auto flex flex-col gap-4">
             <!-- Title -->
             <h1 class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
@@ -431,7 +430,7 @@
                 </div>
             </div>
 
-            <!-- Focus Engine (HTML Restored) -->
+            <!-- Focus Engine -->
             <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-3 mt-1 border-t border-amber-900/30 pt-3 transition-all">
                 <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
                 <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer"></select>
@@ -509,16 +508,12 @@
     </div>
 </div>
 
-<!-- Admin Key Button & Modal -->
-<button id="secret-api-btn" class="fixed top-4 right-4 text-xl opacity-20 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
-    🗝️
-</button>
-
+<!-- Admin Modal -->
 <div id="admin-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[200] hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-md p-6 relative">
         <h2 class="text-xl tarot-font text-amber-400 font-bold mb-4">Secret Admin Configuration</h2>
         <p class="text-sm text-slate-400 mb-4">Enter your Gemini API Key here. It will be stored securely in your browser's local storage.</p>
-        <input type="password" id="admin-api-input" class="w-full bg-slate-800 border border-slate-600 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-amber-400 mb-6" placeholder="AIzaSy...">
+        <input type="password" id="admin-api-input" class="w-full bg-slate-800 border border-slate-600 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-amber-400 mb-6" placeholder="AQ.Ab8RN6...">
         <div class="flex justify-end gap-3">
             <button id="btn-admin-clear" class="px-4 py-2 rounded-md text-sm text-red-400 hover:bg-red-900/20 transition-colors">Clear Key</button>
             <button id="btn-admin-cancel" class="px-4 py-2 rounded-md text-sm text-slate-300 hover:bg-slate-800 transition-colors">Cancel</button>
@@ -631,7 +626,6 @@
         }
     }
 
-    // --- ART ENGINE & OFFLINE CACHE ---
     function updateToggleUI() {
         if(useClassicArt) {
             toggleKnob.classList.add('translate-x-[1.1rem]');
@@ -682,7 +676,7 @@
                         try {
                             const res = await fetch(url);
                             if(res.ok) await cache.put(url, res);
-                            await new Promise(r => setTimeout(r, 100));
+                            await new Promise(r => setTimeout(r, 100)); // Be polite to the server
                         } catch(e) { console.warn("Failed to fetch", url); }
                     }
                     loaded++;
@@ -735,7 +729,6 @@
     });
 
     function getClassicImageUrl(cardData) {
-        const baseUrl = "https://sacred-texts.com/tarot/pkt/img/";
         let fileName = '';
         if (cardData.suit === '') { 
             const idx = majors.findIndex(m => m.name === cardData.name);
@@ -751,9 +744,11 @@
             else num = parseInt(cardData.rank);
             fileName = `${suitPrefix}${String(num).padStart(2, '0')}.jpg`;
         }
+        // Using global CDN to bypass server rate limiting
         return `https://wsrv.nl/?url=sacred-texts.com/tarot/pkt/img/${fileName}&w=400&output=webp`;
     }
 
+    // Safety Fallback if the classic image fails to load
     window.handleImageError = function(img) {
         const parent = img.closest('.drawn-card');
         if (parent) {
@@ -822,7 +817,6 @@
         }
     }
 
-    // --- GAME ENGINE ---
     function renderPlaceholders() {
         spreadArea.innerHTML = '';
         spreadArea.className = `spread-layout spread-${currentSpreadSize}`;
@@ -901,16 +895,16 @@
         const slot = document.getElementById(`slot-${slotIndex}`);
         slot.innerHTML = '';
 
-        // 3. Create placeholder loading face
+        // 3. Create placeholder loading face so there's no freeze
         const face = document.createElement('div');
         face.className = 'drawn-card glow-pulse flex items-center justify-center';
         face.innerHTML = `<div class="animate-spin text-3xl opacity-50">✨</div>`; 
         slot.appendChild(face);
 
-        // 4. Await heavy lifting
+        // 4. Await heavy lifting (loading image from cache or network)
         const finalHTML = await renderCardContent(drawnCardData);
         face.innerHTML = finalHTML;
-        face.classList.remove('flex', 'items-center', 'justify-center');
+        face.classList.remove('flex', 'items-center', 'justify-center'); // reset to normal alignment
 
         // 5. Aura ripple
         const aura = document.createElement('div');
@@ -959,7 +953,7 @@
     }
 
     function triggerMagicalShuffle() {
-        // Simple shuffle without warning prompt
+        // Removed the confirm() box to comply with strict system rules!
         const cards = document.querySelectorAll('.fan-card');
         cards.forEach(c => {
             c.style.transform = 'rotate(0deg) scale(0.9)';
@@ -976,8 +970,6 @@
             cards.forEach(c => c.classList.remove('wiggling'));
         }, 1200);
     }
-
-    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
 
     function triggerResetSweep() {
         if (drawnCards.length === 0) {
@@ -1043,7 +1035,6 @@
         updateStatus();
     }
 
-    // --- HISTORY ENGINE ---
     async function saveToHistory() {
         let focusText = "";
         if (currentSpreadSize !== '1') {
@@ -1068,6 +1059,7 @@
             localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
         } catch (e) {
             console.warn("Storage full! Clearing older images...");
+            // If quota exceeded, wipe images from history but keep text
             readingHistory = readingHistory.map((item, index) => {
                 if (index > 0) item.image = null;
                 return item;
@@ -1130,164 +1122,6 @@
         checkCooldowns(); 
     }
 
-    const funnyWarnings = [
-        "Hold your horses! 🐎 The reading is full!",
-        "Greedy! You already have your cards! 🙅‍♀️",
-        "The spirits are tired! Try resetting! 👻",
-        "That's enough cards for today! 🃏",
-        "Stop clicking! The spread is complete! 😂",
-        "Woah there! Let's read these first! 🔮"
-    ];
-
-    function triggerFunnyWarning() {
-        const warningEl = document.getElementById('funny-warning');
-        const textEl = document.getElementById('warning-text');
-        
-        textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
-        
-        warningEl.classList.remove('warning-active');
-        document.body.classList.remove('flash-screen');
-        void warningEl.offsetWidth; 
-        
-        warningEl.classList.add('warning-active');
-        document.body.classList.add('flash-screen');
-        
-        setTimeout(() => {
-            warningEl.classList.remove('warning-active');
-            document.body.classList.remove('flash-screen');
-        }, 1000);
-    }
-
-    document.addEventListener('click', (e) => {
-        const fanArea = document.getElementById('deck-area');
-        if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
-            if (drawnCards.length >= parseInt(currentSpreadSize)) {
-                e.preventDefault();
-                e.stopPropagation();
-                triggerFunnyWarning();
-            }
-        }
-    }, true);
-    
-    // --- AI INTERPRETATION ENGINE ---
-    document.getElementById('btn-interpret').addEventListener('click', async () => {
-        const modal = document.getElementById('interpret-modal');
-        const content = document.getElementById('interpret-content');
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        
-        content.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-48 gap-6">
-                <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
-                <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                    Communing with the spirits...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
-                </div>
-            </div>
-        `;
-
-        const spreadInfo = spreads[currentSpreadSize];
-        let focusText = "";
-        let focusTitle = "General Reading";
-        
-        if (currentSpreadSize !== '1') {
-            const sub = document.getElementById('intent-subcategory').value;
-            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
-            focusTitle = sub;
-        }
-
-        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
-        
-        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. ${focusText}
-        Here are the cards I pulled: ${readingContext}. 
-        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
-        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
-        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
-        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
-
-        try {
-            let apiKey = localStorage.getItem('tarotApiKey');
-            
-            if (!apiKey) {
-                throw new Error("No API key provided. Falling back to simulated reading.");
-            }
-            
-            // Using 1.5 Flash - Highly stable and supports AQ keys perfectly
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                console.error("API Error Details:", errData);
-                if (response.status === 401) {
-                     localStorage.removeItem('tarotApiKey'); 
-                }
-                throw new Error(errData.error?.message || "Network Response was not ok.");
-            }
-
-            const result = await response.json();
-            
-            if (result.candidates && result.candidates[0].content.parts[0].text) {
-                let htmlText = result.candidates[0].content.parts[0].text;
-                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
-                content.innerHTML = htmlText;
-            } else {
-                throw new Error("Invalid response format");
-            }
-        } catch (error) {
-            console.error("AI Reading Failed:", error);
-            setTimeout(() => {
-                content.innerHTML = `
-                    <div class="flex flex-col items-center justify-center gap-4 text-center">
-                        <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em;">THE SPIRITS HAVE ANSWERED</h3>
-                        <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
-                        <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
-                        <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding <strong>${focusTitle.toLowerCase()}</strong>. The energies indicate that you are shedding old patterns and stepping into a period of clarity. Trust your intuition right now, for it is exceptionally sharp regarding this matter.</p>
-                        <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
-                    </div>`;
-            }, 1000);
-        }
-    });
-
-    document.getElementById('close-interpret').addEventListener('click', () => {
-        document.getElementById('interpret-modal').classList.add('hidden');
-        document.getElementById('interpret-modal').classList.remove('flex');
-    });
-
-    // Admin UI Control (No window alerts/prompts!)
-    document.getElementById('secret-api-btn').addEventListener('click', () => {
-        document.getElementById('admin-api-input').value = localStorage.getItem('tarotApiKey') || '';
-        document.getElementById('admin-modal').classList.remove('hidden');
-        document.getElementById('admin-modal').classList.add('flex');
-    });
-
-    document.getElementById('btn-admin-cancel').addEventListener('click', () => {
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
-    document.getElementById('btn-admin-clear').addEventListener('click', () => {
-        localStorage.removeItem('tarotApiKey');
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
-    document.getElementById('btn-admin-save').addEventListener('click', () => {
-        const val = document.getElementById('admin-api-input').value.trim();
-        if(val) {
-            localStorage.setItem('tarotApiKey', val);
-        }
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
     function checkCooldowns() {
         const select = document.getElementById('spread-select');
         let needsToSwitch = false;
@@ -1336,11 +1170,172 @@
 
     setInterval(checkCooldowns, 60000);
 
+    const funnyWarnings = [
+        "Hold your horses! 🐎 The reading is full!",
+        "Greedy! You already have your cards! 🙅‍♀️",
+        "The spirits are tired! Try resetting! 👻",
+        "That's enough cards for today! 🃏",
+        "Stop clicking! The spread is complete! 😂",
+        "Woah there! Let's read these first! 🔮"
+    ];
+
+    function triggerFunnyWarning() {
+        const warningEl = document.getElementById('funny-warning');
+        const textEl = document.getElementById('warning-text');
+        
+        textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
+        
+        warningEl.classList.remove('warning-active');
+        document.body.classList.remove('flash-screen');
+        void warningEl.offsetWidth; 
+        
+        warningEl.classList.add('warning-active');
+        document.body.classList.add('flash-screen');
+        
+        setTimeout(() => {
+            warningEl.classList.remove('warning-active');
+            document.body.classList.remove('flash-screen');
+        }, 1000);
+    }
+
+    document.addEventListener('click', (e) => {
+        const fanArea = document.getElementById('deck-area');
+        if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
+            if (drawnCards.length >= parseInt(currentSpreadSize)) {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerFunnyWarning();
+            }
+        }
+    }, true);
+    
+    document.getElementById('btn-interpret').addEventListener('click', async () => {
+        const modal = document.getElementById('interpret-modal');
+        const content = document.getElementById('interpret-content');
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        content.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-48 gap-6">
+                <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
+                <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
+                    Communing with the spirits...<br>
+                    <span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
+                </div>
+            </div>
+        `;
+
+        const spreadInfo = spreads[currentSpreadSize];
+        let focusText = "";
+        let focusTitle = "General Reading";
+        
+        if (currentSpreadSize !== '1') {
+            const sub = document.getElementById('intent-subcategory').value;
+            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
+            focusTitle = sub;
+        }
+
+        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
+        
+        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. ${focusText}
+        Here are the cards I pulled: ${readingContext}. 
+        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
+        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
+        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
+        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
+
+        try {
+            let apiKey = localStorage.getItem('tarotApiKey');
+            
+            if (!apiKey) {
+                throw new Error("No API key provided. Click the 🗝️ icon in the top right to add it.");
+            }
+            
+            // Using 1.5 Flash Latest - Resolves "not found" alias issues on newer keys
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey.trim()}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                console.error("API Error Details:", errData);
+                throw new Error(errData.error?.message || "Network Response was not ok.");
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                let htmlText = result.candidates[0].content.parts[0].text;
+                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
+                content.innerHTML = htmlText;
+            } else {
+                throw new Error("Invalid response format");
+            }
+        } catch (error) {
+            console.error("AI Reading Failed:", error);
+            
+            // Print the real error message to the screen!
+            content.innerHTML = `
+                <div class="bg-red-900/30 border border-red-500 rounded-lg p-6 text-center mb-6">
+                    <h3 class="text-red-400 font-bold mb-2 text-xl">API Error Detected</h3>
+                    <p class="text-slate-200 font-mono text-sm mb-0">${error.message}</p>
+                </div>
+                <hr class="border-amber-900/30 mb-6">
+                <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em; text-align: center;">SIMULATED READING (BACKUP)</h3>
+                <div class="flex flex-col items-center justify-center gap-4 text-center mt-4">
+                    <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
+                    <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
+                    <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding <strong>${focusTitle.toLowerCase()}</strong>. The energies indicate that you are shedding old patterns and stepping into a period of clarity. Trust your intuition right now, for it is exceptionally sharp regarding this matter.</p>
+                    <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
+                </div>
+            `;
+        }
+    });
+
+    document.getElementById('close-interpret').addEventListener('click', () => {
+        document.getElementById('interpret-modal').classList.add('hidden');
+        document.getElementById('interpret-modal').classList.remove('flex');
+    });
+
+    // Admin UI Control (No window alerts/prompts!)
+    document.getElementById('secret-api-btn').addEventListener('click', () => {
+        document.getElementById('admin-api-input').value = localStorage.getItem('tarotApiKey') || '';
+        document.getElementById('admin-modal').classList.remove('hidden');
+        document.getElementById('admin-modal').classList.add('flex');
+    });
+
+    document.getElementById('btn-admin-cancel').addEventListener('click', () => {
+        document.getElementById('admin-modal').classList.add('hidden');
+        document.getElementById('admin-modal').classList.remove('flex');
+    });
+
+    document.getElementById('btn-admin-clear').addEventListener('click', () => {
+        localStorage.removeItem('tarotApiKey');
+        document.getElementById('admin-modal').classList.add('hidden');
+        document.getElementById('admin-modal').classList.remove('flex');
+    });
+
+    document.getElementById('btn-admin-save').addEventListener('click', () => {
+        const val = document.getElementById('admin-api-input').value.trim();
+        if(val) {
+            localStorage.setItem('tarotApiKey', val);
+        }
+        document.getElementById('admin-modal').classList.add('hidden');
+        document.getElementById('admin-modal').classList.remove('flex');
+    });
+
     spreadSelect.addEventListener('change', (e) => {
         currentSpreadSize = e.target.value;
         resetReading();
     });
 
+    // Attach all main buttons properly!
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
     document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
     
