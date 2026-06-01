@@ -1220,8 +1220,8 @@
             <div class="flex flex-col items-center justify-center h-48 gap-6">
                 <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
                 <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                    Communing with the spirits...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
+                    Consulting the Akashic Records...<br>
+                    <span class="text-sm text-slate-400 font-sans mt-2 block">Finding an authorized AI model for your key</span>
                 </div>
             </div>
         `;
@@ -1252,8 +1252,42 @@
                 throw new Error("No API key provided. Click the 🗝️ icon in the top right to add it.");
             }
             
-            // Using 1.5 Flash Latest - Resolves "not found" alias issues on newer keys
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey.trim()}`;
+            apiKey = apiKey.trim();
+
+            // STEP 1: Dynamically ask Google what models this specific key is allowed to use!
+            const modelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+            const modelsResponse = await fetch(modelsUrl);
+            
+            if (!modelsResponse.ok) {
+                throw new Error("API Key was rejected by Google. Double check your key!");
+            }
+            
+            const modelsData = await modelsResponse.json();
+            
+            // Filter out models that can't generate text
+            const validModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+            
+            if (validModels.length === 0) {
+                throw new Error("Your API key has no text generation models available.");
+            }
+
+            // Automatically pick 'flash', or fallback to 'pro', or just take the first working one!
+            const flashModel = validModels.find(m => m.name.includes('flash'));
+            const proModel = validModels.find(m => m.name.includes('pro'));
+            const selectedModel = flashModel ? flashModel.name : (proModel ? proModel.name : validModels[0].name);
+
+            // STEP 2: Make the actual reading request using the dynamically found model
+            content.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-48 gap-6">
+                    <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
+                    <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
+                        Communing with the spirits...<br>
+                        <span class="text-sm text-amber-400 font-sans mt-2 block">Using model: ${selectedModel.replace('models/', '')}</span>
+                    </div>
+                </div>
+            `;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`;
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
             const response = await fetch(apiUrl, {
@@ -1265,7 +1299,7 @@
             if (!response.ok) {
                 const errData = await response.json();
                 console.error("API Error Details:", errData);
-                throw new Error(errData.error?.message || "Network Response was not ok.");
+                throw new Error(errData.error?.message || "Generation failed.");
             }
 
             const result = await response.json();
@@ -1275,12 +1309,11 @@
                 htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
                 content.innerHTML = htmlText;
             } else {
-                throw new Error("Invalid response format");
+                throw new Error("Invalid response format from Gemini");
             }
         } catch (error) {
             console.error("AI Reading Failed:", error);
             
-            // Print the real error message to the screen!
             content.innerHTML = `
                 <div class="bg-red-900/30 border border-red-500 rounded-lg p-6 text-center mb-6">
                     <h3 class="text-red-400 font-bold mb-2 text-xl">API Error Detected</h3>
