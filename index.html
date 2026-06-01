@@ -271,6 +271,27 @@
             animation: flashRed 0.6s ease-in-out;
         }
 
+        /* --- BROOM SWEEP ANIMATION --- */
+        @keyframes sweepAcross {
+            0% { transform: translate(100vw, -10vh) rotate(60deg) scale(0.5); }
+            15% { transform: translate(-20vw, 15vh) rotate(-30deg) scale(1.5); } /* Swish Left */
+            30% { transform: translate(30vw, 5vh) rotate(40deg) scale(1.5); }    /* Swish Right */
+            45% { transform: translate(-30vw, 20vh) rotate(-45deg) scale(1.5); } /* Swish Left */
+            60% { transform: translate(25vw, 10vh) rotate(35deg) scale(1.5); }   /* Swish Right */
+            75% { transform: translate(-40vw, 25vh) rotate(-50deg) scale(1.5); } /* Swish Left */
+            100% { transform: translate(-150vw, -20vh) rotate(-90deg) scale(0.5); } /* Fly away left */
+        }
+        
+        .animate-sweep {
+            animation: sweepAcross 1.6s ease-in-out forwards;
+        }
+        
+        .fly-away {
+            transform: translate(var(--fly-x, -100vw), var(--fly-y, -30vh)) rotate(var(--fly-rot, -720deg)) scale(0.2) !important;
+            opacity: 0 !important;
+            transition: all 0.8s cubic-bezier(0.55, 0.085, 0.68, 0.53) !important;
+        }
+
         /* --- NEW ETHEREAL AURA EFFECT --- */
         @keyframes auraExpand {
             0% { transform: scale(0.8); opacity: 1; border-width: 4px; }
@@ -448,6 +469,11 @@
             <!-- Content injected via AI -->
         </div>
     </div>
+</div>
+
+<!-- Giant Broom for Reset -->
+<div id="broom-container" class="fixed inset-0 pointer-events-none z-[150] flex items-center justify-center hidden overflow-hidden">
+    <div id="sweeping-broom" class="text-[12rem] filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]">🧹</div>
 </div>
 
 <script>
@@ -987,7 +1013,61 @@
     });
 
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
-    document.getElementById('btn-reset').addEventListener('click', resetReading);
+    
+    // Trigger the funny sweep animation instead of an instant reset
+    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
+
+    function triggerResetSweep() {
+        // If the board is already empty, just do a silent reset
+        if (drawnCards.length === 0) {
+            resetReading();
+            return;
+        }
+
+        const broom = document.getElementById('sweeping-broom');
+        const broomContainer = document.getElementById('broom-container');
+        
+        // Show the broom and start the sweep animation
+        broomContainer.classList.remove('hidden');
+        void broom.offsetWidth; // Trigger reflow so animation restarts reliably
+        broom.classList.add('animate-sweep');
+        
+        // Multiple dust poofs as the broom scrubs back and forth!
+        const poofDust = () => {
+            confetti({
+                particleCount: 30,
+                spread: 120,
+                origin: { y: 0.6, x: 0.5 },
+                colors: ['#cbd5e1', '#94a3b8', '#64748b'], // Dusty grey colors
+                shapes: ['circle'],
+                scalar: 1.2
+            });
+        };
+
+        // Fire dust on every major scrub
+        setTimeout(poofDust, 240); // 15%
+        setTimeout(poofDust, 480); // 30%
+        setTimeout(poofDust, 720); // 45%
+        setTimeout(poofDust, 960); // 60%
+        
+        // Make all drawn cards spin and fly off screen in random directions
+        setTimeout(() => {
+            document.querySelectorAll('.drawn-card').forEach(card => {
+                // Generate random flight paths
+                card.style.setProperty('--fly-x', `${(Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60)}vw`);
+                card.style.setProperty('--fly-y', `${-20 - Math.random() * 60}vh`);
+                card.style.setProperty('--fly-rot', `${(Math.random() > 0.5 ? 1 : -1) * (360 + Math.random() * 720)}deg`);
+                card.classList.add('fly-away');
+            });
+        }, 240);
+
+        // Wait for animation to completely finish, then actually clear the background logic
+        setTimeout(() => {
+            resetReading();
+            broom.classList.remove('animate-sweep');
+            broomContainer.classList.add('hidden');
+        }, 1600);
+    }
     
     document.getElementById('btn-history').addEventListener('click', () => {
         renderHistory();
