@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Tarot Reader</title>
     
-    <!-- 🔮 Web Favicon (Shows up in the browser tab) -->
+    <!-- 🔮 Web Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,9 +23,7 @@
             overflow-y: auto;   
         }
         
-        .tarot-font {
-            font-family: 'Cinzel', serif;
-        }
+        .tarot-font { font-family: 'Cinzel', serif; }
 
         #app-container {
             display: flex;
@@ -35,7 +33,6 @@
             padding-bottom: 320px; 
         }
 
-        /* --- SPREAD POSITIONS --- */
         .spread-layout {
             position: relative;
             width: 100%;
@@ -69,7 +66,6 @@
         .cc-9 { top: 41.6%; left: 80%; }
         .cc-10 { top: 20%; left: 80%; }
 
-        /* --- DYNAMIC CARD SIZING --- */
         .spread-10 .card-placeholder { width: 90px; height: 144px; font-size: 0.65rem; }
         @media (min-width: 768px) { .spread-10 .card-placeholder { width: 130px; height: 208px; font-size: 0.8rem;} }
 
@@ -110,7 +106,6 @@
             border-radius: 6px;
         }
 
-        /* --- STUNNING DARK MYSTICAL CARD FACES --- */
         .drawn-card {
             width: 100%;
             height: 100%;
@@ -137,7 +132,6 @@
             pointer-events: none;
         }
 
-        /* --- NEW CARD ART & ILLUSTRATIONS --- */
         .card-art-frame {
             width: 86%;
             height: 60%;
@@ -203,7 +197,6 @@
             100% { transform: perspective(400px) rotateY(0deg) scale(1); opacity: 1; }
         }
 
-        /* --- MASSIVE FANNED DECK --- */
         .fan-container {
             position: relative;
             width: 100%;
@@ -258,7 +251,6 @@
             background-size: 1em;
         }
 
-        /* --- ANIMATIONS & EFFECTS --- */
         @keyframes sweepAcross {
             0% { transform: translate(100vw, -10vh) rotate(60deg) scale(0.5); }
             15% { transform: translate(-20vw, 15vh) rotate(-30deg) scale(1.5); }
@@ -338,7 +330,6 @@
 
 <div id="app-container">
     
-    <!-- TOP CONTROL BAR -->
     <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8">
         <div class="max-w-6xl mx-auto flex flex-col gap-4">
             <h1 class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
@@ -465,7 +456,6 @@
 </div>
 
 <script>
-    // --- TAROT DECK GENERATOR ---
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
     
@@ -492,21 +482,19 @@
         }));
     });
 
-    // --- STATE ---
     let activeDeck = [...tarotDeck];
     let drawnCards = [];
     let readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || [];
-    let useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic'; // Default to modern if not set
+    let useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic'; 
     
     const spreads = {
-        '1': { count: 1, baseLabel: '1 Card (Daily Draw)', label: '1 Card (Daily Draw)', cooldown: 24 * 60 * 60 * 1000, classes: ['cc-1-center'], names: ['Focus / Outcome'] },
+        '1': { count: 1, baseLabel: '1 Card (Daily)', label: '1 Card (Daily Draw)', cooldown: 24 * 60 * 60 * 1000, classes: ['cc-1-center'], names: ['Focus / Outcome'] },
         '3': { count: 3, baseLabel: '3 Cards (Past/Present/Future)', label: '3 Cards (Past/Present/Future)', cooldown: 0, classes: ['cc-3-left', 'cc-3-center', 'cc-3-right'], names: ['Past', 'Present', 'Future'] },
         '5': { count: 5, baseLabel: '5 Cards (Story Cross)', label: '5 Cards (Story Cross)', cooldown: 0, classes: ['cc-5-left', 'cc-5-center', 'cc-5-right', 'cc-5-top', 'cc-5-bottom'], names: ['Past', 'Present', 'Future', 'Reason', 'Potential'] },
         '10': { count: 10, baseLabel: '10 Cards (Celtic Cross)', label: '10 Cards (Celtic Cross)', cooldown: 7 * 24 * 60 * 60 * 1000, classes: ['cc-1', 'cc-2', 'cc-3', 'cc-4', 'cc-5', 'cc-6', 'cc-7', 'cc-8', 'cc-9', 'cc-10'], names: ['Heart', 'Crossing', 'Root', 'Past', 'Crown', 'Future', 'Self', 'Environment', 'Hopes/Fears', 'Outcome'] }
     };
     let currentSpreadSize = '1';
 
-    // --- INTENTIONS DATA ---
     const intentionsData = {
         "General / Open": ["What do I need to know right now?", "Daily Guidance", "Overcoming a Blockage", "Upcoming Challenges"],
         "Career & Work": [
@@ -526,7 +514,6 @@
         "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"]
     };
 
-    // --- DOM ELEMENTS ---
     const spreadSelect = document.getElementById('spread-select');
     const statusText = document.getElementById('status-text');
     const spreadArea = document.getElementById('spread-area');
@@ -537,7 +524,6 @@
     const subCatSelect = document.getElementById('intent-subcategory');
     const intentContainer = document.getElementById('intention-container');
 
-    // Populate Intentions Menu
     Object.keys(intentionsData).forEach(cat => {
         let opt = document.createElement('option');
         opt.value = cat; opt.innerText = cat;
@@ -566,7 +552,6 @@
         }
     }
 
-    // --- ART STYLE ENGINE ---
     function updateToggleButton() {
         btnToggleArt.innerHTML = useClassicArt ? '✨ Modern Art' : '🖼️ Classic Art';
     }
@@ -577,7 +562,7 @@
         localStorage.setItem('tarotArtStyle', useClassicArt ? 'classic' : 'modern');
         updateToggleButton();
         
-        // Instantly re-render the faces of all currently drawn cards on the table
+        // Instantly re-render all drawn cards on the table
         drawnCards.forEach((card, i) => {
             const slot = document.getElementById(`slot-${i}`);
             if (slot) {
@@ -589,14 +574,13 @@
         });
     });
 
-    // Helper to get classic Rider Waite image URL from Sacred Texts public domain archive
     function getClassicImageUrl(cardData) {
         const baseUrl = "https://www.sacred-texts.com/tarot/pkt/img/";
-        if (cardData.suit === '') { // Major Arcana
+        if (cardData.suit === '') { 
             const idx = majors.findIndex(m => m.name === cardData.name);
             return `${baseUrl}ar${String(idx).padStart(2, '0')}.jpg`;
-        } else { // Minor Arcana
-            const suitPrefix = cardData.suit.substring(0, 2).toLowerCase(); // wa, cu, sw, pe
+        } else { 
+            const suitPrefix = cardData.suit.substring(0, 2).toLowerCase(); 
             let num = 0;
             if (cardData.rank === 'Ace') num = 1;
             else if (cardData.rank === 'Page') num = 11;
@@ -608,7 +592,6 @@
         }
     }
 
-    // --- NEW: Helper for Modern CSS Art ---
     function getModernArtHtml(drawnCardData) {
         let artContent = '';
         if (drawnCardData.suit === '') { 
@@ -640,14 +623,12 @@
         `;
     }
 
-    // --- NEW: Global Image Error Handler ---
     window.handleImageError = function(img) {
         const parent = img.closest('.drawn-card');
         if (parent) {
             const classic = parent.querySelector('.classic-container');
             const modern = parent.querySelector('.modern-container');
             if (classic && modern) {
-                // If the classic image fails to load, gracefully switch to Modern Art!
                 classic.classList.add('hidden');
                 classic.classList.remove('flex');
                 modern.classList.remove('hidden');
@@ -678,7 +659,6 @@
         }
     }
 
-    // --- GAMEPLAY ENGINE ---
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -822,8 +802,6 @@
         }, 1200);
     }
 
-    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
-
     function triggerResetSweep() {
         if (drawnCards.length === 0) {
             resetReading();
@@ -834,6 +812,7 @@
         const broomContainer = document.getElementById('broom-container');
         
         broomContainer.classList.remove('hidden');
+        broom.classList.remove('animate-sweep'); // Ensure reset before triggering
         void broom.offsetWidth; 
         broom.classList.add('animate-sweep');
         
@@ -899,26 +878,24 @@
 
         let imgData = "";
         try {
-            // Memory Fix: Compress the snapshot heavily using JPEG and scale: 1 to prevent crashing
             const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: 1, useCORS: true });
             imgData = canvas.toDataURL('image/jpeg', 0.6);
-        } catch(e) { console.warn("Failed to capture snapshot (CORS limitation):", e); }
+        } catch(e) { console.warn("Failed to capture snapshot:", e); }
 
         readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: spreadName, cards: cardNames, image: imgData });
         
-        // Safety Net: Catch Browser Storage Quota Exceeded Error
         try {
             localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
         } catch (e) {
-            console.warn("Storage full! Clearing older images to save your new reading.");
+            console.warn("Storage full! Clearing older images...");
             readingHistory = readingHistory.map((item, index) => {
-                if (index > 0) item.image = null; // Drop heavy images from older history
+                if (index > 0) item.image = null;
                 return item;
             });
             try {
                 localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
             } catch (e2) {
-                readingHistory[0].image = null; // Drop all images as absolute last resort
+                readingHistory[0].image = null;
                 localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
             }
         }
@@ -1092,6 +1069,11 @@
 
     setInterval(checkCooldowns, 60000);
     spreadSelect.addEventListener('change', (e) => { currentSpreadSize = e.target.value; resetReading(); });
+    
+    // ATTACH THE BUTTONS (Fixes the dead buttons issue)
+    document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
+    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
+
     document.getElementById('btn-history').addEventListener('click', () => { renderHistory(); document.getElementById('history-modal').classList.remove('hidden'); document.getElementById('history-modal').classList.add('flex'); });
     document.getElementById('close-history').addEventListener('click', () => { document.getElementById('history-modal').classList.add('hidden'); document.getElementById('history-modal').classList.remove('flex'); });
     document.getElementById('close-snapshot').addEventListener('click', () => { document.getElementById('snapshot-modal').classList.add('hidden'); document.getElementById('snapshot-modal').classList.remove('flex'); });
