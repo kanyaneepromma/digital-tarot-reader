@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Tarot Reader</title>
+    
+    <!-- 🔮 Web Favicon (Shows up in the browser tab) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -15,8 +19,8 @@
             background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             background-attachment: fixed;
             color: #f8fafc;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow-x: hidden; 
+            overflow-y: auto;   
         }
         
         .tarot-font {
@@ -42,11 +46,11 @@
 
         .spread-1 { min-height: 500px; }
         .spread-3 { min-height: 500px; }
-        .spread-5 { min-height: 950px; }
-        .spread-10 { min-height: 1200px; }
+        .spread-5 { min-height: 950px; } 
+        .spread-10 { min-height: 1200px; } 
 
         .cc-1-center { top: 50%; left: 50%; }
-        .cc-3-left { top: 50%; left: 18%; }
+        .cc-3-left { top: 50%; left: 18%; } 
         .cc-3-center { top: 50%; left: 50%; }
         .cc-3-right { top: 50%; left: 82%; }
         .cc-5-top { top: 12%; left: 50%; }
@@ -65,7 +69,7 @@
         .cc-9 { top: 41.6%; left: 80%; }
         .cc-10 { top: 20%; left: 80%; }
 
-        /* --- DYNAMIC CARD SIZING BASED ON SPREAD --- */
+        /* --- DYNAMIC CARD SIZING --- */
         .spread-10 .card-placeholder { width: 90px; height: 144px; font-size: 0.65rem; }
         @media (min-width: 768px) { .spread-10 .card-placeholder { width: 130px; height: 208px; font-size: 0.8rem;} }
 
@@ -82,7 +86,7 @@
         }
 
         .card-placeholder {
-            border: 1px solid rgba(251, 191, 36, 0.4);
+            border: 1px solid rgba(251, 191, 36, 0.4); 
             background: rgba(15, 23, 42, 0.6);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
             border-radius: 12px;
@@ -118,7 +122,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Aligns content to top so the banner stays at bottom */
+            justify-content: flex-start;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.6);
             animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
             z-index: 10;
@@ -162,9 +166,7 @@
             pointer-events: none;
         }
 
-        @keyframes slowSpin {
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes slowSpin { 100% { transform: rotate(360deg); } }
 
         .theme-major { background: radial-gradient(circle at center, #6b21a8, #2e1065); }
         .theme-wands { background: radial-gradient(circle at center, #991b1b, #450a0a); }
@@ -229,9 +231,7 @@
             box-shadow: -3px 0 12px rgba(0,0,0,0.7), inset 0 0 15px rgba(0,0,0,0.5);
         }
 
-        @media (min-width: 768px) {
-            .fan-card { width: 90px; height: 144px; border-radius: 8px; }
-        }
+        @media (min-width: 768px) { .fan-card { width: 90px; height: 144px; border-radius: 8px; } }
 
         .fan-card:hover {
             transform: var(--base-transform) translateY(-60px) scale(1.4) !important;
@@ -243,20 +243,12 @@
         .fan-card::after {
             content: '';
             position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -60px;
+            top: -20px; left: -20px; right: -20px; bottom: -60px;
             z-index: -1;
         }
 
-        .reading-complete-fan {
-            filter: grayscale(40%) opacity(0.8);
-            transition: filter 0.5s ease, opacity 0.5s ease;
-        }
-        .reading-complete-fan, .reading-complete-fan * {
-            cursor: not-allowed !important;
-        }
+        .reading-complete-fan { filter: grayscale(40%) opacity(0.8); transition: filter 0.5s ease, opacity 0.5s ease; }
+        .reading-complete-fan, .reading-complete-fan * { cursor: not-allowed !important; }
 
         .custom-select {
             appearance: none;
@@ -315,6 +307,7 @@
             0% { transform: scale(0.8); opacity: 1; border-width: 4px; }
             100% { transform: scale(1.6); opacity: 0; border-width: 1px; }
         }
+        
         .aura-ripple {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -331,9 +324,8 @@
             30% { box-shadow: 0 0 50px rgba(251, 191, 36, 0.8), 0 0 80px rgba(192, 132, 252, 0.5); filter: brightness(1.3); }
             100% { box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.6); filter: brightness(1); }
         }
-        .glow-pulse {
-            animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, cardGlow 1.2s ease-out forwards;
-        }
+
+        .glow-pulse { animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, cardGlow 1.2s ease-out forwards; }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
@@ -348,15 +340,16 @@
     
     <!-- TOP CONTROL BAR -->
     <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8">
-        <div class="max-w-6xl mx-auto flex flex-col gap-5">
+        <div class="max-w-6xl mx-auto flex flex-col gap-4">
             <h1 class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
                 ✧ DIGITAL TAROT ✧
             </h1>
             
-            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-                <div class="flex items-center gap-3">
-                    <label for="spread-select" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
-                    <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
+            <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+                
+                <div class="flex items-center gap-2">
+                    <label for="spread-select" class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
+                    <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
                         <option value="1" selected>1 Card (Daily)</option>
                         <option value="3">3 Cards (Past, Present, Future)</option>
                         <option value="5">5 Cards (Story Cross)</option>
@@ -366,55 +359,48 @@
 
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
-                <div class="flex items-center gap-3">
-                    <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
-                    <div class="h-9 flex items-center justify-center bg-slate-800/50 px-5 rounded-full border border-slate-700 min-w-[160px]">
+                <div class="flex items-center gap-2">
+                    <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
+                    <div class="h-9 flex items-center justify-center bg-slate-800/50 px-4 rounded-full border border-slate-700 min-w-[140px]">
                         <span id="status-text" class="text-sm font-semibold text-amber-50 whitespace-nowrap">Drawn: 0 / 1</span>
                     </div>
                 </div>
 
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
-                <div class="flex items-center gap-3">
-                    <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all">
+                <div class="flex items-center gap-2">
+                    <button id="btn-toggle-art" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500/20 hover:text-emerald-200 hover:border-emerald-400 transition-all">
+                        🖼️ Classic Art
+                    </button>
+                    <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all">
                         History
                     </button>
-                    <button id="btn-shuffle" class="tarot-font flex items-center justify-center gap-2 tracking-wider text-xs uppercase px-6 h-9 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.6)] font-bold">
+                    <button id="btn-shuffle" class="tarot-font flex items-center justify-center gap-2 tracking-wider text-[0.65rem] uppercase px-5 h-9 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.6)] font-bold">
                         <span>✨</span> Shuffle
                     </button>
-                    <button id="btn-reset" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-all">
+                    <button id="btn-reset" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-all">
                         Reset
                     </button>
                 </div>
+            </div>
 
+            <!-- INTENTION / FOCUS MENU (Hidden on 1-card) -->
+            <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-3 mt-1 border-t border-amber-900/30 pt-3 transition-all">
+                <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
+                <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer"></select>
+                <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer max-w-[250px] truncate"></select>
             </div>
-            
-            <!-- NEW: Intention / Focus Bar (Hidden on 1-card spread) -->
-            <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-4 mt-2 border-t border-amber-900/30 pt-4 transition-all">
-                <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
-                <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer">
-                    <!-- Populated by JS -->
-                </select>
-                <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer max-w-[250px] truncate">
-                    <!-- Populated by JS -->
-                </select>
-            </div>
-            
         </div>
     </header>
 
-    <!-- SPREAD DISPLAY AREA (Scrolling Canvas) -->
-    <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-8">
-        <div id="spread-area" class="spread-layout spread-1">
-            <!-- Placeholders injected via JS -->
-        </div>
+    <!-- SPREAD DISPLAY AREA -->
+    <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-4 md:mt-8">
+        <div id="spread-area" class="spread-layout spread-1"></div>
     </main>
 
     <!-- DECK AREA -->
     <footer class="fixed bottom-0 left-0 w-full h-[280px] z-40 pointer-events-none" id="deck-area">
-        <div class="fan-container pointer-events-auto" id="fan-container">
-            <!-- Fanned cards injected via JS -->
-        </div>
+        <div class="fan-container pointer-events-auto" id="fan-container"></div>
     </footer>
 </div>
 
@@ -430,7 +416,7 @@
 </div>
 
 <div id="history-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-4xl max-h-[80vh] flex flex-col">
+    <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col">
         <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 rounded-t-xl">
             <h2 class="text-2xl tarot-font text-amber-400 font-bold">Reading History</h2>
             <button id="close-history" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
@@ -441,7 +427,7 @@
                     <thead>
                         <tr class="border-b border-slate-700 text-slate-400 text-sm uppercase tracking-wider">
                             <th class="pb-3 pr-4 font-medium">Date & Time</th>
-                            <th class="pb-3 pr-4 font-medium">Spread Type</th>
+                            <th class="pb-3 pr-4 font-medium">Spread Type & Focus</th>
                             <th class="pb-3 pr-4 font-medium">Cards Drawn</th>
                             <th class="pb-3 pr-4 font-medium text-center">Snapshot</th>
                             <th class="pb-3 font-medium text-center">Action</th>
@@ -463,7 +449,7 @@
     </div>
 </div>
 
-<button id="btn-interpret" class="fixed bottom-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
+<button id="btn-interpret" class="fixed bottom-[320px] left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
     ✨ Reveal the Meaning ✨
 </button>
 
@@ -483,7 +469,6 @@
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
     
-    // Major Arcana with specific icons
     const majors = [
         {name: "The Fool", icon: '🃏'}, {name: "The Magician", icon: '🪄'}, {name: "The High Priestess", icon: '🌙'},
         {name: "The Empress", icon: '👑'}, {name: "The Emperor", icon: '🛡️'}, {name: "The Hierophant", icon: '🗝️'},
@@ -496,7 +481,7 @@
     ];
 
     const tarotDeck = [];
-    majors.forEach(m => tarotDeck.push({ name: m.name, suit: '', icon: m.icon, theme: 'theme-major' }));
+    majors.forEach(m => tarotDeck.push({ name: m.name, suit: '', rank: '', icon: m.icon, theme: 'theme-major' }));
     suits.forEach(s => {
         ranks.forEach(r => tarotDeck.push({ 
             name: `${r} of ${s.name}`, 
@@ -511,6 +496,7 @@
     let activeDeck = [...tarotDeck];
     let drawnCards = [];
     let readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || [];
+    let useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic'; // Default to modern if not set
     
     const spreads = {
         '1': { count: 1, baseLabel: '1 Card (Daily Draw)', label: '1 Card (Daily Draw)', cooldown: 24 * 60 * 60 * 1000, classes: ['cc-1-center'], names: ['Focus / Outcome'] },
@@ -518,7 +504,6 @@
         '5': { count: 5, baseLabel: '5 Cards (Story Cross)', label: '5 Cards (Story Cross)', cooldown: 0, classes: ['cc-5-left', 'cc-5-center', 'cc-5-right', 'cc-5-top', 'cc-5-bottom'], names: ['Past', 'Present', 'Future', 'Reason', 'Potential'] },
         '10': { count: 10, baseLabel: '10 Cards (Celtic Cross)', label: '10 Cards (Celtic Cross)', cooldown: 7 * 24 * 60 * 60 * 1000, classes: ['cc-1', 'cc-2', 'cc-3', 'cc-4', 'cc-5', 'cc-6', 'cc-7', 'cc-8', 'cc-9', 'cc-10'], names: ['Heart', 'Crossing', 'Root', 'Past', 'Crown', 'Future', 'Self', 'Environment', 'Hopes/Fears', 'Outcome'] }
     };
-    
     let currentSpreadSize = '1';
 
     // --- INTENTIONS DATA ---
@@ -546,13 +531,13 @@
     const statusText = document.getElementById('status-text');
     const spreadArea = document.getElementById('spread-area');
     const fanContainer = document.getElementById('fan-container');
+    const btnToggleArt = document.getElementById('btn-toggle-art');
     
-    // Intention Elements
     const catSelect = document.getElementById('intent-category');
     const subCatSelect = document.getElementById('intent-subcategory');
     const intentContainer = document.getElementById('intention-container');
 
-    // Populate Intentions
+    // Populate Intentions Menu
     Object.keys(intentionsData).forEach(cat => {
         let opt = document.createElement('option');
         opt.value = cat; opt.innerText = cat;
@@ -569,7 +554,7 @@
         });
     }
     catSelect.addEventListener('change', updateSubcategories);
-    updateSubcategories(); // Initialize
+    updateSubcategories(); 
     
     function toggleIntentionBar() {
         if (currentSpreadSize === '1') {
@@ -581,6 +566,119 @@
         }
     }
 
+    // --- ART STYLE ENGINE ---
+    function updateToggleButton() {
+        btnToggleArt.innerHTML = useClassicArt ? '✨ Modern Art' : '🖼️ Classic Art';
+    }
+    updateToggleButton();
+
+    btnToggleArt.addEventListener('click', () => {
+        useClassicArt = !useClassicArt;
+        localStorage.setItem('tarotArtStyle', useClassicArt ? 'classic' : 'modern');
+        updateToggleButton();
+        
+        // Instantly re-render the faces of all currently drawn cards on the table
+        drawnCards.forEach((card, i) => {
+            const slot = document.getElementById(`slot-${i}`);
+            if (slot) {
+                const face = slot.querySelector('.drawn-card');
+                if (face) {
+                    face.innerHTML = renderCardContent(card);
+                }
+            }
+        });
+    });
+
+    // Helper to get classic Rider Waite image URL from Sacred Texts public domain archive
+    function getClassicImageUrl(cardData) {
+        const baseUrl = "https://www.sacred-texts.com/tarot/pkt/img/";
+        if (cardData.suit === '') { // Major Arcana
+            const idx = majors.findIndex(m => m.name === cardData.name);
+            return `${baseUrl}ar${String(idx).padStart(2, '0')}.jpg`;
+        } else { // Minor Arcana
+            const suitPrefix = cardData.suit.substring(0, 2).toLowerCase(); // wa, cu, sw, pe
+            let num = 0;
+            if (cardData.rank === 'Ace') num = 1;
+            else if (cardData.rank === 'Page') num = 11;
+            else if (cardData.rank === 'Knight') num = 12;
+            else if (cardData.rank === 'Queen') num = 13;
+            else if (cardData.rank === 'King') num = 14;
+            else num = parseInt(cardData.rank);
+            return `${baseUrl}${suitPrefix}${String(num).padStart(2, '0')}.jpg`;
+        }
+    }
+
+    // --- NEW: Helper for Modern CSS Art ---
+    function getModernArtHtml(drawnCardData) {
+        let artContent = '';
+        if (drawnCardData.suit === '') { 
+            artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
+        } else {
+            let rankValue = ranks.indexOf(drawnCardData.rank) + 1;
+            if (rankValue === 1) { 
+                artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
+            } else if (rankValue >= 2 && rankValue <= 10) {
+                let iconsHtml = '';
+                for(let i=0; i<rankValue; i++) iconsHtml += `<span class="filter drop-shadow-md">${drawnCardData.icon}</span>`;
+                artContent = `<div class="flex flex-wrap justify-center items-center content-center gap-1 md:gap-2 w-[85%] h-[85%] text-sm md:text-3xl relative z-10">${iconsHtml}</div>`;
+            } else { 
+                let courtIcon = drawnCardData.rank === 'Page' ? '🧑‍🎓' : drawnCardData.rank === 'Knight' ? '🏇' : drawnCardData.rank === 'Queen' ? '👸' : '🤴';
+                artContent = `
+                    <div class="flex flex-col items-center justify-center gap-1 md:gap-3 relative z-10">
+                        <div class="text-3xl md:text-5xl filter drop-shadow-md">${courtIcon}</div>
+                        <div class="text-xl md:text-4xl filter drop-shadow-md">${drawnCardData.icon}</div>
+                    </div>`;
+            }
+        }
+        return `
+            <div class="card-art-frame ${drawnCardData.theme}">
+                ${artContent}
+            </div>
+            <div class="card-title-banner">
+                <span class="drawn-card-title">${drawnCardData.name}</span>
+            </div>
+        `;
+    }
+
+    // --- NEW: Global Image Error Handler ---
+    window.handleImageError = function(img) {
+        const parent = img.closest('.drawn-card');
+        if (parent) {
+            const classic = parent.querySelector('.classic-container');
+            const modern = parent.querySelector('.modern-container');
+            if (classic && modern) {
+                // If the classic image fails to load, gracefully switch to Modern Art!
+                classic.classList.add('hidden');
+                classic.classList.remove('flex');
+                modern.classList.remove('hidden');
+                modern.classList.add('flex');
+            }
+        }
+    };
+
+    function renderCardContent(drawnCardData) {
+        const modernHtml = getModernArtHtml(drawnCardData);
+
+        if (useClassicArt) {
+            const imgUrl = getClassicImageUrl(drawnCardData);
+            return `
+                <div class="classic-container w-full h-full flex flex-col items-center justify-center bg-[#fdfbf7] border-4 border-[#e2d6b5] rounded-[10px] overflow-hidden p-1.5 md:p-2 shadow-inner z-10">
+                    <img src="${imgUrl}" alt="${drawnCardData.name}" class="w-full h-full object-cover rounded-sm mix-blend-multiply" onerror="window.handleImageError(this)">
+                </div>
+                <div class="modern-container hidden w-full h-full flex-col items-center justify-start">
+                    ${modernHtml}
+                </div>
+            `;
+        } else {
+            return `
+                <div class="w-full h-full flex flex-col items-center justify-start">
+                    ${modernHtml}
+                </div>
+            `;
+        }
+    }
+
+    // --- GAMEPLAY ENGINE ---
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -625,13 +723,11 @@
             card.className = 'fan-card';
             
             let normalized = 0;
-            if (cardsRemaining > 1) {
-                normalized = (i / (cardsRemaining - 1)) * 2 - 1;
-            }
+            if (cardsRemaining > 1) normalized = (i / (cardsRemaining - 1)) * 2 - 1;
             
             const translateX = normalized * (spreadWidth / 2);
             const translateY = (normalized * normalized) * 60; 
-            const angle = normalized * 35;
+            const angle = normalized * 35; 
             
             const baseTransform = `translate(${translateX}px, ${translateY}px) rotate(${angle}deg)`;
             card.style.setProperty('--base-transform', baseTransform);
@@ -656,44 +752,7 @@
 
         const face = document.createElement('div');
         face.className = 'drawn-card glow-pulse';
-        
-        // Generate dynamic picture art based on rank and suit
-        let artContent = '';
-        if (drawnCardData.suit === '') { 
-            // Major Arcana (Single large specific icon)
-            artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
-        } else {
-            let rankValue = ranks.indexOf(drawnCardData.rank) + 1;
-            if (rankValue === 1) { 
-                // Ace (Single large suit icon)
-                artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
-            } else if (rankValue >= 2 && rankValue <= 10) {
-                // Minor Arcana (Grid of icons matching the number)
-                let iconsHtml = '';
-                for(let i=0; i<rankValue; i++) {
-                    iconsHtml += `<span class="filter drop-shadow-md">${drawnCardData.icon}</span>`;
-                }
-                artContent = `<div class="flex flex-wrap justify-center items-center content-center gap-1 md:gap-2 w-[85%] h-[85%] text-sm md:text-3xl relative z-10">${iconsHtml}</div>`;
-            } else { 
-                // Court Cards (Royal icon + Suit)
-                let courtIcon = drawnCardData.rank === 'Page' ? '🧑‍🎓' : drawnCardData.rank === 'Knight' ? '🏇' : drawnCardData.rank === 'Queen' ? '👸' : '🤴';
-                artContent = `
-                    <div class="flex flex-col items-center justify-center gap-1 md:gap-3 relative z-10">
-                        <div class="text-3xl md:text-5xl filter drop-shadow-md">${courtIcon}</div>
-                        <div class="text-xl md:text-4xl filter drop-shadow-md">${drawnCardData.icon}</div>
-                    </div>`;
-            }
-        }
-
-        face.innerHTML = `
-            <div class="card-art-frame ${drawnCardData.theme}">
-                ${artContent}
-            </div>
-            <div class="card-title-banner">
-                <span class="drawn-card-title">${drawnCardData.name}</span>
-            </div>
-        `;
-        
+        face.innerHTML = renderCardContent(drawnCardData);
         slot.appendChild(face);
 
         const aura = document.createElement('div');
@@ -712,7 +771,6 @@
             statusText.innerText = "Reading Complete";
             statusText.classList.add('text-amber-400');
             statusText.classList.remove('text-amber-50');
-            
             setTimeout(() => { saveToHistory(); }, 600);
         } else {
             statusText.innerText = `Drawn: ${drawnCards.length} / ${total}`;
@@ -737,9 +795,7 @@
             btnInterpret.classList.remove('opacity-100', 'scale-100', 'animate-pulse', 'pointer-events-auto');
             btnInterpret.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
             setTimeout(() => {
-                if(drawnCards.length < parseInt(currentSpreadSize)) {
-                    btnInterpret.classList.add('hidden');
-                }
+                if(drawnCards.length < parseInt(currentSpreadSize)) btnInterpret.classList.add('hidden');
             }, 500);
         }
     }
@@ -782,10 +838,7 @@
         broom.classList.add('animate-sweep');
         
         const poofDust = () => {
-            confetti({
-                particleCount: 30, spread: 120, origin: { y: 0.6, x: 0.5 },
-                colors: ['#cbd5e1', '#94a3b8', '#64748b'], shapes: ['circle'], scalar: 1.2
-            });
+            confetti({ particleCount: 30, spread: 120, origin: { y: 0.6, x: 0.5 }, colors: ['#cbd5e1', '#94a3b8', '#64748b'], shapes: ['circle'], scalar: 1.2 });
         };
 
         setTimeout(poofDust, 240);
@@ -822,7 +875,7 @@
             }
         }
 
-        toggleIntentionBar(); // Update intention bar visibility based on spread size
+        toggleIntentionBar();
 
         activeDeck = [...tarotDeck];
         drawnCards = [];
@@ -835,7 +888,6 @@
     async function saveToHistory() {
         let focusText = "";
         if (currentSpreadSize !== '1') {
-            const cat = document.getElementById('intent-category').value;
             const sub = document.getElementById('intent-subcategory').value;
             focusText = ` [Focus: ${sub}]`;
         }
@@ -843,21 +895,34 @@
         const spreadName = spreads[currentSpreadSize].label + focusText;
         const cardNames = drawnCards.map(c => c.name).join(', ');
         
-        const timestamp = new Date().toLocaleString(undefined, { 
-            year: 'numeric', month: 'short', day: 'numeric', 
-            hour: '2-digit', minute: '2-digit' 
-        });
+        const timestamp = new Date().toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
         let imgData = "";
         try {
-            const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: window.devicePixelRatio || 2 });
-            imgData = canvas.toDataURL('image/png');
-        } catch(e) {
-            console.error("Failed to capture snapshot", e);
-        }
+            // Memory Fix: Compress the snapshot heavily using JPEG and scale: 1 to prevent crashing
+            const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: 1, useCORS: true });
+            imgData = canvas.toDataURL('image/jpeg', 0.6);
+        } catch(e) { console.warn("Failed to capture snapshot (CORS limitation):", e); }
 
         readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: spreadName, cards: cardNames, image: imgData });
-        localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
+        
+        // Safety Net: Catch Browser Storage Quota Exceeded Error
+        try {
+            localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
+        } catch (e) {
+            console.warn("Storage full! Clearing older images to save your new reading.");
+            readingHistory = readingHistory.map((item, index) => {
+                if (index > 0) item.image = null; // Drop heavy images from older history
+                return item;
+            });
+            try {
+                localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
+            } catch (e2) {
+                readingHistory[0].image = null; // Drop all images as absolute last resort
+                localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
+            }
+        }
+        
         renderHistory();
         checkCooldowns();
     }
@@ -906,7 +971,7 @@
         localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); 
         renderHistory();
         checkCooldowns(); 
-    };
+    }
 
     const funnyWarnings = [
         "Hold your horses! 🐎 The reading is full!",
@@ -920,16 +985,12 @@
     function triggerFunnyWarning() {
         const warningEl = document.getElementById('funny-warning');
         const textEl = document.getElementById('warning-text');
-        
         textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
-        
         warningEl.classList.remove('warning-active');
         document.body.classList.remove('flash-screen');
         void warningEl.offsetWidth; 
-        
         warningEl.classList.add('warning-active');
         document.body.classList.add('flash-screen');
-        
         setTimeout(() => {
             warningEl.classList.remove('warning-active');
             document.body.classList.remove('flash-screen');
@@ -940,9 +1001,7 @@
         const fanArea = document.getElementById('deck-area');
         if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
             if (drawnCards.length >= parseInt(currentSpreadSize)) {
-                e.preventDefault();
-                e.stopPropagation();
-                triggerFunnyWarning();
+                e.preventDefault(); e.stopPropagation(); triggerFunnyWarning();
             }
         }
     }, true);
@@ -950,25 +1009,18 @@
     document.getElementById('btn-interpret').addEventListener('click', async () => {
         const modal = document.getElementById('interpret-modal');
         const content = document.getElementById('interpret-content');
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        
+        modal.classList.remove('hidden'); modal.classList.add('flex');
         content.innerHTML = `
             <div class="flex flex-col items-center justify-center h-48 gap-6">
                 <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
                 <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                    Communing with the spirits...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
+                    Communing with the spirits...<br><span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
                 </div>
-            </div>
-        `;
+            </div>`;
 
-        // Gather context for the AI
         const spreadInfo = spreads[currentSpreadSize];
         const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
         
-        // Determine Focus
         let focusInstruction = "general guidance";
         let focusTitle = "General Reading";
         if (currentSpreadSize !== '1') {
@@ -978,41 +1030,19 @@
             focusTitle = sub;
         }
 
-        // Build the prompt instruction
-        const prompt = `Act as an expert, mystical Tarot reader. The user is asking for ${focusInstruction}. I have just drawn a ${spreadInfo.label} spread. 
-        Here are the cards I pulled: ${readingContext}. 
-        Please provide a concise, insightful, and beautifully written interpretation of this reading specifically tailored to their question. 
-        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
-        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
-        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
+        const prompt = `Act as an expert, mystical Tarot reader. The user is asking for ${focusInstruction}. I have just drawn a ${spreadInfo.label} spread. Here are the cards I pulled: ${readingContext}. Please provide a concise, insightful, and beautifully written interpretation of this reading specifically tailored to their question. Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. Make the headers amber colored using inline CSS. Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
 
         try {
             const apiKey = ""; 
-            // FIX: Updated to a supported Canvas preview model
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
+            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
             if (!response.ok) throw new Error("Network Response was not ok.");
-
             const result = await response.json();
-            
             if (result.candidates && result.candidates[0].content.parts[0].text) {
-                let htmlText = result.candidates[0].content.parts[0].text;
-                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
-                content.innerHTML = htmlText;
-            } else {
-                throw new Error("Invalid response format");
-            }
+                content.innerHTML = result.candidates[0].content.parts[0].text.replace(/```html/gi, '').replace(/```/g, '');
+            } else throw new Error("Invalid response format");
         } catch (error) {
             console.error("AI Reading Failed:", error);
-            // FIX: If the API call fails (like if you don't have a key set up), show a beautiful simulated response!
             setTimeout(() => {
                 content.innerHTML = `
                     <div class="flex flex-col items-center justify-center gap-4 text-center">
@@ -1021,8 +1051,7 @@
                         <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
                         <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding your focus. The energies indicate that you are shedding old patterns and stepping into a period of growth. Trust your intuition right now, for it is exceptionally sharp.</p>
                         <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
-                    </div>
-                `;
+                    </div>`;
             }, 1000);
         }
     });
@@ -1032,87 +1061,46 @@
         document.getElementById('interpret-modal').classList.remove('flex');
     });
 
-    // --- COOLDOWN LOGIC ---
     function checkCooldowns() {
         const select = document.getElementById('spread-select');
         let needsToSwitch = false;
-
         Object.keys(spreads).forEach(key => {
             const spread = spreads[key];
             const option = select.querySelector(`option[value="${key}"]`);
             if (!option) return;
-
             if (spread.cooldown > 0) {
                 const lastReading = readingHistory.find(r => r.spreadId === key);
-                
                 if (lastReading && lastReading.timestamp) {
                     const timeSince = Date.now() - lastReading.timestamp;
                     if (timeSince < spread.cooldown) {
                         const unlockTime = new Date(lastReading.timestamp + spread.cooldown);
-                        const timeStr = unlockTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        const dateStr = unlockTime.toLocaleDateString([], {month: 'short', day: 'numeric'});
-                        
                         option.disabled = true;
-                        option.innerText = `${spread.baseLabel} [Wait till ${dateStr} ${timeStr}]`;
-                        
+                        option.innerText = `${spread.baseLabel} [Wait till ${unlockTime.toLocaleDateString([], {month: 'short', day: 'numeric'})} ${unlockTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}]`;
                         if (currentSpreadSize === key) needsToSwitch = true;
-                    } else {
-                        option.disabled = false;
-                        option.innerText = spread.baseLabel;
-                    }
-                } else {
-                    option.disabled = false;
-                    option.innerText = spread.baseLabel;
-                }
+                    } else { option.disabled = false; option.innerText = spread.baseLabel; }
+                } else { option.disabled = false; option.innerText = spread.baseLabel; }
             }
         });
-
         if ((needsToSwitch || select.options[select.selectedIndex].disabled) && drawnCards.length === 0) {
             for (let i = 0; i < select.options.length; i++) {
                 if (!select.options[i].disabled) {
-                    select.selectedIndex = i;
-                    currentSpreadSize = select.options[i].value;
-                    resetReading();
-                    break;
+                    select.selectedIndex = i; currentSpreadSize = select.options[i].value; resetReading(); break;
                 }
             }
         }
     }
 
     setInterval(checkCooldowns, 60000);
-
-    spreadSelect.addEventListener('change', (e) => {
-        currentSpreadSize = e.target.value;
-        resetReading();
-    });
-
-    document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
-    
-    document.getElementById('btn-history').addEventListener('click', () => {
-        renderHistory();
-        document.getElementById('history-modal').classList.remove('hidden');
-        document.getElementById('history-modal').classList.add('flex');
-    });
-    
-    document.getElementById('close-history').addEventListener('click', () => {
-        document.getElementById('history-modal').classList.add('hidden');
-        document.getElementById('history-modal').classList.remove('flex');
-    });
-
-    document.getElementById('close-snapshot').addEventListener('click', () => {
-        document.getElementById('snapshot-modal').classList.add('hidden');
-        document.getElementById('snapshot-modal').classList.remove('flex');
-    });
-
-    window.addEventListener('resize', () => {
-        if (drawnCards.length < parseInt(currentSpreadSize)) renderFan();
-    });
+    spreadSelect.addEventListener('change', (e) => { currentSpreadSize = e.target.value; resetReading(); });
+    document.getElementById('btn-history').addEventListener('click', () => { renderHistory(); document.getElementById('history-modal').classList.remove('hidden'); document.getElementById('history-modal').classList.add('flex'); });
+    document.getElementById('close-history').addEventListener('click', () => { document.getElementById('history-modal').classList.add('hidden'); document.getElementById('history-modal').classList.remove('flex'); });
+    document.getElementById('close-snapshot').addEventListener('click', () => { document.getElementById('snapshot-modal').classList.add('hidden'); document.getElementById('snapshot-modal').classList.remove('flex'); });
+    window.addEventListener('resize', () => { if (drawnCards.length < parseInt(currentSpreadSize)) renderFan(); });
 
     // INIT
     checkCooldowns();
     resetReading();
     renderHistory(); 
-
 </script>
 </body>
 </html>
