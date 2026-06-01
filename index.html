@@ -325,7 +325,6 @@
             inset: 0;
             z-index: 5;
             pointer-events: none;
-            /* Vibrant, undeniable rainbow gradient + a shiny white glare line */
             background: 
                 linear-gradient(
                     115deg,
@@ -345,7 +344,6 @@
                     transparent 60%
                 );
             background-size: 300% 300%;
-            /* 'hard-light' forces the rainbow to show up brilliantly on light backgrounds */
             mix-blend-mode: hard-light; 
             opacity: 0.45;
             animation: holoRainbow 3.5s infinite linear;
@@ -486,7 +484,7 @@
     </div>
 </div>
 
-<button id="btn-interpret" class="fixed bottom-[320px] left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
+<button id="btn-interpret" class="fixed bottom-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
     ✨ Reveal the Meaning ✨
 </button>
 
@@ -578,6 +576,7 @@
     const subCatSelect = document.getElementById('intent-subcategory');
     const intentContainer = document.getElementById('intention-container');
 
+    // Populating subcategories and categories
     Object.keys(intentionsData).forEach(cat => {
         let opt = document.createElement('option');
         opt.value = cat; opt.innerText = cat;
@@ -686,6 +685,7 @@
         `;
     }
 
+    // Expose globally so inline onerror can reach it
     window.handleImageError = function(img) {
         const parent = img.closest('.drawn-card');
         if (parent) {
@@ -720,6 +720,37 @@
                     ${modernHtml}
                 </div>
             `;
+        }
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function renderPlaceholders() {
+        spreadArea.innerHTML = '';
+        spreadArea.className = `spread-layout spread-${currentSpreadSize}`;
+        const spread = spreads[currentSpreadSize];
+
+        for (let i = 0; i < spread.count; i++) {
+            const slot = document.createElement('div');
+            slot.className = `card-placeholder ${spread.classes[i]}`;
+            slot.id = `slot-${i}`;
+            
+            const label = document.createElement('div');
+            label.className = 'font-semibold text-amber-200/50 mb-1 tracking-wider uppercase text-[0.65rem]';
+            label.innerText = `Card ${i + 1}`;
+            
+            const meaning = document.createElement('div');
+            meaning.className = 'text-slate-400 mt-2 font-bold';
+            meaning.innerText = spread.names[i];
+
+            slot.appendChild(label);
+            slot.appendChild(meaning);
+            spreadArea.appendChild(slot);
         }
     }
 
@@ -845,7 +876,6 @@
         const broomContainer = document.getElementById('broom-container');
         
         broomContainer.classList.remove('hidden');
-        broom.classList.remove('animate-sweep'); // Ensure reset before triggering
         void broom.offsetWidth; 
         broom.classList.add('animate-sweep');
         
@@ -1055,7 +1085,6 @@
                 throw new Error("No API key provided. Falling back to simulated reading.");
             }
             
-            // FIX 1: Pointing to the stable, widely supported Gemini 1.5 Flash model
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
@@ -1068,8 +1097,6 @@
             if (!response.ok) {
                 const errData = await response.json();
                 console.error("API Error Details:", errData);
-                
-                // FIX 2: Only delete the key if Google explicitly says it's invalid (401), not on other errors.
                 if (response.status === 401) {
                      localStorage.removeItem('tarotApiKey'); 
                 }
