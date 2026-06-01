@@ -15,21 +15,19 @@
             background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             background-attachment: fixed;
             color: #f8fafc;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-            overflow-y: auto;   /* Enable vertical scrolling for large spreads */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
         
         .tarot-font {
             font-family: 'Cinzel', serif;
         }
 
-        /* The main scrollable container */
         #app-container {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             width: 100%;
-            /* Add huge padding at the bottom so the hovering deck doesn't cover the bottom cards */
             padding-bottom: 320px; 
         }
 
@@ -42,28 +40,20 @@
             transition: min-height 0.4s ease;
         }
 
-        /* Dynamic Container Heights to give big spreads room to breathe */
         .spread-1 { min-height: 500px; }
         .spread-3 { min-height: 500px; }
-        .spread-5 { min-height: 950px; } /* Increased height to un-can the mackerel! */
-        .spread-10 { min-height: 1200px; } /* Celtic cross gets a massive vertical canvas */
+        .spread-5 { min-height: 950px; }
+        .spread-10 { min-height: 1200px; }
 
-        /* 1 Card Position */
         .cc-1-center { top: 50%; left: 50%; }
-
-        /* 3 Card Positions */
-        .cc-3-left { top: 50%; left: 18%; } /* Spread these out a bit more too */
+        .cc-3-left { top: 50%; left: 18%; }
         .cc-3-center { top: 50%; left: 50%; }
         .cc-3-right { top: 50%; left: 82%; }
-
-        /* 5 Card Positions - Expanded for breathing room */
         .cc-5-top { top: 12%; left: 50%; }
         .cc-5-bottom { top: 88%; left: 50%; }
         .cc-5-left { top: 50%; left: 18%; }
         .cc-5-center { top: 50%; left: 50%; }
         .cc-5-right { top: 50%; left: 82%; }
-
-        /* 10 Card (Celtic Cross) Positions */
         .cc-1 { top: 40%; left: 35%; }
         .cc-2 { top: 40%; left: 35%; transform: translate(-50%, -50%) rotate(90deg) !important; }
         .cc-3 { top: 68%; left: 35%; } 
@@ -85,16 +75,14 @@
         .spread-3 .card-placeholder { width: 130px; height: 208px; }
         @media (min-width: 768px) { .spread-3 .card-placeholder { width: 200px; height: 320px; } }
 
-        /* 1-Card Spread (Center of the Universe!) */
         .spread-1 .card-placeholder { width: 220px; height: 352px; font-size: 1.25rem; }
         @media (min-width: 768px) { 
             .spread-1 .card-placeholder { width: 320px; height: 512px; font-size: 1.5rem; }
-            .spread-1 .drawn-card-title { font-size: 2.5rem; padding: 1.5rem; line-height: 1.2; }
-            .spread-1 .drawn-card .suit-icon { font-size: 6rem; margin-bottom: 1.5rem; }
+            .spread-1 .drawn-card-title { font-size: 1.8rem; }
         }
 
         .card-placeholder {
-            border: 1px solid rgba(251, 191, 36, 0.4); /* Gold border */
+            border: 1px solid rgba(251, 191, 36, 0.4);
             background: rgba(15, 23, 42, 0.6);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
             border-radius: 12px;
@@ -123,20 +111,19 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            border: 2px solid #fbbf24; /* Gold border */
+            border: 2px solid #fbbf24;
             border-radius: 12px;
             position: absolute;
             top: 0; left: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Aligns content to top so the banner stays at bottom */
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.6);
             animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
             z-index: 10;
         }
         
-        /* Elegant inner gold border for the face */
         .drawn-card::after {
             content: '';
             position: absolute;
@@ -146,21 +133,67 @@
             pointer-events: none;
         }
 
+        /* --- NEW CARD ART & ILLUSTRATIONS --- */
+        .card-art-frame {
+            width: 86%;
+            height: 60%;
+            margin-top: 5%;
+            border: 2px solid rgba(251, 191, 36, 0.5);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 4px 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .card-art-frame::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg 15deg,
+                rgba(255,255,255,0.06) 15deg 30deg
+            );
+            animation: slowSpin 40s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes slowSpin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .theme-major { background: radial-gradient(circle at center, #6b21a8, #2e1065); }
+        .theme-wands { background: radial-gradient(circle at center, #991b1b, #450a0a); }
+        .theme-cups { background: radial-gradient(circle at center, #1d4ed8, #0f172a); }
+        .theme-swords { background: radial-gradient(circle at center, #334155, #0f172a); }
+        .theme-pentacles { background: radial-gradient(circle at center, #15803d, #052e16); }
+
+        .card-title-banner {
+            margin-top: auto;
+            margin-bottom: 6%;
+            width: 90%;
+            text-align: center;
+            border-top: 1px solid rgba(251, 191, 36, 0.3);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 0.3rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
         .drawn-card-title {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.1rem;
-            text-align: center;
-            padding: 0.5rem;
-            color: #fef08a; /* Glowing gold text */
+            font-size: 0.85rem;
+            color: #fef08a;
             text-shadow: 0 2px 5px rgba(0,0,0,0.9);
-            z-index: 2;
         }
-        
-        .suit-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.4));
+        @media (min-width: 768px) {
+            .drawn-card-title { font-size: 1rem; }
+            .spread-1 .drawn-card-title { font-size: 1.8rem; }
         }
 
         @keyframes flipIn {
@@ -168,7 +201,7 @@
             100% { transform: perspective(400px) rotateY(0deg) scale(1); opacity: 1; }
         }
 
-        /* --- MASSIVE FANNED DECK (HUD Bottom) --- */
+        /* --- MASSIVE FANNED DECK --- */
         .fan-container {
             position: relative;
             width: 100%;
@@ -185,7 +218,6 @@
             width: 70px;
             height: 112px;
             background-color: #0f172a;
-            /* Beautiful Mystical Indigo Checkerboard Pattern (Matches User Screenshot) */
             background-image: 
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Crect width='15' height='15' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect x='15' y='15' width='15' height='15' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E"),
                 radial-gradient(ellipse at bottom, rgba(79, 70, 229, 0.6) 0%, #020617 100%);
@@ -201,7 +233,6 @@
             .fan-card { width: 90px; height: 144px; border-radius: 8px; }
         }
 
-        /* The beautiful hover pop-out effect */
         .fan-card:hover {
             transform: var(--base-transform) translateY(-60px) scale(1.4) !important;
             box-shadow: 0 25px 50px rgba(0,0,0,0.9), 0 0 30px rgba(251, 191, 36, 0.6);
@@ -209,19 +240,16 @@
             border-color: #fef08a;
         }
 
-        /* ANTI-BOUNCE INVISIBLE HITBOX 
-           Fills the gap created by moving the card up, stopping the "bouncing" overlap bug */
         .fan-card::after {
             content: '';
             position: absolute;
             top: -20px;
             left: -20px;
             right: -20px;
-            bottom: -60px; /* Exactly counters the translateY(-60px) */
+            bottom: -60px;
             z-index: -1;
         }
 
-        /* Disabled deck state */
         .reading-complete-fan {
             filter: grayscale(40%) opacity(0.8);
             transition: filter 0.5s ease, opacity 0.5s ease;
@@ -230,7 +258,6 @@
             cursor: not-allowed !important;
         }
 
-        /* --- UI CONTROLS --- */
         .custom-select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23fbbf24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -240,15 +267,30 @@
         }
 
         /* --- ANIMATIONS & EFFECTS --- */
+        @keyframes sweepAcross {
+            0% { transform: translate(100vw, -10vh) rotate(60deg) scale(0.5); }
+            15% { transform: translate(-20vw, 15vh) rotate(-30deg) scale(1.5); }
+            30% { transform: translate(30vw, 5vh) rotate(40deg) scale(1.5); }
+            45% { transform: translate(-30vw, 20vh) rotate(-45deg) scale(1.5); }
+            60% { transform: translate(25vw, 10vh) rotate(35deg) scale(1.5); }
+            75% { transform: translate(-40vw, 25vh) rotate(-50deg) scale(1.5); }
+            100% { transform: translate(-150vw, -20vh) rotate(-90deg) scale(0.5); }
+        }
+        .animate-sweep { animation: sweepAcross 1.6s ease-in-out forwards; }
+        
+        .fly-away {
+            transform: translate(var(--fly-x, -100vw), var(--fly-y, -30vh)) rotate(var(--fly-rot, -720deg)) scale(0.2) !important;
+            opacity: 0 !important;
+            transition: all 0.8s cubic-bezier(0.55, 0.085, 0.68, 0.53) !important;
+        }
+
         @keyframes cuteWiggle {
             0%, 100% { transform: rotate(0deg); }
             25% { transform: rotate(-5deg) scale(1.05); }
             50% { transform: rotate(5deg) scale(1.05); }
             75% { transform: rotate(-5deg) scale(1.05); }
         }
-        .wiggling {
-            animation: cuteWiggle 0.5s ease-in-out infinite;
-        }
+        .wiggling { animation: cuteWiggle 0.5s ease-in-out infinite; }
 
         @keyframes warningShake {
             0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
@@ -267,37 +309,12 @@
             0%, 100% { box-shadow: inset 0 0 0 rgba(239, 68, 68, 0); }
             20% { box-shadow: inset 0 0 150px rgba(239, 68, 68, 0.6); }
         }
-        .flash-screen {
-            animation: flashRed 0.6s ease-in-out;
-        }
+        .flash-screen { animation: flashRed 0.6s ease-in-out; }
 
-        /* --- BROOM SWEEP ANIMATION --- */
-        @keyframes sweepAcross {
-            0% { transform: translate(100vw, -10vh) rotate(60deg) scale(0.5); }
-            15% { transform: translate(-20vw, 15vh) rotate(-30deg) scale(1.5); } /* Swish Left */
-            30% { transform: translate(30vw, 5vh) rotate(40deg) scale(1.5); }    /* Swish Right */
-            45% { transform: translate(-30vw, 20vh) rotate(-45deg) scale(1.5); } /* Swish Left */
-            60% { transform: translate(25vw, 10vh) rotate(35deg) scale(1.5); }   /* Swish Right */
-            75% { transform: translate(-40vw, 25vh) rotate(-50deg) scale(1.5); } /* Swish Left */
-            100% { transform: translate(-150vw, -20vh) rotate(-90deg) scale(0.5); } /* Fly away left */
-        }
-        
-        .animate-sweep {
-            animation: sweepAcross 1.6s ease-in-out forwards;
-        }
-        
-        .fly-away {
-            transform: translate(var(--fly-x, -100vw), var(--fly-y, -30vh)) rotate(var(--fly-rot, -720deg)) scale(0.2) !important;
-            opacity: 0 !important;
-            transition: all 0.8s cubic-bezier(0.55, 0.085, 0.68, 0.53) !important;
-        }
-
-        /* --- NEW ETHEREAL AURA EFFECT --- */
         @keyframes auraExpand {
             0% { transform: scale(0.8); opacity: 1; border-width: 4px; }
             100% { transform: scale(1.6); opacity: 0; border-width: 1px; }
         }
-        
         .aura-ripple {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -314,12 +331,10 @@
             30% { box-shadow: 0 0 50px rgba(251, 191, 36, 0.8), 0 0 80px rgba(192, 132, 252, 0.5); filter: brightness(1.3); }
             100% { box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.6); filter: brightness(1); }
         }
-
         .glow-pulse {
             animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, cardGlow 1.2s ease-out forwards;
         }
 
-        /* Scrollbar for page and history */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -331,18 +346,14 @@
 
 <div id="app-container">
     
-    <!-- TOP CONTROL BAR (Sticky Header - Stays at top when scrolling) -->
+    <!-- TOP CONTROL BAR -->
     <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8">
         <div class="max-w-6xl mx-auto flex flex-col gap-5">
-            <!-- Title Row -->
             <h1 class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
                 ✧ DIGITAL TAROT ✧
             </h1>
             
-            <!-- Controls Row (Perfectly Centered & Aligned) -->
             <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-                
-                <!-- Spread Select -->
                 <div class="flex items-center gap-3">
                     <label for="spread-select" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
                     <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
@@ -353,22 +364,17 @@
                     </select>
                 </div>
 
-                <!-- Divider -->
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
-                <!-- Status -->
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
-                    <!-- min-w ensures the text never gets squished to ... -->
                     <div class="h-9 flex items-center justify-center bg-slate-800/50 px-5 rounded-full border border-slate-700 min-w-[160px]">
                         <span id="status-text" class="text-sm font-semibold text-amber-50 whitespace-nowrap">Drawn: 0 / 1</span>
                     </div>
                 </div>
 
-                <!-- Divider -->
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
-                <!-- Buttons -->
                 <div class="flex items-center gap-3">
                     <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all">
                         History
@@ -380,34 +386,36 @@
                         Reset
                     </button>
                 </div>
-
             </div>
         </div>
     </header>
 
-    <!-- SPREAD DISPLAY AREA (Scrolling Canvas) -->
+    <!-- SPREAD DISPLAY AREA -->
     <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-8">
         <div id="spread-area" class="spread-layout spread-1">
             <!-- Placeholders injected via JS -->
         </div>
     </main>
 
-    <!-- DECK AREA (Hovering HUD at Bottom - Fixed so it floats over content) -->
+    <!-- DECK AREA -->
     <footer class="fixed bottom-0 left-0 w-full h-[280px] z-40 pointer-events-none" id="deck-area">
         <div class="fan-container pointer-events-auto" id="fan-container">
             <!-- Fanned cards injected via JS -->
         </div>
     </footer>
-
 </div>
 
-<!-- Funny Warning Modal -->
+<!-- Giant Animated Broom Container -->
+<div id="broom-container" class="fixed inset-0 pointer-events-none z-[200] hidden overflow-hidden flex items-center justify-center">
+    <div id="sweeping-broom" class="absolute text-[15rem] md:text-[20rem] filter drop-shadow-2xl" style="transform: translate(100vw, -10vh);">🧹</div>
+</div>
+
+<!-- Modals -->
 <div id="funny-warning" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-900/90 border-2 border-red-500 text-white px-8 py-6 rounded-2xl shadow-[0_0_50px_rgba(239,68,68,0.6)] z-[100] opacity-0 pointer-events-none flex flex-col items-center gap-3 backdrop-blur-md">
     <div class="text-4xl">🛑</div>
     <div id="warning-text" class="text-xl font-bold text-center tarot-font tracking-wide"></div>
 </div>
 
-<!-- History Modal -->
 <div id="history-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-4xl max-h-[80vh] flex flex-col">
         <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 rounded-t-xl">
@@ -426,78 +434,69 @@
                             <th class="pb-3 font-medium text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="history-table-body" class="text-sm">
-                        <!-- History injected here -->
-                    </tbody>
+                    <tbody id="history-table-body" class="text-sm"></tbody>
                 </table>
-                <div id="empty-history" class="text-center py-10 text-slate-500 italic hidden">
-                    No readings recorded yet.
-                </div>
+                <div id="empty-history" class="text-center py-10 text-slate-500 italic hidden">No readings recorded yet.</div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Image Preview Modal -->
 <div id="snapshot-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[110] hidden flex-col items-center justify-center p-4">
     <button id="close-snapshot" class="absolute top-6 right-8 text-slate-400 hover:text-white text-4xl leading-none">&times;</button>
     <h2 class="text-xl tarot-font text-amber-400 font-bold mb-6 tracking-widest">Spread Snapshot</h2>
     <div class="relative max-w-5xl w-full flex justify-center overflow-auto max-h-[80vh]">
-        <!-- The snapshot image will be injected here -->
         <img id="snapshot-image" src="" alt="Spread Snapshot" class="max-w-full h-auto rounded-xl shadow-[0_0_50px_rgba(251,191,36,0.15)] border border-slate-700">
     </div>
 </div>
 
-<!-- Floating Interpret Button (Shows only when reading is complete) -->
 <button id="btn-interpret" class="fixed bottom-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
     ✨ Reveal the Meaning ✨
 </button>
 
-<!-- AI Interpretation Modal -->
 <div id="interpret-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[120] hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-amber-700/50 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden relative">
-        <!-- Glowing top border -->
         <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
-        
         <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/80">
             <h2 class="text-2xl tarot-font text-amber-400 font-bold tracking-widest">Spiritual Insight</h2>
             <button id="close-interpret" class="text-slate-400 hover:text-amber-200 text-3xl leading-none transition-colors">&times;</button>
         </div>
-        
-        <!-- The reading content goes here -->
-        <div class="p-8 overflow-y-auto flex-1 text-slate-300 leading-relaxed text-lg" id="interpret-content">
-            <!-- Content injected via AI -->
-        </div>
+        <div class="p-8 overflow-y-auto flex-1 text-slate-300 leading-relaxed text-lg" id="interpret-content"></div>
     </div>
-</div>
-
-<!-- Giant Broom for Reset -->
-<div id="broom-container" class="fixed inset-0 pointer-events-none z-[150] flex items-center justify-center hidden overflow-hidden">
-    <div id="sweeping-broom" class="text-[12rem] filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]">🧹</div>
 </div>
 
 <script>
     // --- TAROT DECK GENERATOR ---
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
+    
+    // Major Arcana with specific icons
     const majors = [
-        "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", 
-        "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", 
-        "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", 
-        "The Moon", "The Sun", "Judgement", "The World"
+        {name: "The Fool", icon: '🃏'}, {name: "The Magician", icon: '🪄'}, {name: "The High Priestess", icon: '🌙'},
+        {name: "The Empress", icon: '👑'}, {name: "The Emperor", icon: '🛡️'}, {name: "The Hierophant", icon: '🗝️'},
+        {name: "The Lovers", icon: '💖'}, {name: "The Chariot", icon: '🛷'}, {name: "Strength", icon: '🦁'},
+        {name: "The Hermit", icon: '🏮'}, {name: "Wheel of Fortune", icon: '🎡'}, {name: "Justice", icon: '⚖️'},
+        {name: "The Hanged Man", icon: '🕸️'}, {name: "Death", icon: '💀'}, {name: "Temperance", icon: '🏺'},
+        {name: "The Devil", icon: '🐐'}, {name: "The Tower", icon: '⚡'}, {name: "The Star", icon: '🌟'},
+        {name: "The Moon", icon: '🐺'}, {name: "The Sun", icon: '🌞'}, {name: "Judgement", icon: '🎺'},
+        {name: "The World", icon: '🌍'}
     ];
 
     const tarotDeck = [];
-    majors.forEach(m => tarotDeck.push({ name: m, suit: '', icon: '🔮' }));
+    majors.forEach(m => tarotDeck.push({ name: m.name, suit: '', icon: m.icon, theme: 'theme-major' }));
     suits.forEach(s => {
-        ranks.forEach(r => tarotDeck.push({ name: `${r} of ${s.name}`, suit: s.name, icon: s.icon }));
+        ranks.forEach(r => tarotDeck.push({ 
+            name: `${r} of ${s.name}`, 
+            suit: s.name, 
+            rank: r,
+            icon: s.icon, 
+            theme: `theme-${s.name.toLowerCase()}` 
+        }));
     });
 
     // --- STATE ---
     let activeDeck = [...tarotDeck];
     let drawnCards = [];
-    
-    // Load history from Local Storage so cooldowns and photos survive page reloads!
     let readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || [];
     
     const spreads = {
@@ -506,7 +505,6 @@
         '5': { count: 5, baseLabel: '5 Cards (Story Cross)', label: '5 Cards (Story Cross)', cooldown: 0, classes: ['cc-5-left', 'cc-5-center', 'cc-5-right', 'cc-5-top', 'cc-5-bottom'], names: ['Past', 'Present', 'Future', 'Reason', 'Potential'] },
         '10': { count: 10, baseLabel: '10 Cards (Celtic Cross)', label: '10 Cards (Celtic Cross)', cooldown: 7 * 24 * 60 * 60 * 1000, classes: ['cc-1', 'cc-2', 'cc-3', 'cc-4', 'cc-5', 'cc-6', 'cc-7', 'cc-8', 'cc-9', 'cc-10'], names: ['Heart', 'Crossing', 'Root', 'Past', 'Crown', 'Future', 'Self', 'Environment', 'Hopes/Fears', 'Outcome'] }
     };
-    
     let currentSpreadSize = '1';
 
     // --- DOM ELEMENTS ---
@@ -551,7 +549,6 @@
         const cardsRemaining = activeDeck.length;
         if (cardsRemaining === 0) return;
         
-        // Calculate dynamic width based on screen size for a flat, table-like spread
         const containerWidth = window.innerWidth;
         const spreadWidth = Math.min(containerWidth - 40, 1100); 
 
@@ -559,73 +556,83 @@
             const card = document.createElement('div');
             card.className = 'fan-card';
             
-            // Normalize index from -1 (far left) to 1 (far right)
             let normalized = 0;
             if (cardsRemaining > 1) {
                 normalized = (i / (cardsRemaining - 1)) * 2 - 1;
             }
             
-            // 1. Horizontal spread (Translate X)
             const translateX = normalized * (spreadWidth / 2);
-            
-            // 2. Gentle downward curve at the edges (Translate Y) - creates a parabola
             const translateY = (normalized * normalized) * 60; 
+            const angle = normalized * 35;
             
-            // 3. Rotation (Cards fan out following the curve)
-            const angle = normalized * 35; // -35deg to +35deg
-            
-            // Apply the math to the card
             const baseTransform = `translate(${translateX}px, ${translateY}px) rotate(${angle}deg)`;
             card.style.setProperty('--base-transform', baseTransform);
             card.style.transform = baseTransform;
-            
-            // Ensure cards stack correctly left-to-right
             card.style.zIndex = i;
             
             card.onclick = () => drawCard(i);
             fanContainer.appendChild(card);
         }
-        
         checkCompletionState();
     }
 
     function drawCard(deckIndex) {
-        if (drawnCards.length >= parseInt(currentSpreadSize)) return; // Safety check
+        if (drawnCards.length >= parseInt(currentSpreadSize)) return; 
 
         const drawnCardData = activeDeck.splice(deckIndex, 1)[0];
         drawnCards.push(drawnCardData);
 
         const slotIndex = drawnCards.length - 1;
         const slot = document.getElementById(`slot-${slotIndex}`);
-        
-        // Remove placeholder text
         slot.innerHTML = '';
 
-        // Create mystical dark card face
         const face = document.createElement('div');
-        face.className = 'drawn-card glow-pulse'; // Added the glow-pulse animation here
+        face.className = 'drawn-card glow-pulse';
         
-        const icon = document.createElement('div');
-        icon.className = 'suit-icon';
-        icon.innerText = drawnCardData.icon;
+        // Generate dynamic picture art based on rank and suit
+        let artContent = '';
+        if (drawnCardData.suit === '') { 
+            // Major Arcana (Single large specific icon)
+            artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
+        } else {
+            let rankValue = ranks.indexOf(drawnCardData.rank) + 1;
+            if (rankValue === 1) { 
+                // Ace (Single large suit icon)
+                artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
+            } else if (rankValue >= 2 && rankValue <= 10) {
+                // Minor Arcana (Grid of icons matching the number)
+                let iconsHtml = '';
+                for(let i=0; i<rankValue; i++) {
+                    iconsHtml += `<span class="filter drop-shadow-md">${drawnCardData.icon}</span>`;
+                }
+                artContent = `<div class="flex flex-wrap justify-center items-center content-center gap-1 md:gap-2 w-[85%] h-[85%] text-sm md:text-3xl relative z-10">${iconsHtml}</div>`;
+            } else { 
+                // Court Cards (Royal icon + Suit)
+                let courtIcon = drawnCardData.rank === 'Page' ? '🧑‍🎓' : drawnCardData.rank === 'Knight' ? '🏇' : drawnCardData.rank === 'Queen' ? '👸' : '🤴';
+                artContent = `
+                    <div class="flex flex-col items-center justify-center gap-1 md:gap-3 relative z-10">
+                        <div class="text-3xl md:text-5xl filter drop-shadow-md">${courtIcon}</div>
+                        <div class="text-xl md:text-4xl filter drop-shadow-md">${drawnCardData.icon}</div>
+                    </div>`;
+            }
+        }
 
-        const title = document.createElement('div');
-        title.className = 'drawn-card-title';
-        title.innerText = drawnCardData.name;
-
-        face.appendChild(icon);
-        face.appendChild(title);
+        face.innerHTML = `
+            <div class="card-art-frame ${drawnCardData.theme}">
+                ${artContent}
+            </div>
+            <div class="card-title-banner">
+                <span class="drawn-card-title">${drawnCardData.name}</span>
+            </div>
+        `;
+        
         slot.appendChild(face);
 
-        // --- NEW: Ethereal Aura Ripple ---
         const aura = document.createElement('div');
         aura.className = 'aura-ripple';
         slot.appendChild(aura);
 
-        // Cleanup aura element after animation finishes
-        setTimeout(() => {
-            if (slot.contains(aura)) slot.removeChild(aura);
-        }, 800);
+        setTimeout(() => { if (slot.contains(aura)) slot.removeChild(aura); }, 800);
 
         renderFan();
         updateStatus();
@@ -638,11 +645,7 @@
             statusText.classList.add('text-amber-400');
             statusText.classList.remove('text-amber-50');
             
-            // Wait 600ms for the final card's flip animation to finish, THEN take the photo
-            setTimeout(() => {
-                saveToHistory();
-            }, 600);
-            
+            setTimeout(() => { saveToHistory(); }, 600);
         } else {
             statusText.innerText = `Drawn: ${drawnCards.length} / ${total}`;
             statusText.classList.remove('text-amber-400');
@@ -656,18 +659,13 @@
         
         if (drawnCards.length >= parseInt(currentSpreadSize)) {
             fanContainer.classList.add('reading-complete-fan');
-            
-            // Show the AI Interpretation button
             btnInterpret.classList.remove('hidden');
             setTimeout(() => {
                 btnInterpret.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
                 btnInterpret.classList.add('opacity-100', 'scale-100', 'animate-pulse', 'pointer-events-auto');
             }, 50);
-            
         } else {
             fanContainer.classList.remove('reading-complete-fan');
-            
-            // Hide the AI Interpretation button
             btnInterpret.classList.remove('opacity-100', 'scale-100', 'animate-pulse', 'pointer-events-auto');
             btnInterpret.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
             setTimeout(() => {
@@ -691,26 +689,8 @@
 
         statusText.innerText = "Shuffling... ✨";
         
-        // Canvas Confetti Magic Burst
-        confetti({
-            particleCount: 50,
-            spread: 120,
-            origin: { y: 0.9 },
-            colors: ['#fbbf24', '#fef08a', '#818cf8', '#c084fc'],
-            shapes: ['star', 'circle'],
-            scalar: 1.2
-        });
-        
-        // Emoji burst
-        confetti({
-            particleCount: 30,
-            scalar: 1.5,
-            origin: { y: 0.9 },
-            shapes: ['emoji'],
-            shapeOptions: {
-                emoji: { value: ['✨', '🌟', '😉', '🔮'] }
-            }
-        });
+        confetti({ particleCount: 50, spread: 120, origin: { y: 0.9 }, colors: ['#fbbf24', '#fef08a', '#818cf8', '#c084fc'], shapes: ['star', 'circle'], scalar: 1.2 });
+        confetti({ particleCount: 30, scalar: 1.5, origin: { y: 0.9 }, shapes: ['emoji'], shapeOptions: { emoji: { value: ['✨', '🌟', '😉', '🔮'] } } });
 
         setTimeout(() => {
             resetReading();
@@ -718,11 +698,52 @@
         }, 1200);
     }
 
+    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
+
+    function triggerResetSweep() {
+        if (drawnCards.length === 0) {
+            resetReading();
+            return;
+        }
+
+        const broom = document.getElementById('sweeping-broom');
+        const broomContainer = document.getElementById('broom-container');
+        
+        broomContainer.classList.remove('hidden');
+        void broom.offsetWidth; 
+        broom.classList.add('animate-sweep');
+        
+        const poofDust = () => {
+            confetti({
+                particleCount: 30, spread: 120, origin: { y: 0.6, x: 0.5 },
+                colors: ['#cbd5e1', '#94a3b8', '#64748b'], shapes: ['circle'], scalar: 1.2
+            });
+        };
+
+        setTimeout(poofDust, 240);
+        setTimeout(poofDust, 480);
+        setTimeout(poofDust, 720);
+        setTimeout(poofDust, 960);
+        
+        setTimeout(() => {
+            document.querySelectorAll('.drawn-card').forEach(card => {
+                card.style.setProperty('--fly-x', `${(Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60)}vw`);
+                card.style.setProperty('--fly-y', `${-20 - Math.random() * 60}vh`);
+                card.style.setProperty('--fly-rot', `${(Math.random() > 0.5 ? 1 : -1) * (360 + Math.random() * 720)}deg`);
+                card.classList.add('fly-away');
+            });
+        }, 240);
+
+        setTimeout(() => {
+            resetReading();
+            broom.classList.remove('animate-sweep');
+            broomContainer.classList.add('hidden');
+        }, 1600);
+    }
+
     function resetReading() {
         const select = document.getElementById('spread-select');
         
-        // FIX: If the currently selected option was disabled by a cooldown, 
-        // bump them to the first available spread when they hit reset.
         if (select.options[select.selectedIndex] && select.options[select.selectedIndex].disabled) {
             for (let i = 0; i < select.options.length; i++) {
                 if (!select.options[i].disabled) {
@@ -745,37 +766,18 @@
         const spreadName = spreads[currentSpreadSize].label;
         const cardNames = drawnCards.map(c => c.name).join(', ');
         
-        const timestamp = new Date().toLocaleString(undefined, { 
-            year: 'numeric', month: 'short', day: 'numeric', 
-            hour: '2-digit', minute: '2-digit' 
-        });
+        const timestamp = new Date().toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        // 📸 Take a high-res snapshot of the spread layout
         let imgData = "";
         try {
-            const canvas = await html2canvas(document.getElementById('spread-area'), {
-                backgroundColor: null,
-                scale: window.devicePixelRatio || 2
-            });
+            const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: window.devicePixelRatio || 2 });
             imgData = canvas.toDataURL('image/png');
         } catch(e) {
             console.error("Failed to capture snapshot", e);
         }
 
-        readingHistory.unshift({ 
-            id: Date.now(), 
-            timestamp: Date.now(), // Raw timestamp for exact cooldown math
-            spreadId: currentSpreadSize, // Track which spread type was locked
-            date: timestamp, 
-            type: spreadName, 
-            cards: cardNames, 
-            image: imgData 
-        });
-        
-        // Save permanently to Browser Local Storage
+        readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: spreadName, cards: cardNames, image: imgData });
         localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
-        
-        // Update the table and lock the dropdown if necessary
         renderHistory();
         checkCooldowns();
     }
@@ -821,9 +823,9 @@
 
     window.deleteHistoryItem = function(id) {
         readingHistory = readingHistory.filter(item => item.id !== id);
-        localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); // Update storage
+        localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); 
         renderHistory();
-        checkCooldowns(); // If they delete a recent reading, it might lift a cooldown!
+        checkCooldowns(); 
     };
 
     const funnyWarnings = [
@@ -843,7 +845,7 @@
         
         warningEl.classList.remove('warning-active');
         document.body.classList.remove('flash-screen');
-        void warningEl.offsetWidth; // reflow
+        void warningEl.offsetWidth; 
         
         warningEl.classList.add('warning-active');
         document.body.classList.add('flash-screen');
@@ -854,7 +856,6 @@
         }, 1000);
     }
 
-    // Intercept clicks on the deck if reading is full
     document.addEventListener('click', (e) => {
         const fanArea = document.getElementById('deck-area');
         if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
@@ -866,12 +867,10 @@
         }
     }, true);
     
-    // --- AI INTERPRETATION ENGINE ---
     document.getElementById('btn-interpret').addEventListener('click', async () => {
         const modal = document.getElementById('interpret-modal');
         const content = document.getElementById('interpret-content');
         
-        // Open Modal and show loading state
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         
@@ -885,11 +884,9 @@
             </div>
         `;
 
-        // Gather context for the AI
         const spreadInfo = spreads[currentSpreadSize];
         const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
         
-        // Build the prompt instruction
         const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. 
         Here are the cards I pulled: ${readingContext}. 
         Please provide a concise, insightful, and beautifully written interpretation of this reading. 
@@ -898,14 +895,10 @@
         Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
 
         try {
-            // Call the Gemini API via Canvas Runtime
             const apiKey = ""; 
-            // FIX: Updated to a supported Canvas preview model
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-            };
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -913,15 +906,12 @@
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) {
-                throw new Error("Network Response was not ok.");
-            }
+            if (!response.ok) throw new Error("Network Response was not ok.");
 
             const result = await response.json();
             
             if (result.candidates && result.candidates[0].content.parts[0].text) {
                 let htmlText = result.candidates[0].content.parts[0].text;
-                // Strip markdown blocks if the LLM occasionally adds them
                 htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
                 content.innerHTML = htmlText;
             } else {
@@ -929,7 +919,6 @@
             }
         } catch (error) {
             console.error("AI Reading Failed:", error);
-            // FIX: If the API call fails (like if you don't have a key set up), show a beautiful simulated response!
             setTimeout(() => {
                 content.innerHTML = `
                     <div class="flex flex-col items-center justify-center gap-4 text-center">
@@ -959,13 +948,11 @@
             if (!option) return;
 
             if (spread.cooldown > 0) {
-                // Find the most recent reading for this specific spread type
                 const lastReading = readingHistory.find(r => r.spreadId === key);
                 
                 if (lastReading && lastReading.timestamp) {
                     const timeSince = Date.now() - lastReading.timestamp;
                     if (timeSince < spread.cooldown) {
-                        // IT IS ON COOLDOWN!
                         const unlockTime = new Date(lastReading.timestamp + spread.cooldown);
                         const timeStr = unlockTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         const dateStr = unlockTime.toLocaleDateString([], {month: 'short', day: 'numeric'});
@@ -973,12 +960,8 @@
                         option.disabled = true;
                         option.innerText = `${spread.baseLabel} [Wait till ${dateStr} ${timeStr}]`;
                         
-                        // If they are currently viewing a spread that just got locked, flag it
-                        if (currentSpreadSize === key) {
-                            needsToSwitch = true;
-                        }
+                        if (currentSpreadSize === key) needsToSwitch = true;
                     } else {
-                        // COOLDOWN FINISHED
                         option.disabled = false;
                         option.innerText = spread.baseLabel;
                     }
@@ -989,8 +972,6 @@
             }
         });
 
-        // FIX: Auto-switch to the first available spread ONLY if the board is empty.
-        // If they just finished a reading, we DO NOT want to wipe the board!
         if ((needsToSwitch || select.options[select.selectedIndex].disabled) && drawnCards.length === 0) {
             for (let i = 0; i < select.options.length; i++) {
                 if (!select.options[i].disabled) {
@@ -1003,71 +984,14 @@
         }
     }
 
-    // Check cooldowns every 60 seconds to keep the countdown live
     setInterval(checkCooldowns, 60000);
 
-    // Event Listeners
     spreadSelect.addEventListener('change', (e) => {
         currentSpreadSize = e.target.value;
         resetReading();
     });
 
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
-    
-    // Trigger the funny sweep animation instead of an instant reset
-    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
-
-    function triggerResetSweep() {
-        // If the board is already empty, just do a silent reset
-        if (drawnCards.length === 0) {
-            resetReading();
-            return;
-        }
-
-        const broom = document.getElementById('sweeping-broom');
-        const broomContainer = document.getElementById('broom-container');
-        
-        // Show the broom and start the sweep animation
-        broomContainer.classList.remove('hidden');
-        void broom.offsetWidth; // Trigger reflow so animation restarts reliably
-        broom.classList.add('animate-sweep');
-        
-        // Multiple dust poofs as the broom scrubs back and forth!
-        const poofDust = () => {
-            confetti({
-                particleCount: 30,
-                spread: 120,
-                origin: { y: 0.6, x: 0.5 },
-                colors: ['#cbd5e1', '#94a3b8', '#64748b'], // Dusty grey colors
-                shapes: ['circle'],
-                scalar: 1.2
-            });
-        };
-
-        // Fire dust on every major scrub
-        setTimeout(poofDust, 240); // 15%
-        setTimeout(poofDust, 480); // 30%
-        setTimeout(poofDust, 720); // 45%
-        setTimeout(poofDust, 960); // 60%
-        
-        // Make all drawn cards spin and fly off screen in random directions
-        setTimeout(() => {
-            document.querySelectorAll('.drawn-card').forEach(card => {
-                // Generate random flight paths
-                card.style.setProperty('--fly-x', `${(Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 60)}vw`);
-                card.style.setProperty('--fly-y', `${-20 - Math.random() * 60}vh`);
-                card.style.setProperty('--fly-rot', `${(Math.random() > 0.5 ? 1 : -1) * (360 + Math.random() * 720)}deg`);
-                card.classList.add('fly-away');
-            });
-        }, 240);
-
-        // Wait for animation to completely finish, then actually clear the background logic
-        setTimeout(() => {
-            resetReading();
-            broom.classList.remove('animate-sweep');
-            broomContainer.classList.add('hidden');
-        }, 1600);
-    }
     
     document.getElementById('btn-history').addEventListener('click', () => {
         renderHistory();
@@ -1085,17 +1009,14 @@
         document.getElementById('snapshot-modal').classList.remove('flex');
     });
 
-    // Re-render fan if window resizes so it always fits perfectly
     window.addEventListener('resize', () => {
-        if (drawnCards.length < parseInt(currentSpreadSize)) {
-            renderFan();
-        }
+        if (drawnCards.length < parseInt(currentSpreadSize)) renderFan();
     });
 
     // INIT
     checkCooldowns();
     resetReading();
-    renderHistory(); // Make sure the table fills up with saved data right on load
+    renderHistory(); 
 
 </script>
 </body>
