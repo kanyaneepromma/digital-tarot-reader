@@ -1016,7 +1016,9 @@
         const fanArea = document.getElementById('deck-area');
         if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
             if (drawnCards.length >= parseInt(currentSpreadSize)) {
-                e.preventDefault(); e.stopPropagation(); triggerFunnyWarning();
+                e.preventDefault();
+                e.stopPropagation();
+                triggerFunnyWarning();
             }
         }
     }, true);
@@ -1024,38 +1026,80 @@
     document.getElementById('btn-interpret').addEventListener('click', async () => {
         const modal = document.getElementById('interpret-modal');
         const content = document.getElementById('interpret-content');
-        modal.classList.remove('hidden'); modal.classList.add('flex');
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
         content.innerHTML = `
             <div class="flex flex-col items-center justify-center h-48 gap-6">
                 <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
                 <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                    Communing with the spirits...<br><span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
+                    Communing with the spirits...<br>
+                    <span class="text-sm text-slate-400 font-sans mt-2 block">Interpreting your cards</span>
                 </div>
-            </div>`;
+            </div>
+        `;
 
         const spreadInfo = spreads[currentSpreadSize];
-        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
-        
-        let focusInstruction = "general guidance";
+        let focusText = "";
         let focusTitle = "General Reading";
         if (currentSpreadSize !== '1') {
-            const cat = document.getElementById('intent-category').value;
             const sub = document.getElementById('intent-subcategory').value;
-            focusInstruction = `a specific question regarding ${cat} (specifically: ${sub})`;
+            focusText = `My specific focus/question is about: "${sub}". `;
             focusTitle = sub;
         }
 
-        const prompt = `Act as an expert, mystical Tarot reader. The user is asking for ${focusInstruction}. I have just drawn a ${spreadInfo.label} spread. Here are the cards I pulled: ${readingContext}. Please provide a concise, insightful, and beautifully written interpretation of this reading specifically tailored to their question. Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. Make the headers amber colored using inline CSS. Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
+        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
+        
+        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. 
+        ${focusText}
+        Here are the cards I pulled: ${readingContext}. 
+        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
+        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
+        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
+        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
 
         try {
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
-            if (!response.ok) throw new Error("Network Response was not ok.");
+            let apiKey = localStorage.getItem('tarotApiKey');
+            
+            // If there is no key saved locally, trigger the Browser Prompt
+            if (!apiKey) {
+                apiKey = window.prompt("To get a live AI reading, please enter your Gemini API Key.\n\nYour key will be securely saved in your browser's local storage and will never be sent anywhere except directly to Google's API.");
+                
+                if (apiKey) {
+                    localStorage.setItem('tarotApiKey', apiKey.trim());
+                } else {
+                    throw new Error("No API key provided. Falling back to simulated reading.");
+                }
+            }
+            
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey.trim()}`;
+            
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            // If the key is invalid (400) or unauthorized (403), delete it so they get prompted again next time
+            if (!response.ok) {
+                if (response.status === 400 || response.status === 403) {
+                    localStorage.removeItem('tarotApiKey'); 
+                }
+                throw new Error("Network Response was not ok. Likely an invalid API key.");
+            }
+
             const result = await response.json();
+            
             if (result.candidates && result.candidates[0].content.parts[0].text) {
-                content.innerHTML = result.candidates[0].content.parts[0].text.replace(/```html/gi, '').replace(/```/g, '');
-            } else throw new Error("Invalid response format");
+                let htmlText = result.candidates[0].content.parts[0].text;
+                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
+                content.innerHTML = htmlText;
+            } else {
+                throw new Error("Invalid response format");
+            }
         } catch (error) {
             console.error("AI Reading Failed:", error);
             setTimeout(() => {
