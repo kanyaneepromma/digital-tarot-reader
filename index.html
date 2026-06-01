@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- NEW: Tone.js for Synthesized Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
         body {
@@ -435,6 +437,12 @@
                 <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
                 <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer"></select>
                 <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer max-w-[250px] truncate"></select>
+                
+                <!-- NEW: Wrapped Custom Input with a "Set" Button -->
+                <div id="custom-intent-wrapper" class="hidden items-center gap-2 w-full max-w-[320px]">
+                    <input type="text" id="custom-intent-input" class="bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full px-4 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all flex-1 placeholder-amber-700/50" placeholder="Type your specific question...">
+                    <button id="btn-lock-intent" class="h-8 px-4 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all text-[0.65rem] uppercase font-bold tracking-wider">Set</button>
+                </div>
             </div>
         </div>
     </header>
@@ -580,7 +588,8 @@
         ],
         "Love & Relationships": ["Current Relationship", "Finding New Love", "Ex-partner", "Marriage / Commitment", "Casual Dating", "Friendship Dynamics", "Family Issues"],
         "Money & Finances": ["Improving Cash Flow", "Making a Big Purchase", "Debt / Financial Burden", "General Wealth Outlook", "Investments"],
-        "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"]
+        "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"],
+        "Custom Question": ["I want to ask my own question..."]
     };
 
     const spreadSelect = document.getElementById('spread-select');
@@ -596,6 +605,87 @@
     const catSelect = document.getElementById('intent-category');
     const subCatSelect = document.getElementById('intent-subcategory');
     const intentContainer = document.getElementById('intention-container');
+    const customIntentInput = document.getElementById('custom-intent-input');
+    const customIntentWrapper = document.getElementById('custom-intent-wrapper');
+    const btnLockIntent = document.getElementById('btn-lock-intent');
+
+    // --- SYNTHESIZED SOUND EFFECTS ENGINE (Tone.js) ---
+    const AudioManager = {
+        ready: false,
+        async init() {
+            if(this.ready) return;
+            await Tone.start();
+            
+            // Magical shimmer for drawing cards
+            this.drawSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.05, decay: 0.5, sustain: 0.2, release: 1.5 }
+            }).toDestination();
+            this.drawSynth.volume.value = -12;
+
+            // Hover tick
+            this.hoverSynth = new Tone.MembraneSynth({
+                pitchDecay: 0.01, octaves: 1,
+                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.01 }
+            }).toDestination();
+            this.hoverSynth.volume.value = -25;
+
+            // Shuffle (rustling cards)
+            this.noiseSynth = new Tone.NoiseSynth({
+                noise: { type: "pink" },
+                envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+            }).toDestination();
+            this.noiseSynth.volume.value = -15;
+
+            // Broom Sweep
+            this.sweepSynth = new Tone.NoiseSynth({
+                noise: { type: "white" },
+                envelope: { attack: 0.1, decay: 0.4, sustain: 0, release: 0.5 }
+            }).toDestination();
+            this.sweepSynth.volume.value = -10;
+
+            this.ready = true;
+        },
+        playDraw() { if(this.ready) this.drawSynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "8n"); },
+        playHover() { if(this.ready) this.hoverSynth.triggerAttackRelease("C5", "32n"); },
+        playShuffle() {
+            if(!this.ready) return;
+            let now = Tone.now();
+            for(let i=0; i<12; i++) this.noiseSynth.triggerAttackRelease("32n", now + i*0.08);
+        },
+        playSweep() { 
+            if(!this.ready) return;
+            let now = Tone.now();
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.2);
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.4);
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.7);
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.9);
+        },
+        playClick() { if(this.ready) this.hoverSynth.triggerAttackRelease("G4", "32n"); }
+    };
+
+    // Browsers block sound until the user clicks somewhere. This wakes it up instantly!
+    document.body.addEventListener('click', () => AudioManager.init(), { once: true });
+
+    // UX: Set Intention Button
+    btnLockIntent.addEventListener('click', () => {
+        AudioManager.playClick();
+        if (customIntentInput.value.trim() === "") {
+            customIntentInput.focus();
+            return;
+        }
+        btnLockIntent.innerText = "✓ Locked";
+        btnLockIntent.classList.replace('text-amber-400', 'text-emerald-400');
+        btnLockIntent.classList.replace('border-amber-500', 'border-emerald-500');
+        customIntentInput.blur();
+        
+        // Reset visually after a few seconds if they want to edit it again
+        setTimeout(() => {
+            btnLockIntent.innerText = "Set";
+            btnLockIntent.classList.replace('text-emerald-400', 'text-amber-400');
+            btnLockIntent.classList.replace('border-emerald-500', 'border-amber-500');
+        }, 2500);
+    });
 
     // Populate Intentions
     Object.keys(intentionsData).forEach(cat => {
@@ -605,13 +695,23 @@
     });
 
     function updateSubcategories() {
-        subCatSelect.innerHTML = '';
-        const subs = intentionsData[catSelect.value];
-        subs.forEach(sub => {
-            let opt = document.createElement('option');
-            opt.value = sub; opt.innerText = sub;
-            subCatSelect.appendChild(opt);
-        });
+        if (catSelect.value === "Custom Question") {
+            subCatSelect.classList.add('hidden');
+            customIntentWrapper.classList.remove('hidden');
+            customIntentWrapper.classList.add('flex');
+            customIntentInput.focus();
+        } else {
+            subCatSelect.classList.remove('hidden');
+            customIntentWrapper.classList.add('hidden');
+            customIntentWrapper.classList.remove('flex');
+            subCatSelect.innerHTML = '';
+            const subs = intentionsData[catSelect.value];
+            subs.forEach(sub => {
+                let opt = document.createElement('option');
+                opt.value = sub; opt.innerText = sub;
+                subCatSelect.appendChild(opt);
+            });
+        }
     }
     catSelect.addEventListener('change', updateSubcategories);
     updateSubcategories(); 
@@ -867,7 +967,13 @@
             card.style.transform = baseTransform;
             card.style.zIndex = i;
             
-            card.onclick = () => drawCard(i);
+            // NEW: Add hover sound!
+            card.onmouseenter = () => AudioManager.playHover();
+            
+            card.onclick = () => {
+                AudioManager.playClick();
+                drawCard(i);
+            };
             fanContainer.appendChild(card);
         }
         checkCompletionState();
@@ -894,19 +1000,20 @@
         const slotIndex = drawnCards.length - 1;
         const slot = document.getElementById(`slot-${slotIndex}`);
         slot.innerHTML = '';
-
-        // 3. Create placeholder loading face so there's no freeze
-        const face = document.createElement('div');
-        face.className = 'drawn-card glow-pulse flex items-center justify-center';
-        face.innerHTML = `<div class="animate-spin text-3xl opacity-50">✨</div>`; 
+        face.innerHTML = `
+            <div class="card-art-frame ${drawnCardData.theme}">
+                ${artContent}
+            </div>
+            <div class="card-title-banner">
+                <span class="drawn-card-title">${drawnCardData.name}</span>
+            </div>
+        `;
+        
         slot.appendChild(face);
+        
+        // NEW: Play mystical draw sound
+        AudioManager.playDraw();
 
-        // 4. Await heavy lifting (loading image from cache or network)
-        const finalHTML = await renderCardContent(drawnCardData);
-        face.innerHTML = finalHTML;
-        face.classList.remove('flex', 'items-center', 'justify-center'); // reset to normal alignment
-
-        // 5. Aura ripple
         const aura = document.createElement('div');
         aura.className = 'aura-ripple';
         slot.appendChild(aura);
@@ -961,6 +1068,7 @@
         });
 
         statusText.innerText = "Shuffling... ✨";
+        AudioManager.playShuffle();
         
         confetti({ particleCount: 50, spread: 120, origin: { y: 0.9 }, colors: ['#fbbf24', '#fef08a', '#818cf8', '#c084fc'], shapes: ['star', 'circle'], scalar: 1.2 });
         confetti({ particleCount: 30, scalar: 1.5, origin: { y: 0.9 }, shapes: ['emoji'], shapeOptions: { emoji: { value: ['✨', '🌟', '😉', '🔮'] } } });
@@ -983,6 +1091,8 @@
         broomContainer.classList.remove('hidden');
         void broom.offsetWidth; 
         broom.classList.add('animate-sweep');
+        
+        AudioManager.playSweep();
         
         const poofDust = () => {
             confetti({
@@ -1038,7 +1148,8 @@
     async function saveToHistory() {
         let focusText = "";
         if (currentSpreadSize !== '1') {
-            const sub = document.getElementById('intent-subcategory').value;
+            // Grab custom text if "Custom Question" is selected, otherwise grab dropdown value
+            const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
             focusText = ` [Focus: ${sub}]`;
         }
         
@@ -1231,7 +1342,8 @@
         let focusTitle = "General Reading";
         
         if (currentSpreadSize !== '1') {
-            const sub = document.getElementById('intent-subcategory').value;
+            // Grab custom text if "Custom Question" is selected, otherwise grab dropdown value
+            const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
             focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
             focusTitle = sub;
         }
