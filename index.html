@@ -397,10 +397,19 @@
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
                 <div class="flex items-center gap-2">
-                    <button id="btn-toggle-art" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500/20 hover:text-emerald-200 hover:border-emerald-400 transition-all">
-                        🖼️ Classic Art
-                    </button>
-                    <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all">
+                    
+                    <!-- NEW UI TOGGLE SWITCH -->
+                    <div class="flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-9 px-3 cursor-pointer" id="art-toggle-container" title="Switch Art Style">
+                        <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-amber-300" id="label-modern">Modern</span>
+                        
+                        <div class="relative w-9 h-5 rounded-full bg-slate-900 border border-amber-500/50 shadow-inner">
+                            <div id="toggle-knob" class="absolute left-0.5 top-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 transition-transform duration-300 transform shadow-md"></div>
+                        </div>
+                        
+                        <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-slate-500" id="label-classic">Classic</span>
+                    </div>
+
+                    <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all ml-1">
                         History
                     </button>
                     <button id="btn-shuffle" class="tarot-font flex items-center justify-center gap-2 tracking-wider text-[0.65rem] uppercase px-5 h-9 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.6)] font-bold">
@@ -492,8 +501,8 @@
     </div>
 </div>
 
-<!-- Secret Admin API Key Button (Almost invisible until hovered) -->
-<button id="secret-api-btn" class="fixed top-4 right-4 text-base opacity-20 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
+<!-- Secret Admin API Key Button -->
+<button id="secret-api-btn" class="fixed top-4 right-4 text-xl opacity-20 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
     🗝️
 </button>
 
@@ -560,7 +569,10 @@
     const statusText = document.getElementById('status-text');
     const spreadArea = document.getElementById('spread-area');
     const fanContainer = document.getElementById('fan-container');
-    const btnToggleArt = document.getElementById('btn-toggle-art');
+    const artToggleContainer = document.getElementById('art-toggle-container');
+    const toggleKnob = document.getElementById('toggle-knob');
+    const lblModern = document.getElementById('label-modern');
+    const lblClassic = document.getElementById('label-classic');
     
     const catSelect = document.getElementById('intent-category');
     const subCatSelect = document.getElementById('intent-subcategory');
@@ -594,17 +606,26 @@
         }
     }
 
-    function updateToggleButton() {
-        btnToggleArt.innerHTML = useClassicArt ? '✨ Modern Art' : '🖼️ Classic Art';
+    // --- TOGGLE SWITCH LOGIC ---
+    function updateToggleUI() {
+        if(useClassicArt) {
+            toggleKnob.classList.add('translate-x-[1.1rem]');
+            lblClassic.classList.replace('text-slate-500', 'text-amber-300');
+            lblModern.classList.replace('text-amber-300', 'text-slate-500');
+        } else {
+            toggleKnob.classList.remove('translate-x-[1.1rem]');
+            lblModern.classList.replace('text-slate-500', 'text-amber-300');
+            lblClassic.classList.replace('text-amber-300', 'text-slate-500');
+        }
     }
-    updateToggleButton();
+    updateToggleUI(); // Run on load
 
-    btnToggleArt.addEventListener('click', () => {
+    artToggleContainer.addEventListener('click', () => {
         useClassicArt = !useClassicArt;
         localStorage.setItem('tarotArtStyle', useClassicArt ? 'classic' : 'modern');
-        updateToggleButton();
+        updateToggleUI();
         
-        // Instantly re-render all drawn cards on the table
+        // Instantly re-render drawn cards
         drawnCards.forEach((card, i) => {
             const slot = document.getElementById(`slot-${i}`);
             if (slot) {
@@ -699,37 +720,6 @@
                     ${modernHtml}
                 </div>
             `;
-        }
-    }
-
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
-    function renderPlaceholders() {
-        spreadArea.innerHTML = '';
-        spreadArea.className = `spread-layout spread-${currentSpreadSize}`;
-        const spread = spreads[currentSpreadSize];
-
-        for (let i = 0; i < spread.count; i++) {
-            const slot = document.createElement('div');
-            slot.className = `card-placeholder ${spread.classes[i]}`;
-            slot.id = `slot-${i}`;
-            
-            const label = document.createElement('div');
-            label.className = 'font-semibold text-amber-200/50 mb-1 tracking-wider uppercase text-[0.65rem]';
-            label.innerText = `Card ${i + 1}`;
-            
-            const meaning = document.createElement('div');
-            meaning.className = 'text-slate-400 mt-2 font-bold';
-            meaning.innerText = spread.names[i];
-
-            slot.appendChild(label);
-            slot.appendChild(meaning);
-            spreadArea.appendChild(slot);
         }
     }
 
@@ -993,19 +983,13 @@
         checkCooldowns(); 
     }
 
-    const funnyWarnings = [
-        "Hold your horses! 🐎 The reading is full!",
-        "Greedy! You already have your cards! 🙅‍♀️",
-        "The spirits are tired! Try resetting! 👻",
-        "That's enough cards for today! 🃏",
-        "Stop clicking! The spread is complete! 😂",
-        "Woah there! Let's read these first! 🔮"
-    ];
-
     function triggerFunnyWarning() {
         const warningEl = document.getElementById('funny-warning');
         const textEl = document.getElementById('warning-text');
+        
+        const funnyWarnings = ["Hold your horses! 🐎", "Greedy! You have your cards! 🙅‍♀️", "The spirits are tired! 👻", "That's enough for today! 🃏"];
         textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
+        
         warningEl.classList.remove('warning-active');
         document.body.classList.remove('flash-screen');
         void warningEl.offsetWidth; 
@@ -1048,16 +1032,16 @@
         const spreadInfo = spreads[currentSpreadSize];
         let focusText = "";
         let focusTitle = "General Reading";
+        
         if (currentSpreadSize !== '1') {
             const sub = document.getElementById('intent-subcategory').value;
-            focusText = `My specific focus/question is about: "${sub}". `;
+            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
             focusTitle = sub;
         }
 
         const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
         
-        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. 
-        ${focusText}
+        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. ${focusText}
         Here are the cards I pulled: ${readingContext}. 
         Please provide a concise, insightful, and beautifully written interpretation of this reading. 
         Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
@@ -1067,19 +1051,12 @@
         try {
             let apiKey = localStorage.getItem('tarotApiKey');
             
-            // If there is no key saved locally, trigger the Browser Prompt
             if (!apiKey) {
-                apiKey = window.prompt("To get a live AI reading, please enter your Gemini API Key.\n\nYour key will be securely saved in your browser's local storage and will never be sent anywhere except directly to Google's API.");
-                
-                if (apiKey) {
-                    localStorage.setItem('tarotApiKey', apiKey.trim());
-                } else {
-                    throw new Error("No API key provided. Falling back to simulated reading.");
-                }
+                throw new Error("No API key provided. Falling back to simulated reading.");
             }
             
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey.trim()}`;
-            
+            // FIX 1: Pointing to the stable, widely supported Gemini 1.5 Flash model
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
             const response = await fetch(apiUrl, {
@@ -1088,12 +1065,15 @@
                 body: JSON.stringify(payload)
             });
 
-            // If the key is invalid (400) or unauthorized (403), delete it so they get prompted again next time
             if (!response.ok) {
-                if (response.status === 400 || response.status === 403) {
-                    localStorage.removeItem('tarotApiKey'); 
+                const errData = await response.json();
+                console.error("API Error Details:", errData);
+                
+                // FIX 2: Only delete the key if Google explicitly says it's invalid (401), not on other errors.
+                if (response.status === 401) {
+                     localStorage.removeItem('tarotApiKey'); 
                 }
-                throw new Error("Network Response was not ok. Likely an invalid API key.");
+                throw new Error(errData.error?.message || "Network Response was not ok.");
             }
 
             const result = await response.json();
@@ -1113,7 +1093,7 @@
                         <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em;">THE SPIRITS HAVE ANSWERED</h3>
                         <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
                         <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
-                        <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding your focus. The energies indicate that you are shedding old patterns and stepping into a period of growth. Trust your intuition right now, for it is exceptionally sharp.</p>
+                        <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding <strong>${focusTitle.toLowerCase()}</strong>. The energies indicate that you are shedding old patterns and stepping into a period of clarity. Trust your intuition right now, for it is exceptionally sharp regarding this matter.</p>
                         <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
                     </div>`;
             }, 1000);
@@ -1173,10 +1153,8 @@
     setInterval(checkCooldowns, 60000);
     spreadSelect.addEventListener('change', (e) => { currentSpreadSize = e.target.value; resetReading(); });
     
-    // ATTACH THE BUTTONS (Fixes the dead buttons issue)
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
     document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
-
     document.getElementById('btn-history').addEventListener('click', () => { renderHistory(); document.getElementById('history-modal').classList.remove('hidden'); document.getElementById('history-modal').classList.add('flex'); });
     document.getElementById('close-history').addEventListener('click', () => { document.getElementById('history-modal').classList.add('hidden'); document.getElementById('history-modal').classList.remove('flex'); });
     document.getElementById('close-snapshot').addEventListener('click', () => { document.getElementById('snapshot-modal').classList.add('hidden'); document.getElementById('snapshot-modal').classList.remove('flex'); });
