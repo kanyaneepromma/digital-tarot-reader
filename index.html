@@ -1341,6 +1341,29 @@
         resetReading();
     });
 
+    document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
+    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
+    
+    document.getElementById('btn-history').addEventListener('click', () => {
+        renderHistory();
+        document.getElementById('history-modal').classList.remove('hidden');
+        document.getElementById('history-modal').classList.add('flex');
+    });
+    
+    document.getElementById('close-history').addEventListener('click', () => {
+        document.getElementById('history-modal').classList.add('hidden');
+        document.getElementById('history-modal').classList.remove('flex');
+    });
+
+    document.getElementById('close-snapshot').addEventListener('click', () => {
+        document.getElementById('snapshot-modal').classList.add('hidden');
+        document.getElementById('snapshot-modal').classList.remove('flex');
+    });
+
+    window.addEventListener('resize', () => {
+        if (drawnCards.length < parseInt(currentSpreadSize)) renderFan();
+    });
+
     // INIT
     updateToggleUI();
     DeckStorageManager.checkStatus();
