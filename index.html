@@ -386,11 +386,24 @@
                         Reset
                     </button>
                 </div>
+
             </div>
+            
+            <!-- NEW: Intention / Focus Bar (Hidden on 1-card spread) -->
+            <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-4 mt-2 border-t border-amber-900/30 pt-4 transition-all">
+                <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
+                <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer">
+                    <!-- Populated by JS -->
+                </select>
+                <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer max-w-[250px] truncate">
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+            
         </div>
     </header>
 
-    <!-- SPREAD DISPLAY AREA -->
+    <!-- SPREAD DISPLAY AREA (Scrolling Canvas) -->
     <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-8">
         <div id="spread-area" class="spread-layout spread-1">
             <!-- Placeholders injected via JS -->
@@ -505,7 +518,17 @@
         '5': { count: 5, baseLabel: '5 Cards (Story Cross)', label: '5 Cards (Story Cross)', cooldown: 0, classes: ['cc-5-left', 'cc-5-center', 'cc-5-right', 'cc-5-top', 'cc-5-bottom'], names: ['Past', 'Present', 'Future', 'Reason', 'Potential'] },
         '10': { count: 10, baseLabel: '10 Cards (Celtic Cross)', label: '10 Cards (Celtic Cross)', cooldown: 7 * 24 * 60 * 60 * 1000, classes: ['cc-1', 'cc-2', 'cc-3', 'cc-4', 'cc-5', 'cc-6', 'cc-7', 'cc-8', 'cc-9', 'cc-10'], names: ['Heart', 'Crossing', 'Root', 'Past', 'Crown', 'Future', 'Self', 'Environment', 'Hopes/Fears', 'Outcome'] }
     };
+    
     let currentSpreadSize = '1';
+
+    // --- INTENTIONS DATA ---
+    const intentionsData = {
+        "General / Open": ["What do I need to know right now?", "Daily Guidance", "Overcoming a Blockage", "Upcoming Challenges"],
+        "Career & Work": ["Current Job / Promotion", "Finding a New Job", "Starting a Business", "Work from Home (WFH)", "Work from Office (WFO)", "Freelance / Gig Work", "Quitting Job / Career Change", "Workplace Conflict"],
+        "Love & Relationships": ["Current Relationship", "Finding New Love", "Ex-partner", "Marriage / Commitment", "Casual Dating", "Friendship Dynamics", "Family Issues"],
+        "Money & Finances": ["Improving Cash Flow", "Making a Big Purchase", "Debt / Financial Burden", "General Wealth Outlook", "Investments"],
+        "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"]
+    };
 
     // --- DOM ELEMENTS ---
     const spreadSelect = document.getElementById('spread-select');
@@ -513,6 +536,40 @@
     const spreadArea = document.getElementById('spread-area');
     const fanContainer = document.getElementById('fan-container');
     
+    // Intention Elements
+    const catSelect = document.getElementById('intent-category');
+    const subCatSelect = document.getElementById('intent-subcategory');
+    const intentContainer = document.getElementById('intention-container');
+
+    // Populate Intentions
+    Object.keys(intentionsData).forEach(cat => {
+        let opt = document.createElement('option');
+        opt.value = cat; opt.innerText = cat;
+        catSelect.appendChild(opt);
+    });
+
+    function updateSubcategories() {
+        subCatSelect.innerHTML = '';
+        const subs = intentionsData[catSelect.value];
+        subs.forEach(sub => {
+            let opt = document.createElement('option');
+            opt.value = sub; opt.innerText = sub;
+            subCatSelect.appendChild(opt);
+        });
+    }
+    catSelect.addEventListener('change', updateSubcategories);
+    updateSubcategories(); // Initialize
+    
+    function toggleIntentionBar() {
+        if (currentSpreadSize === '1') {
+            intentContainer.classList.add('hidden');
+            intentContainer.classList.remove('flex');
+        } else {
+            intentContainer.classList.remove('hidden');
+            intentContainer.classList.add('flex');
+        }
+    }
+
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -754,6 +811,8 @@
             }
         }
 
+        toggleIntentionBar(); // Update intention bar visibility based on spread size
+
         activeDeck = [...tarotDeck];
         drawnCards = [];
         shuffleArray(activeDeck);
@@ -763,10 +822,20 @@
     }
 
     async function saveToHistory() {
-        const spreadName = spreads[currentSpreadSize].label;
+        let focusText = "";
+        if (currentSpreadSize !== '1') {
+            const cat = document.getElementById('intent-category').value;
+            const sub = document.getElementById('intent-subcategory').value;
+            focusText = ` [Focus: ${sub}]`;
+        }
+        
+        const spreadName = spreads[currentSpreadSize].label + focusText;
         const cardNames = drawnCards.map(c => c.name).join(', ');
         
-        const timestamp = new Date().toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const timestamp = new Date().toLocaleString(undefined, { 
+            year: 'numeric', month: 'short', day: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+        });
 
         let imgData = "";
         try {
@@ -884,18 +953,31 @@
             </div>
         `;
 
+        // Gather context for the AI
         const spreadInfo = spreads[currentSpreadSize];
         const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
         
-        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. 
+        // Determine Focus
+        let focusInstruction = "general guidance";
+        let focusTitle = "General Reading";
+        if (currentSpreadSize !== '1') {
+            const cat = document.getElementById('intent-category').value;
+            const sub = document.getElementById('intent-subcategory').value;
+            focusInstruction = `a specific question regarding ${cat} (specifically: ${sub})`;
+            focusTitle = sub;
+        }
+
+        // Build the prompt instruction
+        const prompt = `Act as an expert, mystical Tarot reader. The user is asking for ${focusInstruction}. I have just drawn a ${spreadInfo.label} spread. 
         Here are the cards I pulled: ${readingContext}. 
-        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
+        Please provide a concise, insightful, and beautifully written interpretation of this reading specifically tailored to their question. 
         Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
         Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
         Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
 
         try {
             const apiKey = ""; 
+            // FIX: Updated to a supported Canvas preview model
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
@@ -919,12 +1001,14 @@
             }
         } catch (error) {
             console.error("AI Reading Failed:", error);
+            // FIX: If the API call fails (like if you don't have a key set up), show a beautiful simulated response!
             setTimeout(() => {
                 content.innerHTML = `
                     <div class="flex flex-col items-center justify-center gap-4 text-center">
                         <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em;">THE SPIRITS HAVE ANSWERED</h3>
+                        <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
                         <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
-                        <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition. The energies indicate that you are shedding old patterns and stepping into a period of personal growth. Trust your intuition right now, for it is exceptionally sharp.</p>
+                        <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding your focus. The energies indicate that you are shedding old patterns and stepping into a period of growth. Trust your intuition right now, for it is exceptionally sharp.</p>
                         <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
                     </div>
                 `;
