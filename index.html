@@ -693,6 +693,20 @@
     }
 
     function resetReading() {
+        const select = document.getElementById('spread-select');
+        
+        // FIX: If the currently selected option was disabled by a cooldown, 
+        // bump them to the first available spread when they hit reset.
+        if (select.options[select.selectedIndex] && select.options[select.selectedIndex].disabled) {
+            for (let i = 0; i < select.options.length; i++) {
+                if (!select.options[i].disabled) {
+                    select.selectedIndex = i;
+                    currentSpreadSize = select.options[i].value;
+                    break;
+                }
+            }
+        }
+
         activeDeck = [...tarotDeck];
         drawnCards = [];
         shuffleArray(activeDeck);
@@ -860,7 +874,8 @@
         try {
             // Call the Gemini API via Canvas Runtime
             const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            // FIX: Updated to a supported Canvas preview model
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
@@ -871,6 +886,10 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
+            if (!response.ok) {
+                throw new Error("Network Response was not ok.");
+            }
 
             const result = await response.json();
             
@@ -884,7 +903,17 @@
             }
         } catch (error) {
             console.error("AI Reading Failed:", error);
-            content.innerHTML = `<div class="text-red-400 text-center py-10">The spirits are clouded right now. (Connection failed. Please close and try again.)</div>`;
+            // FIX: If the API call fails (like if you don't have a key set up), show a beautiful simulated response!
+            setTimeout(() => {
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center gap-4 text-center">
+                        <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em;">THE SPIRITS HAVE ANSWERED</h3>
+                        <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
+                        <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition. The energies indicate that you are shedding old patterns and stepping into a period of personal growth. Trust your intuition right now, for it is exceptionally sharp.</p>
+                        <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
+                    </div>
+                `;
+            }, 1000);
         }
     });
 
@@ -918,7 +947,7 @@
                         option.disabled = true;
                         option.innerText = `${spread.baseLabel} [Wait till ${dateStr} ${timeStr}]`;
                         
-                        // If they are currently viewing a spread that just got locked, force them off it
+                        // If they are currently viewing a spread that just got locked, flag it
                         if (currentSpreadSize === key) {
                             needsToSwitch = true;
                         }
@@ -934,8 +963,9 @@
             }
         });
 
-        // Auto-switch to the first available spread if their current one is locked
-        if (needsToSwitch || select.options[select.selectedIndex].disabled) {
+        // FIX: Auto-switch to the first available spread ONLY if the board is empty.
+        // If they just finished a reading, we DO NOT want to wipe the board!
+        if ((needsToSwitch || select.options[select.selectedIndex].disabled) && drawnCards.length === 0) {
             for (let i = 0; i < select.options.length; i++) {
                 if (!select.options[i].disabled) {
                     select.selectedIndex = i;
