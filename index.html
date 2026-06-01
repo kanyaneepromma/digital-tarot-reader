@@ -319,7 +319,6 @@
 
         .glow-pulse { animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, cardGlow 1.2s ease-out forwards; }
 
-        /* --- HOLOGRAPHIC FOIL EFFECT FOR CLASSIC CARDS --- */
         .holo-overlay {
             position: absolute;
             inset: 0;
@@ -395,15 +394,11 @@
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
                 <div class="flex items-center gap-2">
-                    
-                    <!-- NEW UI TOGGLE SWITCH -->
                     <div class="flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-9 px-3 cursor-pointer" id="art-toggle-container" title="Switch Art Style">
                         <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-amber-300" id="label-modern">Modern</span>
-                        
                         <div class="relative w-9 h-5 rounded-full bg-slate-900 border border-amber-500/50 shadow-inner">
                             <div id="toggle-knob" class="absolute left-0.5 top-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 transition-transform duration-300 transform shadow-md"></div>
                         </div>
-                        
                         <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-slate-500" id="label-classic">Classic</span>
                     </div>
 
@@ -419,7 +414,6 @@
                 </div>
             </div>
 
-            <!-- INTENTION / FOCUS MENU (Hidden on 1-card) -->
             <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-3 mt-1 border-t border-amber-900/30 pt-3 transition-all">
                 <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
                 <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer"></select>
@@ -428,23 +422,19 @@
         </div>
     </header>
 
-    <!-- SPREAD DISPLAY AREA -->
     <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-4 md:mt-8">
         <div id="spread-area" class="spread-layout spread-1"></div>
     </main>
 
-    <!-- DECK AREA -->
     <footer class="fixed bottom-0 left-0 w-full h-[280px] z-40 pointer-events-none" id="deck-area">
         <div class="fan-container pointer-events-auto" id="fan-container"></div>
     </footer>
 </div>
 
-<!-- Giant Animated Broom Container -->
 <div id="broom-container" class="fixed inset-0 pointer-events-none z-[200] hidden overflow-hidden flex items-center justify-center">
     <div id="sweeping-broom" class="absolute text-[15rem] md:text-[20rem] filter drop-shadow-2xl" style="transform: translate(100vw, -10vh);">🧹</div>
 </div>
 
-<!-- Modals -->
 <div id="funny-warning" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-900/90 border-2 border-red-500 text-white px-8 py-6 rounded-2xl shadow-[0_0_50px_rgba(239,68,68,0.6)] z-[100] opacity-0 pointer-events-none flex flex-col items-center gap-3 backdrop-blur-md">
     <div class="text-4xl">🛑</div>
     <div id="warning-text" class="text-xl font-bold text-center tarot-font tracking-wide"></div>
@@ -499,7 +489,6 @@
     </div>
 </div>
 
-<!-- Secret Admin API Key Button -->
 <button id="secret-api-btn" class="fixed top-4 right-4 text-xl opacity-20 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
     🗝️
 </button>
@@ -576,7 +565,6 @@
     const subCatSelect = document.getElementById('intent-subcategory');
     const intentContainer = document.getElementById('intention-container');
 
-    // Populating subcategories and categories
     Object.keys(intentionsData).forEach(cat => {
         let opt = document.createElement('option');
         opt.value = cat; opt.innerText = cat;
@@ -605,7 +593,6 @@
         }
     }
 
-    // --- TOGGLE SWITCH LOGIC ---
     function updateToggleUI() {
         if(useClassicArt) {
             toggleKnob.classList.add('translate-x-[1.1rem]');
@@ -617,7 +604,7 @@
             lblClassic.classList.replace('text-amber-300', 'text-slate-500');
         }
     }
-    updateToggleUI(); // Run on load
+    updateToggleUI(); 
 
     artToggleContainer.addEventListener('click', () => {
         useClassicArt = !useClassicArt;
@@ -637,7 +624,8 @@
     });
 
     function getClassicImageUrl(cardData) {
-        const baseUrl = "https://www.sacred-texts.com/tarot/pkt/img/";
+        // Fetching directly from public archive to bypass proxy issues
+        const baseUrl = "https://sacred-texts.com/tarot/pkt/img/";
         if (cardData.suit === '') { 
             const idx = majors.findIndex(m => m.name === cardData.name);
             return `${baseUrl}ar${String(idx).padStart(2, '0')}.jpg`;
@@ -653,6 +641,21 @@
             return `${baseUrl}${suitPrefix}${String(num).padStart(2, '0')}.jpg`;
         }
     }
+
+    // Expose globally so inline onerror can reach it and swap to modern art!
+    window.handleImageError = function(img) {
+        const parent = img.closest('.drawn-card');
+        if (parent) {
+            const classic = parent.querySelector('.classic-container');
+            const modern = parent.querySelector('.modern-container');
+            if (classic && modern) {
+                classic.classList.add('hidden');
+                classic.classList.remove('flex');
+                modern.classList.remove('hidden');
+                modern.classList.add('flex');
+            }
+        }
+    };
 
     function getModernArtHtml(drawnCardData) {
         let artContent = '';
@@ -685,21 +688,6 @@
         `;
     }
 
-    // Expose globally so inline onerror can reach it
-    window.handleImageError = function(img) {
-        const parent = img.closest('.drawn-card');
-        if (parent) {
-            const classic = parent.querySelector('.classic-container');
-            const modern = parent.querySelector('.modern-container');
-            if (classic && modern) {
-                classic.classList.add('hidden');
-                classic.classList.remove('flex');
-                modern.classList.remove('hidden');
-                modern.classList.add('flex');
-            }
-        }
-    };
-
     function renderCardContent(drawnCardData) {
         const modernHtml = getModernArtHtml(drawnCardData);
 
@@ -710,6 +698,7 @@
                     <img src="${imgUrl}" alt="${drawnCardData.name}" class="w-full h-full object-cover rounded-sm mix-blend-multiply" onerror="window.handleImageError(this)">
                     <div class="holo-overlay"></div>
                 </div>
+                <!-- Hidden fallback container ready in case image fails to load -->
                 <div class="modern-container hidden w-full h-full flex-col items-center justify-start">
                     ${modernHtml}
                 </div>
@@ -942,7 +931,7 @@
         let imgData = "";
         try {
             const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: 1, useCORS: true });
-            imgData = canvas.toDataURL('image/jpeg', 0.6);
+            imgData = canvas.toDataURL('image/jpeg', 0.6); // Compress to prevent quota limits
         } catch(e) { console.warn("Failed to capture snapshot:", e); }
 
         readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: spreadName, cards: cardNames, image: imgData });
@@ -950,6 +939,7 @@
         try {
             localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
         } catch (e) {
+            // Safety fallback if storage quota is exceeded
             console.warn("Storage full! Clearing older images...");
             readingHistory = readingHistory.map((item, index) => {
                 if (index > 0) item.image = null;
@@ -1079,12 +1069,14 @@
         Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
 
         try {
+            // FIX: Retrieve key properly!
             let apiKey = localStorage.getItem('tarotApiKey');
             
             if (!apiKey) {
                 throw new Error("No API key provided. Falling back to simulated reading.");
             }
             
+            // FIX: Reverted back to highly-stable gemini-1.5-flash which perfectly supports AQ. keys
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
@@ -1094,9 +1086,11 @@
                 body: JSON.stringify(payload)
             });
 
+            // Catch API errors explicitly without automatically deleting the user's key
             if (!response.ok) {
                 const errData = await response.json();
                 console.error("API Error Details:", errData);
+                // Only delete the key if it's explicitly rejected as invalid auth
                 if (response.status === 401) {
                      localStorage.removeItem('tarotApiKey'); 
                 }
@@ -1114,6 +1108,7 @@
             }
         } catch (error) {
             console.error("AI Reading Failed:", error);
+            // Simulated Mystical Fallback if the key fails or is absent!
             setTimeout(() => {
                 content.innerHTML = `
                     <div class="flex flex-col items-center justify-center gap-4 text-center">
@@ -1132,7 +1127,6 @@
         document.getElementById('interpret-modal').classList.remove('flex');
     });
 
-    // --- SECRET ADMIN CONFIGURATION ---
     document.getElementById('secret-api-btn').addEventListener('click', () => {
         const currentKey = localStorage.getItem('tarotApiKey') || '';
         const newKey = window.prompt("Admin Panel: Enter your Gemini API Key.\n\nLeave blank and click OK to clear the current key.", currentKey);
