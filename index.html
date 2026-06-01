@@ -616,33 +616,37 @@
             if(this.ready) return;
             await Tone.start();
             
-            // Magical shimmer for drawing cards
+            // Magical shimmer for drawing cards and UI clicks
             this.drawSynth = new Tone.PolySynth(Tone.Synth, {
                 oscillator: { type: "sine" },
                 envelope: { attack: 0.05, decay: 0.5, sustain: 0.2, release: 1.5 }
             }).toDestination();
-            this.drawSynth.volume.value = -12;
+            this.drawSynth.volume.value = -15; // Softened
 
             // Hover tick
             this.hoverSynth = new Tone.MembraneSynth({
                 pitchDecay: 0.01, octaves: 1,
                 envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.01 }
             }).toDestination();
-            this.hoverSynth.volume.value = -25;
+            this.hoverSynth.volume.value = -28; // Softened
 
-            // Shuffle (rustling cards)
+            // Shuffle (Softer brown noise, muffled by a filter to make it a "swoosh")
             this.noiseSynth = new Tone.NoiseSynth({
-                noise: { type: "pink" },
-                envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
-            }).toDestination();
-            this.noiseSynth.volume.value = -15;
+                noise: { type: "brown" }, 
+                envelope: { attack: 0.1, decay: 0.4, sustain: 0.1, release: 0.4 }
+            });
+            this.noiseFilter = new Tone.Filter(800, "lowpass").toDestination();
+            this.noiseSynth.connect(this.noiseFilter);
+            this.noiseSynth.volume.value = -5;
 
             // Broom Sweep
             this.sweepSynth = new Tone.NoiseSynth({
-                noise: { type: "white" },
+                noise: { type: "pink" },
                 envelope: { attack: 0.1, decay: 0.4, sustain: 0, release: 0.5 }
-            }).toDestination();
-            this.sweepSynth.volume.value = -10;
+            });
+            this.sweepFilter = new Tone.Filter(1000, "lowpass").toDestination();
+            this.sweepSynth.connect(this.sweepFilter);
+            this.sweepSynth.volume.value = -8;
 
             this.ready = true;
         },
@@ -651,7 +655,18 @@
         playShuffle() {
             if(!this.ready) return;
             let now = Tone.now();
-            for(let i=0; i<12; i++) this.noiseSynth.triggerAttackRelease("32n", now + i*0.08);
+            
+            // 3 gentle, overlapping velvet swooshes instead of machine gun fire
+            this.noiseSynth.triggerAttackRelease("4n", now);
+            this.noiseSynth.triggerAttackRelease("4n", now + 0.15);
+            this.noiseSynth.triggerAttackRelease("4n", now + 0.3);
+            
+            // Beautiful ascending magical harp glissando over the top!
+            this.drawSynth.triggerAttackRelease("C4", "16n", now);
+            this.drawSynth.triggerAttackRelease("E4", "16n", now + 0.1);
+            this.drawSynth.triggerAttackRelease("G4", "16n", now + 0.2);
+            this.drawSynth.triggerAttackRelease("C5", "16n", now + 0.3);
+            this.drawSynth.triggerAttackRelease("E5", "8n", now + 0.4);
         },
         playSweep() { 
             if(!this.ready) return;
@@ -661,7 +676,7 @@
             this.sweepSynth.triggerAttackRelease("8n", now + 0.7);
             this.sweepSynth.triggerAttackRelease("8n", now + 0.9);
         },
-        playClick() { if(this.ready) this.hoverSynth.triggerAttackRelease("G4", "32n"); }
+        playClick() { if(this.ready) this.drawSynth.triggerAttackRelease(["G4", "B4"], "16n"); } // Soft chime
     };
 
     // Browsers block sound until the user clicks somewhere. This wakes it up instantly!
