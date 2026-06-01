@@ -492,6 +492,11 @@
     </div>
 </div>
 
+<!-- Secret Admin API Key Button (Almost invisible until hovered) -->
+<button id="secret-api-btn" class="fixed bottom-2 left-2 text-xs opacity-5 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
+    🗝️
+</button>
+
 <script>
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
@@ -1118,6 +1123,22 @@
     document.getElementById('close-interpret').addEventListener('click', () => {
         document.getElementById('interpret-modal').classList.add('hidden');
         document.getElementById('interpret-modal').classList.remove('flex');
+    });
+
+    // --- SECRET ADMIN CONFIGURATION ---
+    document.getElementById('secret-api-btn').addEventListener('click', () => {
+        const currentKey = localStorage.getItem('tarotApiKey') || '';
+        const newKey = window.prompt("Admin Panel: Enter your Gemini API Key.\n\nLeave blank and click OK to clear the current key.", currentKey);
+        
+        if (newKey !== null) { 
+            if (newKey.trim() === '') {
+                localStorage.removeItem('tarotApiKey');
+                alert("API Key has been cleared.");
+            } else {
+                localStorage.setItem('tarotApiKey', newKey.trim());
+                alert("API Key saved securely!");
+            }
+        }
     });
 
     function checkCooldowns() {
