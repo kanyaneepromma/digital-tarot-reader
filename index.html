@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Tarot Reader</title>
     
+    <!-- App Icon (Favicon) RESTORED -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
+    
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- FIX: Forcing Tailwind to use Sarabun globally so it never gets overridden -->
+    <!-- Forcing Tailwind to use Sarabun globally so it never gets overridden -->
     <script>
         tailwind.config = {
             theme: {
@@ -1407,7 +1410,7 @@
                 <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
                 <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
                     Consulting the Akashic Records...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block" id="model-status">Connecting to Gemini...</span>
+                    <span class="text-sm text-slate-400 font-sans mt-2 block" id="model-status">Finding available AI models...</span>
                 </div>
             </div>
         `;
@@ -1433,11 +1436,38 @@
             const apiKey = window.geminiApiKey || ""; 
             if(!apiKey) throw new Error("API Key not found in Firebase Remote Config. Please verify settings.");
 
-            // Always use stable 1.5 flash for reliable generation
-            const modelToUse = "gemini-1.5-flash-latest";
-            document.getElementById('model-status').innerText = `Using ${modelToUse}...`;
+            // 1. DYNAMIC MODEL FETCHING (Fixing the "model not found" error)
+            const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+            const listResponse = await fetch(listUrl);
+            if (!listResponse.ok) {
+                const errData = await listResponse.json();
+                throw new Error(errData.error?.message || "Failed to fetch model list from Google.");
+            }
+            const listData = await listResponse.json();
+            
+            // 2. FIND A VALID MODEL
+            let modelPath = "";
+            if (listData.models && listData.models.length > 0) {
+                const validModels = listData.models.filter(m => 
+                    m.supportedGenerationMethods && 
+                    m.supportedGenerationMethods.includes("generateContent") &&
+                    m.name.includes("gemini")
+                );
+                
+                const flashModel = validModels.find(m => m.name.includes("flash"));
+                if (flashModel) {
+                    modelPath = flashModel.name; // e.g., 'models/gemini-1.5-flash'
+                } else if (validModels.length > 0) {
+                    modelPath = validModels[0].name;
+                }
+            }
+            
+            if (!modelPath) throw new Error("No valid text generation models found for this API key.");
+            
+            document.getElementById('model-status').innerText = `Using ${modelPath.replace('models/', '')}...`;
 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
+            // 3. EXECUTE GENERATION REQUEST
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/${modelPath}:generateContent?key=${apiKey}`;
             
             const payload = { contents: [{ parts: [{ text: prompt }] }] };
             const response = await fetch(apiUrl, {
