@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- NEW: Tone.js for Synthesized Sound Effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
@@ -199,6 +198,7 @@
             100% { transform: perspective(400px) rotateY(0deg) scale(1); opacity: 1; }
         }
 
+        /* --- HOLOGRAPHIC FOIL EFFECT --- */
         .holo-overlay {
             position: absolute;
             inset: 0;
@@ -379,11 +379,11 @@
             </h1>
             
             <!-- Controls Row -->
-            <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
                 
-                <div class="flex items-center gap-2">
-                    <label for="spread-select" class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
-                    <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <label for="spread-select" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
+                    <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
                         <option value="1" selected>1 Card (Daily)</option>
                         <option value="3">3 Cards (Past, Present, Future)</option>
                         <option value="5">5 Cards (Story Cross)</option>
@@ -393,61 +393,53 @@
 
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
-                <div class="flex items-center gap-2">
-                    <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
-                    <div class="h-9 flex items-center justify-center bg-slate-800/50 px-4 rounded-full border border-slate-700 min-w-[140px]">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
+                    <div class="h-9 flex items-center justify-center bg-slate-800/50 px-5 rounded-full border border-slate-700 min-w-[160px]">
                         <span id="status-text" class="text-sm font-semibold text-amber-50 whitespace-nowrap">Drawn: 0 / 1</span>
                     </div>
                 </div>
 
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
-                <div class="flex items-center gap-2">
-                    <!-- Art Toggle with absolute positioned Offline status to prevent layout shifting -->
-                    <div class="relative flex flex-col items-center justify-center">
-                        <div class="flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-9 px-3 cursor-pointer" id="art-toggle-container" title="Switch Art Style">
-                            <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-amber-300" id="label-modern">Modern</span>
-                            <div class="relative w-9 h-5 rounded-full bg-slate-900 border border-amber-500/50 shadow-inner">
-                                <div id="toggle-knob" class="absolute left-0.5 top-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 transition-transform duration-300 transform shadow-md"></div>
-                            </div>
-                            <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-slate-500" id="label-classic">Classic</span>
+                <div class="flex items-center gap-3 relative">
+                    <!-- Art Toggle -->
+                    <div class="flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-9 px-3 cursor-pointer" id="art-toggle-container" title="Switch Art Style">
+                        <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-amber-300" id="label-modern">Modern</span>
+                        <div class="relative w-9 h-5 rounded-full bg-slate-900 border border-amber-500/50 shadow-inner">
+                            <div id="toggle-knob" class="absolute left-0.5 top-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 transition-transform duration-300 transform shadow-md"></div>
                         </div>
-                        
-                        <!-- Offline Download Button (Absolutely Positioned to prevent layout breaking) -->
-                        <button id="btn-download-deck" class="absolute top-[100%] mt-1 text-[0.6rem] text-slate-500 hover:text-amber-300 transition-colors hidden items-center gap-1 font-bold tracking-wider uppercase whitespace-nowrap" title="Download Classic Images to Browser Storage for Offline Use">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            <span>Save Offline</span>
-                        </button>
+                        <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-slate-500" id="label-classic">Classic</span>
                     </div>
 
-                    <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all ml-1">
+                    <button id="btn-history" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 hover:border-indigo-400 transition-all">
                         History
                     </button>
-                    <button id="btn-shuffle" class="tarot-font flex items-center justify-center gap-2 tracking-wider text-[0.65rem] uppercase px-5 h-9 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.6)] font-bold">
+                    <button id="btn-shuffle" class="tarot-font flex items-center justify-center gap-2 tracking-wider text-xs uppercase px-6 h-9 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.6)] font-bold">
                         <span>✨</span> Shuffle
                     </button>
-                    <button id="btn-reset" class="tarot-font flex items-center justify-center tracking-wider text-[0.65rem] uppercase px-4 h-9 rounded-full border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-all">
+                    <button id="btn-reset" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-all">
                         Reset
                     </button>
                 </div>
             </div>
 
             <!-- Focus Engine -->
-            <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-3 mt-1 border-t border-amber-900/30 pt-3 transition-all">
-                <span class="text-[0.65rem] text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
-                <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer"></select>
-                <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-4 pr-8 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all hover:bg-slate-800 cursor-pointer max-w-[250px] truncate"></select>
+            <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-3 mt-2 border-t border-amber-900/30 pt-4 transition-all">
+                <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
+                <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer"></select>
+                <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer max-w-[300px] truncate"></select>
                 
-                <!-- NEW: Wrapped Custom Input with a "Set" Button -->
-                <div id="custom-intent-wrapper" class="hidden items-center gap-2 w-full max-w-[320px]">
-                    <input type="text" id="custom-intent-input" class="bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full px-4 h-8 text-xs focus:outline-none focus:border-amber-400 transition-all flex-1 placeholder-amber-700/50" placeholder="Type your specific question...">
-                    <button id="btn-lock-intent" class="h-8 px-4 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all text-[0.65rem] uppercase font-bold tracking-wider">Set</button>
+                <!-- Custom Input with Set Button -->
+                <div id="custom-intent-wrapper" class="hidden items-center gap-2 w-full max-w-[400px]">
+                    <input type="text" id="custom-intent-input" class="bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full px-5 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all flex-1 placeholder-amber-700/50" placeholder="Type your specific question...">
+                    <button id="btn-lock-intent" class="h-9 px-5 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all text-xs uppercase font-bold tracking-wider">Set</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-4 md:mt-8">
+    <main class="w-full flex-grow p-4 md:p-8 flex items-start justify-center relative mt-8">
         <div id="spread-area" class="spread-layout spread-1"></div>
     </main>
 
@@ -459,6 +451,17 @@
 <!-- Giant Animated Broom Container -->
 <div id="broom-container" class="fixed inset-0 pointer-events-none z-[200] hidden overflow-hidden flex items-center justify-center">
     <div id="sweeping-broom" class="absolute text-[15rem] md:text-[20rem] filter drop-shadow-2xl" style="transform: translate(100vw, -10vh);">🧹</div>
+</div>
+
+<!-- Ancient Deck Download Modal -->
+<div id="download-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[300] hidden flex-col items-center justify-center p-4">
+    <div class="text-6xl animate-pulse mb-6">🔮</div>
+    <h2 class="text-2xl tarot-font text-amber-400 font-bold mb-4 tracking-widest text-center">Summoning Ancient Visions</h2>
+    <p class="text-slate-300 text-sm mb-6 text-center max-w-md leading-relaxed">Please wait while the spirits weave the classic 1909 deck into your browser's memory. This only happens once.</p>
+    <div class="w-64 h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700 shadow-inner">
+        <div id="download-progress-bar" class="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 w-0 transition-all duration-300 shadow-[0_0_10px_rgba(251,191,36,0.8)]"></div>
+    </div>
+    <div id="download-progress-text" class="text-amber-200 mt-4 tarot-font font-bold tracking-widest text-lg">0%</div>
 </div>
 
 <!-- Modals -->
@@ -531,6 +534,70 @@
 </div>
 
 <script>
+    // --- AUDIO ENGINE ---
+    const AudioManager = {
+        ready: false,
+        async init() {
+            if(this.ready) return;
+            if (typeof Tone === 'undefined') return;
+            await Tone.start();
+            
+            this.drawSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.05, decay: 0.5, sustain: 0.2, release: 1.5 }
+            }).toDestination();
+            this.drawSynth.volume.value = -15;
+
+            this.hoverSynth = new Tone.MembraneSynth({
+                pitchDecay: 0.01, octaves: 1,
+                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.01 }
+            }).toDestination();
+            this.hoverSynth.volume.value = -28;
+
+            this.noiseSynth = new Tone.NoiseSynth({
+                noise: { type: "brown" }, 
+                envelope: { attack: 0.1, decay: 0.4, sustain: 0.1, release: 0.4 }
+            });
+            this.noiseFilter = new Tone.Filter(800, "lowpass").toDestination();
+            this.noiseSynth.connect(this.noiseFilter);
+            this.noiseSynth.volume.value = -5;
+
+            this.sweepSynth = new Tone.NoiseSynth({
+                noise: { type: "pink" },
+                envelope: { attack: 0.1, decay: 0.4, sustain: 0, release: 0.5 }
+            });
+            this.sweepFilter = new Tone.Filter(1000, "lowpass").toDestination();
+            this.sweepSynth.connect(this.sweepFilter);
+            this.sweepSynth.volume.value = -8;
+
+            this.ready = true;
+        },
+        playDraw() { if(this.ready) this.drawSynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "8n"); },
+        playHover() { if(this.ready) this.hoverSynth.triggerAttackRelease("C5", "32n"); },
+        playShuffle() {
+            if(!this.ready) return;
+            let now = Tone.now();
+            this.noiseSynth.triggerAttackRelease("4n", now);
+            this.noiseSynth.triggerAttackRelease("4n", now + 0.15);
+            this.noiseSynth.triggerAttackRelease("4n", now + 0.3);
+            this.drawSynth.triggerAttackRelease("C4", "16n", now);
+            this.drawSynth.triggerAttackRelease("E4", "16n", now + 0.1);
+            this.drawSynth.triggerAttackRelease("G4", "16n", now + 0.2);
+            this.drawSynth.triggerAttackRelease("C5", "16n", now + 0.3);
+            this.drawSynth.triggerAttackRelease("E5", "8n", now + 0.4);
+        },
+        playSweep() { 
+            if(!this.ready) return;
+            let now = Tone.now();
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.2);
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.4);
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.7);
+            this.sweepSynth.triggerAttackRelease("8n", now + 0.9);
+        },
+        playClick() { if(this.ready) this.drawSynth.triggerAttackRelease(["G4", "B4"], "16n"); }
+    };
+    document.body.addEventListener('click', () => AudioManager.init(), { once: true });
+
     // --- TAROT DECK GENERATOR ---
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
@@ -560,8 +627,17 @@
 
     let activeDeck = [...tarotDeck];
     let drawnCards = [];
-    let readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || [];
-    let useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic'; 
+    
+    // SAFE Storage Initialization
+    let readingHistory = [];
+    try {
+        readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || [];
+    } catch(e) { readingHistory = []; }
+    
+    let useClassicArt = false;
+    try {
+        useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic';
+    } catch(e) {}
     
     const spreads = {
         '1': { count: 1, baseLabel: '1 Card (Daily)', label: '1 Card (Daily Draw)', cooldown: 24 * 60 * 60 * 1000, classes: ['cc-1-center'], names: ['Focus / Outcome'] },
@@ -574,18 +650,7 @@
     // --- INTENTION ENGINE ---
     const intentionsData = {
         "General / Open": ["What do I need to know right now?", "Daily Guidance", "Overcoming a Blockage", "Upcoming Challenges"],
-        "Career & Work": [
-            "Current Job / Promotion", 
-            "Finding a New Job", 
-            "Starting a Business", 
-            "Work from Home (WFH)", 
-            "Work from Office (WFO)", 
-            "Forced Return to Office (RTO)", 
-            "Negotiating Working Conditions", 
-            "Freelance / Gig Work", 
-            "Quitting Job / Career Change", 
-            "Workplace Conflict"
-        ],
+        "Career & Work": ["Current Job / Promotion", "Finding a New Job", "Starting a Business", "Work from Home (WFH)", "Work from Office (WFO)", "Forced Return to Office (RTO)", "Negotiating Working Conditions", "Freelance / Gig Work", "Quitting Job / Career Change", "Workplace Conflict"],
         "Love & Relationships": ["Current Relationship", "Finding New Love", "Ex-partner", "Marriage / Commitment", "Casual Dating", "Friendship Dynamics", "Family Issues"],
         "Money & Finances": ["Improving Cash Flow", "Making a Big Purchase", "Debt / Financial Burden", "General Wealth Outlook", "Investments"],
         "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"],
@@ -600,7 +665,6 @@
     const toggleKnob = document.getElementById('toggle-knob');
     const lblModern = document.getElementById('label-modern');
     const lblClassic = document.getElementById('label-classic');
-    const btnDownloadDeck = document.getElementById('btn-download-deck');
     
     const catSelect = document.getElementById('intent-category');
     const subCatSelect = document.getElementById('intent-subcategory');
@@ -608,99 +672,6 @@
     const customIntentInput = document.getElementById('custom-intent-input');
     const customIntentWrapper = document.getElementById('custom-intent-wrapper');
     const btnLockIntent = document.getElementById('btn-lock-intent');
-
-    // --- SYNTHESIZED SOUND EFFECTS ENGINE (Tone.js) ---
-    const AudioManager = {
-        ready: false,
-        async init() {
-            if(this.ready) return;
-            await Tone.start();
-            
-            // Magical shimmer for drawing cards and UI clicks
-            this.drawSynth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "sine" },
-                envelope: { attack: 0.05, decay: 0.5, sustain: 0.2, release: 1.5 }
-            }).toDestination();
-            this.drawSynth.volume.value = -15; // Softened
-
-            // Hover tick
-            this.hoverSynth = new Tone.MembraneSynth({
-                pitchDecay: 0.01, octaves: 1,
-                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.01 }
-            }).toDestination();
-            this.hoverSynth.volume.value = -28; // Softened
-
-            // Shuffle (Softer brown noise, muffled by a filter to make it a "swoosh")
-            this.noiseSynth = new Tone.NoiseSynth({
-                noise: { type: "brown" }, 
-                envelope: { attack: 0.1, decay: 0.4, sustain: 0.1, release: 0.4 }
-            });
-            this.noiseFilter = new Tone.Filter(800, "lowpass").toDestination();
-            this.noiseSynth.connect(this.noiseFilter);
-            this.noiseSynth.volume.value = -5;
-
-            // Broom Sweep
-            this.sweepSynth = new Tone.NoiseSynth({
-                noise: { type: "pink" },
-                envelope: { attack: 0.1, decay: 0.4, sustain: 0, release: 0.5 }
-            });
-            this.sweepFilter = new Tone.Filter(1000, "lowpass").toDestination();
-            this.sweepSynth.connect(this.sweepFilter);
-            this.sweepSynth.volume.value = -8;
-
-            this.ready = true;
-        },
-        playDraw() { if(this.ready) this.drawSynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "8n"); },
-        playHover() { if(this.ready) this.hoverSynth.triggerAttackRelease("C5", "32n"); },
-        playShuffle() {
-            if(!this.ready) return;
-            let now = Tone.now();
-            
-            // 3 gentle, overlapping velvet swooshes instead of machine gun fire
-            this.noiseSynth.triggerAttackRelease("4n", now);
-            this.noiseSynth.triggerAttackRelease("4n", now + 0.15);
-            this.noiseSynth.triggerAttackRelease("4n", now + 0.3);
-            
-            // Beautiful ascending magical harp glissando over the top!
-            this.drawSynth.triggerAttackRelease("C4", "16n", now);
-            this.drawSynth.triggerAttackRelease("E4", "16n", now + 0.1);
-            this.drawSynth.triggerAttackRelease("G4", "16n", now + 0.2);
-            this.drawSynth.triggerAttackRelease("C5", "16n", now + 0.3);
-            this.drawSynth.triggerAttackRelease("E5", "8n", now + 0.4);
-        },
-        playSweep() { 
-            if(!this.ready) return;
-            let now = Tone.now();
-            this.sweepSynth.triggerAttackRelease("8n", now + 0.2);
-            this.sweepSynth.triggerAttackRelease("8n", now + 0.4);
-            this.sweepSynth.triggerAttackRelease("8n", now + 0.7);
-            this.sweepSynth.triggerAttackRelease("8n", now + 0.9);
-        },
-        playClick() { if(this.ready) this.drawSynth.triggerAttackRelease(["G4", "B4"], "16n"); } // Soft chime
-    };
-
-    // Browsers block sound until the user clicks somewhere. This wakes it up instantly!
-    document.body.addEventListener('click', () => AudioManager.init(), { once: true });
-
-    // UX: Set Intention Button
-    btnLockIntent.addEventListener('click', () => {
-        AudioManager.playClick();
-        if (customIntentInput.value.trim() === "") {
-            customIntentInput.focus();
-            return;
-        }
-        btnLockIntent.innerText = "✓ Locked";
-        btnLockIntent.classList.replace('text-amber-400', 'text-emerald-400');
-        btnLockIntent.classList.replace('border-amber-500', 'border-emerald-500');
-        customIntentInput.blur();
-        
-        // Reset visually after a few seconds if they want to edit it again
-        setTimeout(() => {
-            btnLockIntent.innerText = "Set";
-            btnLockIntent.classList.replace('text-emerald-400', 'text-amber-400');
-            btnLockIntent.classList.replace('border-emerald-500', 'border-amber-500');
-        }, 2500);
-    });
 
     // Populate Intentions
     Object.keys(intentionsData).forEach(cat => {
@@ -731,6 +702,23 @@
     catSelect.addEventListener('change', updateSubcategories);
     updateSubcategories(); 
     
+    btnLockIntent.addEventListener('click', () => {
+        AudioManager.playClick();
+        if (customIntentInput.value.trim() === "") {
+            customIntentInput.focus();
+            return;
+        }
+        btnLockIntent.innerText = "✓ Locked";
+        btnLockIntent.classList.replace('text-amber-400', 'text-emerald-400');
+        btnLockIntent.classList.replace('border-amber-500', 'border-emerald-500');
+        customIntentInput.blur();
+        setTimeout(() => {
+            btnLockIntent.innerText = "Set";
+            btnLockIntent.classList.replace('text-emerald-400', 'text-amber-400');
+            btnLockIntent.classList.replace('border-emerald-500', 'border-amber-500');
+        }, 2500);
+    });
+
     function toggleIntentionBar() {
         if (currentSpreadSize === '1') {
             intentContainer.classList.add('hidden');
@@ -741,107 +729,18 @@
         }
     }
 
+    // --- OFFLINE DECK STORAGE ENGINE ---
     function updateToggleUI() {
         if(useClassicArt) {
             toggleKnob.classList.add('translate-x-[1.1rem]');
             lblClassic.classList.replace('text-slate-500', 'text-amber-300');
             lblModern.classList.replace('text-amber-300', 'text-slate-500');
-            btnDownloadDeck.classList.remove('hidden');
-            btnDownloadDeck.classList.add('flex');
         } else {
             toggleKnob.classList.remove('translate-x-[1.1rem]');
             lblModern.classList.replace('text-slate-500', 'text-amber-300');
             lblClassic.classList.replace('text-amber-300', 'text-slate-500');
-            btnDownloadDeck.classList.add('hidden');
-            btnDownloadDeck.classList.remove('flex');
         }
     }
-
-    const DeckStorageManager = {
-        cacheName: 'tarot-classic-deck-v2',
-        isDownloading: false,
-
-        async getCardImage(cardData) {
-            const originalUrl = getClassicImageUrl(cardData);
-            try {
-                const cache = await caches.open(this.cacheName);
-                const response = await cache.match(originalUrl);
-                if (response) {
-                    const blob = await response.blob();
-                    return URL.createObjectURL(blob);
-                }
-            } catch(e) { console.warn("Cache read error", e); }
-            return originalUrl;
-        },
-
-        async downloadDeck() {
-            if (this.isDownloading) return;
-            this.isDownloading = true;
-            
-            if(btnDownloadDeck) btnDownloadDeck.innerHTML = `<span><svg class="animate-spin h-3 w-3 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Downloading... 0%</span>`;
-
-            try {
-                const cache = await caches.open(this.cacheName);
-                let loaded = 0;
-                
-                for (const card of tarotDeck) {
-                    const url = getClassicImageUrl(card);
-                    const match = await cache.match(url);
-                    if (!match) {
-                        try {
-                            const res = await fetch(url);
-                            if(res.ok) await cache.put(url, res);
-                            await new Promise(r => setTimeout(r, 100)); // Be polite to the server
-                        } catch(e) { console.warn("Failed to fetch", url); }
-                    }
-                    loaded++;
-                    if(btnDownloadDeck) btnDownloadDeck.innerHTML = `<span><svg class="animate-spin h-3 w-3 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Downloading... ${Math.round((loaded/78)*100)}%</span>`;
-                }
-                
-                if(btnDownloadDeck) {
-                    btnDownloadDeck.innerHTML = `<span>✅ Deck Saved Offline</span>`;
-                    btnDownloadDeck.classList.replace('text-slate-500', 'text-emerald-400');
-                    btnDownloadDeck.classList.add('pointer-events-none');
-                }
-            } catch (err) {
-                console.error("Cache open failed", err);
-                if(btnDownloadDeck) btnDownloadDeck.innerHTML = `<span>❌ Download Failed</span>`;
-            }
-            this.isDownloading = false;
-        },
-
-        async checkStatus() {
-            try {
-                const cache = await caches.open(this.cacheName);
-                const keys = await cache.keys();
-                if (keys.length >= 78) {
-                    if(btnDownloadDeck) {
-                        btnDownloadDeck.innerHTML = `<span>✅ Deck Saved Offline</span>`;
-                        btnDownloadDeck.classList.replace('text-slate-500', 'text-emerald-400');
-                        btnDownloadDeck.classList.add('pointer-events-none');
-                    }
-                }
-            } catch(e) {}
-        }
-    };
-
-    btnDownloadDeck.addEventListener('click', () => DeckStorageManager.downloadDeck());
-
-    artToggleContainer.addEventListener('click', () => {
-        useClassicArt = !useClassicArt;
-        localStorage.setItem('tarotArtStyle', useClassicArt ? 'classic' : 'modern');
-        updateToggleUI();
-        
-        drawnCards.forEach(async (card, i) => {
-            const slot = document.getElementById(`slot-${i}`);
-            if (slot) {
-                const face = slot.querySelector('.drawn-card');
-                if (face) {
-                    face.innerHTML = await renderCardContent(card);
-                }
-            }
-        });
-    });
 
     function getClassicImageUrl(cardData) {
         let fileName = '';
@@ -859,76 +758,177 @@
             else num = parseInt(cardData.rank);
             fileName = `${suitPrefix}${String(num).padStart(2, '0')}.jpg`;
         }
-        // Using global CDN to bypass server rate limiting
         return `https://wsrv.nl/?url=sacred-texts.com/tarot/pkt/img/${fileName}&w=400&output=webp`;
     }
 
-    // Safety Fallback if the classic image fails to load
-    window.handleImageError = function(img) {
-        const parent = img.closest('.drawn-card');
-        if (parent) {
-            const classic = parent.querySelector('.classic-container');
-            const modern = parent.querySelector('.modern-container');
-            if (classic && modern) {
-                classic.classList.add('hidden');
-                classic.classList.remove('flex');
-                modern.classList.remove('hidden');
-                modern.classList.add('flex');
+    const DeckStorageManager = {
+        cacheName: 'tarot-classic-deck-v3',
+        isDownloading: false,
+
+        async getCardImage(cardData) {
+            const originalUrl = getClassicImageUrl(cardData);
+            try {
+                if ('caches' in window) {
+                    const cache = await caches.open(this.cacheName);
+                    const response = await cache.match(originalUrl);
+                    if (response) {
+                        const blob = await response.blob();
+                        return URL.createObjectURL(blob);
+                    }
+                }
+            } catch(e) { console.warn("Cache read error", e); }
+            return originalUrl; // Fallback to network if not cached
+        },
+
+        async downloadDeck() {
+            if (this.isDownloading) return;
+            this.isDownloading = true;
+            
+            const modal = document.getElementById('download-modal');
+            const bar = document.getElementById('download-progress-bar');
+            const text = document.getElementById('download-progress-text');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            AudioManager.playSweep();
+
+            try {
+                if (!('caches' in window)) throw new Error("Caches API not supported in this browser.");
+                const cache = await caches.open(this.cacheName);
+                let loaded = 0;
+                
+                for (const card of tarotDeck) {
+                    const url = getClassicImageUrl(card);
+                    const match = await cache.match(url);
+                    if (!match) {
+                        try {
+                            const res = await fetch(url);
+                            if(res.ok) await cache.put(url, res);
+                            await new Promise(r => setTimeout(r, 20)); // Polite throttle
+                        } catch(e) {}
+                    }
+                    loaded++;
+                    let pct = Math.round((loaded/78)*100);
+                    bar.style.width = `${pct}%`;
+                    text.innerText = `${pct}%`;
+                    
+                    if (loaded % 5 === 0) AudioManager.playHover();
+                }
+                
+                text.innerText = "100% - Magically Ready ✨";
+                AudioManager.playDraw();
+                
+                confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 }, colors: ['#fbbf24', '#c084fc'] });
+                confetti({ particleCount: 30, scalar: 1.5, origin: { y: 0.5 }, shapes: ['emoji'], shapeOptions: { emoji: { value: ['✨', '🌟', '😉'] } } });
+
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    this.isDownloading = false;
+                    redrawAllFaces();
+                }, 2000);
+
+            } catch (err) {
+                console.error("Cache open failed", err);
+                text.innerText = "Summoning Failed.";
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    this.isDownloading = false;
+                }, 2000);
             }
         }
     };
 
-    function getModernArtHtml(drawnCardData) {
-        let artContent = '';
+    artToggleContainer.addEventListener('click', async () => {
+        AudioManager.playClick();
+        useClassicArt = !useClassicArt;
+        try { localStorage.setItem('tarotArtStyle', useClassicArt ? 'classic' : 'modern'); } catch(e){}
+        
+        updateToggleUI();
+
+        if (useClassicArt) {
+            try {
+                if ('caches' in window) {
+                    const cache = await caches.open(DeckStorageManager.cacheName);
+                    const keys = await cache.keys();
+                    if (keys.length < 78) {
+                        await DeckStorageManager.downloadDeck();
+                        return;
+                    }
+                }
+            } catch(e) { console.warn(e); }
+        }
+        redrawAllFaces();
+    });
+
+    async function redrawAllFaces() {
+        for (let i = 0; i < drawnCards.length; i++) {
+            const slot = document.getElementById(`slot-${i}`);
+            if (slot) {
+                const face = slot.querySelector('.drawn-card');
+                if (face) {
+                    face.innerHTML = await renderCardContent(drawnCards[i]);
+                }
+            }
+        }
+    }
+
+    async function renderCardContent(drawnCardData) {
+        let modernHtml = '';
         if (drawnCardData.suit === '') { 
-            artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
+            modernHtml = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
         } else {
             let rankValue = ranks.indexOf(drawnCardData.rank) + 1;
             if (rankValue === 1) { 
-                artContent = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
+                modernHtml = `<div class="text-5xl md:text-[5rem] filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] relative z-10">${drawnCardData.icon}</div>`;
             } else if (rankValue >= 2 && rankValue <= 10) {
                 let iconsHtml = '';
                 for(let i=0; i<rankValue; i++) iconsHtml += `<span class="filter drop-shadow-md">${drawnCardData.icon}</span>`;
-                artContent = `<div class="flex flex-wrap justify-center items-center content-center gap-1 md:gap-2 w-[85%] h-[85%] text-sm md:text-3xl relative z-10">${iconsHtml}</div>`;
+                modernHtml = `<div class="flex flex-wrap justify-center items-center content-center gap-1 md:gap-2 w-[85%] h-[85%] text-sm md:text-3xl relative z-10">${iconsHtml}</div>`;
             } else { 
                 let courtIcon = drawnCardData.rank === 'Page' ? '🧑‍🎓' : drawnCardData.rank === 'Knight' ? '🏇' : drawnCardData.rank === 'Queen' ? '👸' : '🤴';
-                artContent = `
+                modernHtml = `
                     <div class="flex flex-col items-center justify-center gap-1 md:gap-3 relative z-10">
                         <div class="text-3xl md:text-5xl filter drop-shadow-md">${courtIcon}</div>
                         <div class="text-xl md:text-4xl filter drop-shadow-md">${drawnCardData.icon}</div>
                     </div>`;
             }
         }
-        return `
+        
+        const modernFace = `
             <div class="card-art-frame ${drawnCardData.theme}">
-                ${artContent}
+                ${modernHtml}
             </div>
             <div class="card-title-banner">
                 <span class="drawn-card-title">${drawnCardData.name}</span>
             </div>
         `;
-    }
-
-    async function renderCardContent(drawnCardData) {
-        const modernHtml = getModernArtHtml(drawnCardData);
 
         if (useClassicArt) {
             const imgUrl = await DeckStorageManager.getCardImage(drawnCardData);
             return `
-                <div class="classic-container relative w-full h-full flex flex-col items-center justify-center bg-[#fdfbf7] border-4 border-[#e2d6b5] rounded-[10px] overflow-hidden p-1.5 md:p-2 shadow-inner z-10">
-                    <img src="${imgUrl}" alt="${drawnCardData.name}" class="w-full h-full object-cover rounded-sm mix-blend-multiply" onerror="window.handleImageError(this)">
+                <div class="relative w-full h-full flex flex-col items-center justify-center bg-[#fdfbf7] border-4 border-[#e2d6b5] rounded-[10px] overflow-hidden p-1.5 md:p-2 shadow-inner z-10">
+                    <img src="${imgUrl}" alt="${drawnCardData.name}" class="w-full h-full object-cover rounded-sm mix-blend-multiply" onerror="this.parentElement.nextElementSibling.classList.remove('hidden'); this.parentElement.nextElementSibling.classList.add('flex'); this.parentElement.classList.add('hidden');">
                     <div class="holo-overlay"></div>
                 </div>
-                <div class="modern-container hidden w-full h-full flex-col items-center justify-start">
-                    ${modernHtml}
+                <div class="hidden w-full h-full flex-col items-center justify-start z-10">
+                    ${modernFace}
                 </div>
             `;
         } else {
             return `
-                <div class="w-full h-full flex flex-col items-center justify-start">
-                    ${modernHtml}
+                <div class="w-full h-full flex flex-col items-center justify-start z-10">
+                    ${modernFace}
                 </div>
             `;
+        }
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
     }
 
@@ -965,6 +965,7 @@
         const spreadWidth = Math.min(containerWidth - 40, 1100); 
 
         for (let i = 0; i < cardsRemaining; i++) {
+            const cardData = activeDeck[i];
             const card = document.createElement('div');
             card.className = 'fan-card';
             
@@ -982,58 +983,40 @@
             card.style.transform = baseTransform;
             card.style.zIndex = i;
             
-            // NEW: Add hover sound!
-            card.onmouseenter = () => AudioManager.playHover();
+            card.onmouseenter = () => { if(AudioManager.ready) AudioManager.playHover(); };
             
-            card.onclick = () => {
-                AudioManager.playClick();
-                drawCard(i);
+            card.onclick = async () => {
+                if (drawnCards.length >= parseInt(currentSpreadSize)) return;
+                if(AudioManager.ready) { AudioManager.playClick(); AudioManager.playDraw(); }
+                
+                // Instantly remove from fan
+                activeDeck.splice(i, 1);
+                drawnCards.push(cardData);
+                
+                renderFan(); // Re-render missing card
+                
+                const slotIndex = drawnCards.length - 1;
+                const slot = document.getElementById(`slot-${slotIndex}`);
+                
+                slot.innerHTML = `<div class="text-3xl animate-spin filter drop-shadow-md">✨</div>`;
+                
+                const face = document.createElement('div');
+                face.className = 'drawn-card glow-pulse';
+                face.innerHTML = await renderCardContent(cardData);
+                
+                slot.innerHTML = '';
+                slot.appendChild(face);
+
+                const aura = document.createElement('div');
+                aura.className = 'aura-ripple';
+                slot.appendChild(aura);
+
+                setTimeout(() => { if (slot.contains(aura)) slot.removeChild(aura); }, 800);
+                updateStatus();
             };
             fanContainer.appendChild(card);
         }
         checkCompletionState();
-    }
-
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
-    async function drawCard(deckIndex) {
-        if (drawnCards.length >= parseInt(currentSpreadSize)) return; 
-
-        // 1. Instantly splice from deck
-        const drawnCardData = activeDeck.splice(deckIndex, 1)[0];
-        drawnCards.push(drawnCardData);
-
-        // 2. Instantly update UI to remove from fan
-        renderFan();
-        updateStatus();
-
-        const slotIndex = drawnCards.length - 1;
-        const slot = document.getElementById(`slot-${slotIndex}`);
-        slot.innerHTML = '';
-        face.innerHTML = `
-            <div class="card-art-frame ${drawnCardData.theme}">
-                ${artContent}
-            </div>
-            <div class="card-title-banner">
-                <span class="drawn-card-title">${drawnCardData.name}</span>
-            </div>
-        `;
-        
-        slot.appendChild(face);
-        
-        // NEW: Play mystical draw sound
-        AudioManager.playDraw();
-
-        const aura = document.createElement('div');
-        aura.className = 'aura-ripple';
-        slot.appendChild(aura);
-
-        setTimeout(() => { if (slot.contains(aura)) slot.removeChild(aura); }, 800);
     }
 
     function updateStatus() {
@@ -1042,7 +1025,6 @@
             statusText.innerText = "Reading Complete";
             statusText.classList.add('text-amber-400');
             statusText.classList.remove('text-amber-50');
-            
             setTimeout(() => { saveToHistory(); }, 600);
         } else {
             statusText.innerText = `Drawn: ${drawnCards.length} / ${total}`;
@@ -1075,7 +1057,6 @@
     }
 
     function triggerMagicalShuffle() {
-        // Removed the confirm() box to comply with strict system rules!
         const cards = document.querySelectorAll('.fan-card');
         cards.forEach(c => {
             c.style.transform = 'rotate(0deg) scale(0.9)';
@@ -1106,7 +1087,6 @@
         broomContainer.classList.remove('hidden');
         void broom.offsetWidth; 
         broom.classList.add('animate-sweep');
-        
         AudioManager.playSweep();
         
         const poofDust = () => {
@@ -1163,7 +1143,6 @@
     async function saveToHistory() {
         let focusText = "";
         if (currentSpreadSize !== '1') {
-            // Grab custom text if "Custom Question" is selected, otherwise grab dropdown value
             const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
             focusText = ` [Focus: ${sub}]`;
         }
@@ -1176,8 +1155,10 @@
         let imgData = "";
         try {
             const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: 1, useCORS: true });
-            imgData = canvas.toDataURL('image/jpeg', 0.6); // Compress to prevent quota limits
-        } catch(e) { console.warn("Failed to capture snapshot:", e); }
+            imgData = canvas.toDataURL('image/jpeg', 0.6); // Compress aggressively
+        } catch(e) {
+            console.error("Failed to capture snapshot", e);
+        }
 
         readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: spreadName, cards: cardNames, image: imgData });
         
@@ -1185,17 +1166,13 @@
             localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
         } catch (e) {
             console.warn("Storage full! Clearing older images...");
-            // If quota exceeded, wipe images from history but keep text
             readingHistory = readingHistory.map((item, index) => {
                 if (index > 0) item.image = null;
                 return item;
             });
             try {
                 localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
-            } catch (e2) {
-                readingHistory[0].image = null;
-                localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
-            }
+            } catch (e2) {}
         }
         
         renderHistory();
@@ -1243,11 +1220,190 @@
 
     window.deleteHistoryItem = function(id) {
         readingHistory = readingHistory.filter(item => item.id !== id);
-        localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); 
+        try { localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); } catch(e){}
         renderHistory();
         checkCooldowns(); 
+    };
+
+    const funnyWarnings = [
+        "Hold your horses! 🐎 The reading is full!",
+        "Greedy! You already have your cards! 🙅‍♀️",
+        "The spirits are tired! Try resetting! 👻",
+        "That's enough cards for today! 🃏",
+        "Stop clicking! The spread is complete! 😂",
+        "Woah there! Let's read these first! 🔮"
+    ];
+
+    function triggerFunnyWarning() {
+        const warningEl = document.getElementById('funny-warning');
+        const textEl = document.getElementById('warning-text');
+        
+        textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
+        
+        warningEl.classList.remove('warning-active');
+        document.body.classList.remove('flash-screen');
+        void warningEl.offsetWidth; 
+        
+        warningEl.classList.add('warning-active');
+        document.body.classList.add('flash-screen');
+        
+        setTimeout(() => {
+            warningEl.classList.remove('warning-active');
+            document.body.classList.remove('flash-screen');
+        }, 1000);
     }
 
+    document.addEventListener('click', (e) => {
+        const fanArea = document.getElementById('deck-area');
+        if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
+            if (drawnCards.length >= parseInt(currentSpreadSize)) {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerFunnyWarning();
+            }
+        }
+    }, true);
+    
+    // --- AI INTERPRETATION ENGINE ---
+    document.getElementById('btn-interpret').addEventListener('click', async () => {
+        const modal = document.getElementById('interpret-modal');
+        const content = document.getElementById('interpret-content');
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        content.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-48 gap-6">
+                <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
+                <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
+                    Consulting the Akashic Records...<br>
+                    <span class="text-sm text-slate-400 font-sans mt-2 block" id="ai-status-detail">Finding an authorized AI model for your key</span>
+                </div>
+            </div>
+        `;
+
+        const spreadInfo = spreads[currentSpreadSize];
+        let focusText = "";
+        let focusTitle = "General Reading";
+        
+        if (currentSpreadSize !== '1') {
+            const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
+            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
+            focusTitle = sub;
+        }
+
+        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
+        
+        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. ${focusText}
+        Here are the cards I pulled: ${readingContext}. 
+        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
+        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
+        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
+        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
+
+        try {
+            let apiKey = '';
+            try { apiKey = localStorage.getItem('tarotApiKey') || ''; } catch(e){}
+            
+            if (!apiKey) {
+                throw new Error("No API key provided. Click the 🗝️ icon in the top right to add it.");
+            }
+
+            const modelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+            const modelsResponse = await fetch(modelsUrl);
+            
+            if (!modelsResponse.ok) {
+                const errData = await modelsResponse.json();
+                throw new Error(errData.error?.message || "Invalid API Key");
+            }
+            
+            const modelsData = await modelsResponse.json();
+            const validModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+            
+            if (validModels.length === 0) {
+                throw new Error("Your API key has no text generation models available.");
+            }
+
+            const flashModel = validModels.find(m => m.name.includes('flash'));
+            const selectedModel = flashModel ? flashModel.name : validModels[0].name;
+
+            document.getElementById('ai-status-detail').innerText = `Using model: ${selectedModel.replace('models/', '')}`;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error?.message || "Generation failed.");
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                let htmlText = result.candidates[0].content.parts[0].text;
+                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
+                content.innerHTML = htmlText;
+            } else {
+                throw new Error("Invalid response format from Gemini");
+            }
+        } catch (error) {
+            console.error("AI Reading Failed:", error);
+            content.innerHTML = `
+                <div class="bg-red-900/30 border border-red-500 rounded-lg p-6 text-center mb-6">
+                    <h3 class="text-red-400 font-bold mb-2 text-xl">API Error Detected</h3>
+                    <p class="text-slate-200 font-mono text-sm mb-0">${error.message}</p>
+                </div>
+                <hr class="border-amber-900/30 mb-6">
+                <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em; text-align: center;">SIMULATED READING (BACKUP)</h3>
+                <div class="flex flex-col items-center justify-center gap-4 text-center mt-4">
+                    <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
+                    <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
+                    <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding <strong>${focusTitle.toLowerCase()}</strong>. The energies indicate that you are shedding old patterns and stepping into a period of clarity. Trust your intuition right now, for it is exceptionally sharp regarding this matter.</p>
+                    <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
+                </div>
+            `;
+        }
+    });
+
+    document.getElementById('close-interpret').addEventListener('click', () => {
+        document.getElementById('interpret-modal').classList.add('hidden');
+        document.getElementById('interpret-modal').classList.remove('flex');
+    });
+
+    // Admin UI Control
+    document.getElementById('secret-api-btn').addEventListener('click', () => {
+        try { document.getElementById('admin-api-input').value = localStorage.getItem('tarotApiKey') || ''; } catch(e){}
+        document.getElementById('admin-modal').classList.remove('hidden');
+        document.getElementById('admin-modal').classList.add('flex');
+    });
+
+    document.getElementById('btn-admin-cancel').addEventListener('click', () => {
+        document.getElementById('admin-modal').classList.add('hidden');
+        document.getElementById('admin-modal').classList.remove('flex');
+    });
+
+    document.getElementById('btn-admin-clear').addEventListener('click', () => {
+        try { localStorage.removeItem('tarotApiKey'); } catch(e){}
+        document.getElementById('admin-modal').classList.add('hidden');
+        document.getElementById('admin-modal').classList.remove('flex');
+    });
+
+    document.getElementById('btn-admin-save').addEventListener('click', () => {
+        const val = document.getElementById('admin-api-input').value.trim();
+        if(val) {
+            try { localStorage.setItem('tarotApiKey', val); } catch(e){}
+        }
+        document.getElementById('admin-modal').classList.add('hidden');
+        document.getElementById('admin-modal').classList.remove('flex');
+    });
+
+    // --- COOLDOWN LOGIC ---
     function checkCooldowns() {
         const select = document.getElementById('spread-select');
         let needsToSwitch = false;
@@ -1296,235 +1452,43 @@
 
     setInterval(checkCooldowns, 60000);
 
-    const funnyWarnings = [
-        "Hold your horses! 🐎 The reading is full!",
-        "Greedy! You already have your cards! 🙅‍♀️",
-        "The spirits are tired! Try resetting! 👻",
-        "That's enough cards for today! 🃏",
-        "Stop clicking! The spread is complete! 😂",
-        "Woah there! Let's read these first! 🔮"
-    ];
-
-    function triggerFunnyWarning() {
-        const warningEl = document.getElementById('funny-warning');
-        const textEl = document.getElementById('warning-text');
-        
-        textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
-        
-        warningEl.classList.remove('warning-active');
-        document.body.classList.remove('flash-screen');
-        void warningEl.offsetWidth; 
-        
-        warningEl.classList.add('warning-active');
-        document.body.classList.add('flash-screen');
-        
-        setTimeout(() => {
-            warningEl.classList.remove('warning-active');
-            document.body.classList.remove('flash-screen');
-        }, 1000);
-    }
-
-    document.addEventListener('click', (e) => {
-        const fanArea = document.getElementById('deck-area');
-        if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
-            if (drawnCards.length >= parseInt(currentSpreadSize)) {
-                e.preventDefault();
-                e.stopPropagation();
-                triggerFunnyWarning();
-            }
-        }
-    }, true);
-    
-    document.getElementById('btn-interpret').addEventListener('click', async () => {
-        const modal = document.getElementById('interpret-modal');
-        const content = document.getElementById('interpret-content');
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        
-        content.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-48 gap-6">
-                <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
-                <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                    Consulting the Akashic Records...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block">Finding an authorized AI model for your key</span>
-                </div>
-            </div>
-        `;
-
-        const spreadInfo = spreads[currentSpreadSize];
-        let focusText = "";
-        let focusTitle = "General Reading";
-        
-        if (currentSpreadSize !== '1') {
-            // Grab custom text if "Custom Question" is selected, otherwise grab dropdown value
-            const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
-            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
-            focusTitle = sub;
-        }
-
-        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
-        
-        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. ${focusText}
-        Here are the cards I pulled: ${readingContext}. 
-        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
-        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
-        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
-        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
-
-        try {
-            let apiKey = localStorage.getItem('tarotApiKey');
-            
-            if (!apiKey) {
-                throw new Error("No API key provided. Click the 🗝️ icon in the top right to add it.");
-            }
-            
-            apiKey = apiKey.trim();
-
-            // STEP 1: Dynamically ask Google what models this specific key is allowed to use!
-            const modelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-            const modelsResponse = await fetch(modelsUrl);
-            
-            if (!modelsResponse.ok) {
-                throw new Error("API Key was rejected by Google. Double check your key!");
-            }
-            
-            const modelsData = await modelsResponse.json();
-            
-            // Filter out models that can't generate text
-            const validModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
-            
-            if (validModels.length === 0) {
-                throw new Error("Your API key has no text generation models available.");
-            }
-
-            // Automatically pick 'flash', or fallback to 'pro', or just take the first working one!
-            const flashModel = validModels.find(m => m.name.includes('flash'));
-            const proModel = validModels.find(m => m.name.includes('pro'));
-            const selectedModel = flashModel ? flashModel.name : (proModel ? proModel.name : validModels[0].name);
-
-            // STEP 2: Make the actual reading request using the dynamically found model
-            content.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-48 gap-6">
-                    <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
-                    <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                        Communing with the spirits...<br>
-                        <span class="text-sm text-amber-400 font-sans mt-2 block">Using model: ${selectedModel.replace('models/', '')}</span>
-                    </div>
-                </div>
-            `;
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                console.error("API Error Details:", errData);
-                throw new Error(errData.error?.message || "Generation failed.");
-            }
-
-            const result = await response.json();
-            
-            if (result.candidates && result.candidates[0].content.parts[0].text) {
-                let htmlText = result.candidates[0].content.parts[0].text;
-                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
-                content.innerHTML = htmlText;
-            } else {
-                throw new Error("Invalid response format from Gemini");
-            }
-        } catch (error) {
-            console.error("AI Reading Failed:", error);
-            
-            content.innerHTML = `
-                <div class="bg-red-900/30 border border-red-500 rounded-lg p-6 text-center mb-6">
-                    <h3 class="text-red-400 font-bold mb-2 text-xl">API Error Detected</h3>
-                    <p class="text-slate-200 font-mono text-sm mb-0">${error.message}</p>
-                </div>
-                <hr class="border-amber-900/30 mb-6">
-                <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em; text-align: center;">SIMULATED READING (BACKUP)</h3>
-                <div class="flex flex-col items-center justify-center gap-4 text-center mt-4">
-                    <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
-                    <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
-                    <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding <strong>${focusTitle.toLowerCase()}</strong>. The energies indicate that you are shedding old patterns and stepping into a period of clarity. Trust your intuition right now, for it is exceptionally sharp regarding this matter.</p>
-                    <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
-                </div>
-            `;
-        }
-    });
-
-    document.getElementById('close-interpret').addEventListener('click', () => {
-        document.getElementById('interpret-modal').classList.add('hidden');
-        document.getElementById('interpret-modal').classList.remove('flex');
-    });
-
-    // Admin UI Control (No window alerts/prompts!)
-    document.getElementById('secret-api-btn').addEventListener('click', () => {
-        document.getElementById('admin-api-input').value = localStorage.getItem('tarotApiKey') || '';
-        document.getElementById('admin-modal').classList.remove('hidden');
-        document.getElementById('admin-modal').classList.add('flex');
-    });
-
-    document.getElementById('btn-admin-cancel').addEventListener('click', () => {
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
-    document.getElementById('btn-admin-clear').addEventListener('click', () => {
-        localStorage.removeItem('tarotApiKey');
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
-    document.getElementById('btn-admin-save').addEventListener('click', () => {
-        const val = document.getElementById('admin-api-input').value.trim();
-        if(val) {
-            localStorage.setItem('tarotApiKey', val);
-        }
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
     spreadSelect.addEventListener('change', (e) => {
         currentSpreadSize = e.target.value;
         resetReading();
     });
 
-    // Attach all main buttons properly!
+    // Wire up events
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
     document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
     
     document.getElementById('btn-history').addEventListener('click', () => {
+        AudioManager.playClick();
         renderHistory();
         document.getElementById('history-modal').classList.remove('hidden');
         document.getElementById('history-modal').classList.add('flex');
     });
     
     document.getElementById('close-history').addEventListener('click', () => {
+        AudioManager.playClick();
         document.getElementById('history-modal').classList.add('hidden');
         document.getElementById('history-modal').classList.remove('flex');
     });
 
     document.getElementById('close-snapshot').addEventListener('click', () => {
+        AudioManager.playClick();
         document.getElementById('snapshot-modal').classList.add('hidden');
         document.getElementById('snapshot-modal').classList.remove('flex');
     });
 
-    window.addEventListener('resize', () => {
-        if (drawnCards.length < parseInt(currentSpreadSize)) renderFan();
-    });
-
-    // INIT
-    updateToggleUI();
-    DeckStorageManager.checkStatus();
-    checkCooldowns();
-    resetReading();
-    renderHistory(); 
+    // --- SAFELY RUN INITIALIZATION ---
+    try {
+        updateToggleUI();
+        checkCooldowns();
+        resetReading();
+        renderHistory();
+    } catch (e) {
+        console.error("Fatal initialization error:", e);
+    }
 
 </script>
 </body>
