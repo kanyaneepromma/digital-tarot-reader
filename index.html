@@ -7,15 +7,31 @@
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FIX: Forcing Tailwind to use Sarabun globally so it never gets overridden -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Official Sarabun Font (Web equivalent of TH Sarabun PSK) -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
-    <!-- Firebase Analytics Integration -->
+    <!-- Firebase Analytics & Remote Config Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+        import { getRemoteConfig, fetchAndActivate, getValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-remote-config.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDf-1z_Vt3JMOaqSRxsJVI7dy7AUFlYfuU",
@@ -29,6 +45,26 @@
 
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
+        const remoteConfig = getRemoteConfig(app);
+        
+        // Cache limit: check for new config every hour
+        remoteConfig.settings.minimumFetchIntervalMillis = 3600; 
+
+        remoteConfig.defaultConfig = {
+            "gemini_api_key": ""
+        };
+
+        // Expose to the global window object so the main script can use it for AI Studio calls
+        window.geminiApiKey = "";
+
+        fetchAndActivate(remoteConfig)
+            .then(() => {
+                window.geminiApiKey = getValue(remoteConfig, "gemini_api_key").asString();
+                console.log("Firebase Remote Config Loaded successfully.");
+            })
+            .catch((err) => {
+                console.error("Firebase Remote Config Error:", err);
+            });
     </script>
 
     <style>
@@ -383,7 +419,8 @@
     
     <!-- TOP CONTROL BAR -->
     <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8">
-        <!-- Bilingual Toggle -->
+        
+        <!-- Bilingual Toggle (EN / TH) -->
         <div class="absolute top-4 right-4 md:right-8 flex items-center gap-2 z-50">
             <span class="text-xs font-bold text-slate-400" id="lbl-en">EN</span>
             <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
@@ -391,8 +428,6 @@
                 <label for="toggle-lang" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-700 cursor-pointer"></label>
             </div>
             <span class="text-xs font-bold text-slate-400" id="lbl-th">TH</span>
-            <!-- Admin Key Button -->
-            <button id="btn-admin-key" class="text-slate-500 hover:text-amber-400 opacity-20 hover:opacity-100 transition-all ml-4" title="Admin Settings">🗝️</button>
         </div>
 
         <div class="max-w-6xl mx-auto flex flex-col gap-5">
@@ -529,19 +564,6 @@
     </div>
 </div>
 
-<!-- Admin Key Modal -->
-<div id="admin-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-[150] hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border border-amber-700/50 rounded-2xl shadow-2xl w-full max-w-md p-8 flex flex-col relative">
-        <h2 class="text-xl tarot-font text-amber-400 font-bold mb-2">🗝️ Set Gemini API Key</h2>
-        <p class="text-slate-400 text-sm mb-6">Enter your API key from Google AI Studio. This is saved securely in your browser.</p>
-        <input type="password" id="admin-key-input" placeholder="AQ.Ab8..." class="bg-slate-800 text-white border border-slate-600 rounded-lg px-4 py-3 focus:outline-none focus:border-amber-400 mb-6 w-full font-mono">
-        <div class="flex justify-end gap-3">
-            <button id="btn-admin-cancel" class="px-5 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors">Cancel</button>
-            <button id="btn-admin-save" class="px-5 py-2 rounded-lg bg-amber-600 text-white font-bold hover:bg-amber-500 transition-colors shadow-lg">Save Key</button>
-        </div>
-    </div>
-</div>
-
 <!-- Floating Interpret Button -->
 <button id="btn-interpret" class="fixed bottom-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
     ✨ <span data-i18n="revealBtn">Reveal the Meaning</span> ✨
@@ -560,7 +582,7 @@
 </div>
 
 <script>
-    // --- AUDIO ENGINE (Tone.js) ---
+    // --- ETHEREAL AUDIO ENGINE ---
     const AudioParams = {
         synth: null,
         noise: null,
@@ -601,7 +623,7 @@
     function playShuffleSound() {
         if (!AudioParams.noise) return;
         
-        // Brown noise swooshes
+        // 3 Gentle Swooshes
         AudioParams.noise.volume.rampTo(-10, 0.1);
         AudioParams.noise.volume.rampTo(-Infinity, 0.4, "+0.1");
         
@@ -615,7 +637,7 @@
             AudioParams.noise.volume.rampTo(-Infinity, 0.5, "+0.1");
         }, 600);
 
-        // Harp Glissando
+        // Magical Harp Glissando
         const now = Tone.now();
         const notes = ["C4", "E4", "G4", "C5", "E5"];
         notes.forEach((note, i) => {
@@ -623,14 +645,13 @@
         });
     }
 
-    // Initialize Audio on first click
+    // Require user interaction to start audio (browser policy)
     document.body.addEventListener('click', async () => {
         await Tone.start();
         initAudio();
     }, { once: true });
 
-
-    // --- TRANSLATION ENGINE ---
+    // --- BILINGUAL ENGINE ---
     let currentLang = 'en';
 
     const translations = {
@@ -747,6 +768,7 @@
     };
 
     function updateLanguageUI() {
+        // Text translations
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (translations[currentLang][key]) {
@@ -759,8 +781,9 @@
             if (translations[currentLang][key]) el.placeholder = translations[currentLang][key];
         });
 
+        // Dropdown translation
         const select = document.getElementById('spread-select');
-        const val = select.value || '1';
+        const val = select.value || '1'; // Default to 1-card if nothing is selected
         select.innerHTML = '';
         Object.keys(spreadsData).forEach(key => {
             const opt = document.createElement('option');
@@ -776,6 +799,7 @@
         renderHistory();
         checkCooldowns();
 
+        // Update the EN/TH toggle visuals
         const langToggle = document.getElementById('toggle-lang');
         const lblEn = document.getElementById('lbl-en');
         const lblTh = document.getElementById('lbl-th');
@@ -790,8 +814,6 @@
         }
     }
 
-
-    // --- TAROT DECK GENERATOR ---
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
     const majors = [
@@ -844,7 +866,6 @@
         }
     }
 
-    // --- FOCUS ENGINE ---
     function renderFocusMenus() {
         if (currentSpreadSize === '1') {
             document.getElementById('focus-container').classList.add('hidden');
@@ -923,8 +944,6 @@
         return qObj ? qObj[currentLang] : "";
     }
 
-
-    // --- CORE RENDERING ---
     function renderPlaceholders() {
         spreadArea.innerHTML = '';
         spreadArea.className = `spread-layout spread-${currentSpreadSize}`;
@@ -975,7 +994,6 @@
             card.style.transform = baseTransform;
             card.style.zIndex = i;
             
-            // Mouseenter for Audio
             card.addEventListener('mouseenter', () => playHoverSound());
             card.onclick = () => drawCard(i);
             
@@ -984,7 +1002,6 @@
         checkCompletionState();
     }
 
-    // --- ART ENGINE & OFFLINE CACHE ---
     async function getClassicImage(classicId) {
         const url = `https://wsrv.nl/?url=sacred-texts.com/tarot/pkt/img/${classicId}.jpg&w=400&output=webp`;
         try {
@@ -995,7 +1012,7 @@
                 return URL.createObjectURL(blob);
             }
         } catch(e) { console.error(e); }
-        return url; // Fallback to live fetch if cache misses
+        return url; 
     }
 
     async function downloadDeck() {
@@ -1017,7 +1034,6 @@
                 const exists = await cache.match(url);
                 if (!exists) {
                     await cache.add(url);
-                    // Gentle pause to not overwhelm the network
                     await new Promise(r => setTimeout(r, 50));
                 }
                 
@@ -1025,7 +1041,7 @@
                 const pct = Math.round((loaded / tarotDeck.length) * 100);
                 bar.style.width = `${pct}%`;
                 text.innerText = `${pct}%`;
-                if(i % 3 === 0) playHoverSound(); // tick sound
+                if(i % 3 === 0) playHoverSound(); 
             }
             
             playClickSound();
@@ -1045,7 +1061,7 @@
     document.getElementById('toggle-art').addEventListener('change', async (e) => {
         if(drawnCards.length > 0) {
             e.preventDefault();
-            e.target.checked = !e.target.checked; // revert
+            e.target.checked = !e.target.checked;
             triggerFunnyWarning(translations[currentLang].errStyleLock);
             return;
         }
@@ -1058,7 +1074,6 @@
         }
     });
 
-    // Art Lock UI Checker
     function updateArtLockUI() {
         const wrapper = document.getElementById('art-toggle-wrapper');
         const toggle = document.getElementById('toggle-art');
@@ -1077,22 +1092,20 @@
         playDrawSound();
         const drawnCardData = activeDeck.splice(deckIndex, 1)[0];
         drawnCards.push(drawnCardData);
-        updateArtLockUI(); // Lock style immediately
+        updateArtLockUI(); 
 
         const slotIndex = drawnCards.length - 1;
         const slot = document.getElementById(`slot-${slotIndex}`);
         
-        // Instant visual feedback on the table
+        // Show loading sparkle while the image fetches from cache
         slot.innerHTML = `<div class="text-4xl animate-spin" style="animation-duration: 2s;">✨</div>`;
-        renderFan(); // Snap fan instantly
+        renderFan(); 
 
         const face = document.createElement('div');
         face.className = 'drawn-card glow-pulse';
         
         if (isClassicStyle) {
             const imgUrl = await getClassicImage(drawnCardData.classicId);
-            
-            // Check if image loaded, if not, fallback to modern
             const img = new Image();
             img.src = imgUrl;
             img.onload = () => {
@@ -1103,6 +1116,7 @@
                 finalizeCardRender(slot, face);
             };
             img.onerror = () => {
+                // Seamless fallback to modern art if the network completely fails
                 renderModernFace(face, drawnCardData);
                 finalizeCardRender(slot, face);
             };
@@ -1185,7 +1199,6 @@
     function triggerMagicalShuffle() {
         playClickSound();
         if (drawnCards.length > 0 && drawnCards.length < parseInt(currentSpreadSize)) {
-            // Replaced alert with custom warning
             triggerFunnyWarning(translations[currentLang].errStyleLock);
             return;
         }
@@ -1222,7 +1235,7 @@
         broom.classList.add('animate-sweep');
         
         const poofDust = () => {
-            playShuffleSound(); // Re-use brown noise for broom scrubbing
+            playShuffleSound(); 
             confetti({ particleCount: 30, spread: 120, origin: { y: 0.6, x: 0.5 }, colors: ['#cbd5e1', '#94a3b8', '#64748b'], shapes: ['circle'], scalar: 1.2 });
         };
 
@@ -1269,7 +1282,6 @@
         updateArtLockUI();
     }
 
-    // --- HISTORY & COMPRESSION ---
     async function saveToHistory() {
         const spreadName = spreadsData[currentSpreadSize][`label_${currentLang}`];
         const focusStr = getCurrentFocusString();
@@ -1280,14 +1292,13 @@
         let imgData = "";
         try {
             const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: 1.5 });
-            imgData = canvas.toDataURL('image/jpeg', 0.7); // Compress as JPEG
+            imgData = canvas.toDataURL('image/jpeg', 0.7); 
         } catch(e) { console.error("Snapshot fail", e); }
 
         readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: fullTypeStr, cards: cardNames, image: imgData });
         
-        // Safety trim if too large
         while(JSON.stringify(readingHistory).length > 4000000) {
-            readingHistory.pop(); // Remove oldest to prevent Quota Exceeded
+            readingHistory.pop(); 
         }
 
         try {
@@ -1383,24 +1394,6 @@
         }
     }, true);
 
-    // --- AI ENGINE (DYNAMIC MODEL SELECTION) ---
-    async function getAvailableModel(apiKey) {
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-            const res = await fetch(url);
-            if(!res.ok) throw new Error("Key failed verification.");
-            const data = await res.json();
-            
-            // Prefer 1.5 flash, fallback to pro, then latest
-            const models = data.models.map(m => m.name);
-            if (models.includes("models/gemini-1.5-flash")) return "gemini-1.5-flash";
-            if (models.includes("models/gemini-1.5-pro")) return "gemini-1.5-pro";
-            return "gemini-1.5-flash-latest"; 
-        } catch(e) {
-            return "gemini-1.5-flash"; // Assume standard if check fails
-        }
-    }
-
     document.getElementById('btn-interpret').addEventListener('click', async () => {
         playClickSound();
         const modal = document.getElementById('interpret-modal');
@@ -1414,7 +1407,7 @@
                 <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
                 <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
                     Consulting the Akashic Records...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block" id="model-status">Verifying alignment...</span>
+                    <span class="text-sm text-slate-400 font-sans mt-2 block" id="model-status">Connecting to Gemini...</span>
                 </div>
             </div>
         `;
@@ -1436,11 +1429,12 @@
         ${langInstruction}`;
 
         try {
-            const apiKey = localStorage.getItem('tarotAdminKey') || ""; 
-            if(!apiKey) throw new Error("No API Key configured. Click the 🗝️ in the top right.");
+            // Retrieve key securely pulled via Firebase Remote Config
+            const apiKey = window.geminiApiKey || ""; 
+            if(!apiKey) throw new Error("API Key not found in Firebase Remote Config. Please verify settings.");
 
-            document.getElementById('model-status').innerText = "Selecting optimal AI model...";
-            const modelToUse = await getAvailableModel(apiKey);
+            // Always use stable 1.5 flash for reliable generation
+            const modelToUse = "gemini-1.5-flash-latest";
             document.getElementById('model-status').innerText = `Using ${modelToUse}...`;
 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
@@ -1468,7 +1462,6 @@
             }
         } catch (error) {
             console.error("AI Reading Failed:", error);
-            // Print real error to screen, then show simulated fallback
             const errHtml = `<div class="bg-red-900/50 border border-red-500 text-red-200 p-3 rounded mb-4 text-sm font-mono">${error.message}</div>`;
             
             const simTitle = currentLang === 'th' ? "เบื้องบนได้รับรู้แล้ว" : "THE SPIRITS HAVE ANSWERED";
@@ -1496,32 +1489,6 @@
         document.getElementById('interpret-modal').classList.remove('flex');
     });
 
-    // --- ADMIN KEY LOGIC ---
-    document.getElementById('btn-admin-key').addEventListener('click', () => {
-        playClickSound();
-        const modal = document.getElementById('admin-modal');
-        const input = document.getElementById('admin-key-input');
-        input.value = localStorage.getItem('tarotAdminKey') || "";
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    });
-
-    document.getElementById('btn-admin-cancel').addEventListener('click', () => {
-        playClickSound();
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
-    document.getElementById('btn-admin-save').addEventListener('click', () => {
-        playClickSound();
-        const input = document.getElementById('admin-key-input');
-        localStorage.setItem('tarotAdminKey', input.value.trim());
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
-    });
-
-
-    // --- COOLDOWN LOGIC ---
     function checkCooldowns() {
         const select = document.getElementById('spread-select');
         let needsToSwitch = false;
@@ -1570,7 +1537,6 @@
 
     setInterval(checkCooldowns, 60000);
 
-    // --- EVENT LISTENERS ---
     spreadSelect.addEventListener('change', (e) => {
         playClickSound();
         currentSpreadSize = e.target.value;
@@ -1603,13 +1569,13 @@
     });
 
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
+    document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
 
     window.addEventListener('resize', () => {
         if (drawnCards.length < parseInt(currentSpreadSize)) renderFan();
     });
 
     // --- INITIALIZATION ---
-    // Make sure dropdown defaults to 1 Card on very first load if blank
     if (!spreadSelect.value) {
         spreadSelect.innerHTML = `<option value="1">1 Card (Daily Draw)</option>`;
         spreadSelect.value = "1";
@@ -1620,8 +1586,8 @@
         document.getElementById('toggle-art').checked = true;
     }
 
-    updateLanguageUI(); // Sets up translations, menus, and cooldowns based on language
-    resetReading();     // Draws initial board
+    updateLanguageUI(); 
+    resetReading();     
 </script>
 </body>
 </html>
