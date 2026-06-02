@@ -9,14 +9,14 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Prompt', 'Inter', sans-serif;
             background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             background-attachment: fixed;
             color: #f8fafc;
@@ -34,6 +34,7 @@
             padding-bottom: 320px; 
         }
 
+        /* --- SPREAD POSITIONS --- */
         .spread-layout {
             position: relative;
             width: 100%;
@@ -107,6 +108,7 @@
             border-radius: 6px;
         }
 
+        /* --- STUNNING DARK MYSTICAL CARD FACES --- */
         .drawn-card {
             width: 100%;
             height: 100%;
@@ -118,7 +120,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: flex-start; 
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.6);
             animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
             z-index: 10;
@@ -152,11 +154,7 @@
             content: '';
             position: absolute;
             inset: -50%;
-            background: repeating-conic-gradient(
-                from 0deg,
-                transparent 0deg 15deg,
-                rgba(255,255,255,0.06) 15deg 30deg
-            );
+            background: repeating-conic-gradient(from 0deg, transparent 0deg 15deg, rgba(255,255,255,0.06) 15deg 30deg);
             animation: slowSpin 40s linear infinite;
             pointer-events: none;
         }
@@ -205,23 +203,8 @@
             z-index: 5;
             pointer-events: none;
             background: 
-                linear-gradient(
-                    115deg,
-                    transparent 10%,
-                    rgba(255, 0, 0, 0.8) 20%,
-                    rgba(255, 165, 0, 0.8) 30%,
-                    rgba(255, 255, 0, 0.8) 40%,
-                    rgba(0, 255, 0, 0.8) 50%,
-                    rgba(0, 191, 255, 0.8) 60%,
-                    rgba(138, 43, 226, 0.8) 70%,
-                    transparent 80%
-                ),
-                linear-gradient(
-                    115deg,
-                    transparent 40%,
-                    rgba(255, 255, 255, 0.9) 50%,
-                    transparent 60%
-                );
+                linear-gradient(115deg, transparent 10%, rgba(255, 0, 0, 0.8) 20%, rgba(255, 165, 0, 0.8) 30%, rgba(255, 255, 0, 0.8) 40%, rgba(0, 255, 0, 0.8) 50%, rgba(0, 191, 255, 0.8) 60%, rgba(138, 43, 226, 0.8) 70%, transparent 80%),
+                linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.9) 50%, transparent 60%);
             background-size: 300% 300%;
             mix-blend-mode: hard-light; 
             opacity: 0.45;
@@ -233,6 +216,7 @@
             100% { background-position: -50% -50%; }
         }
 
+        /* --- MASSIVE FANNED DECK --- */
         .fan-container {
             position: relative;
             width: 100%;
@@ -287,6 +271,7 @@
             background-size: 1em;
         }
 
+        /* --- ANIMATIONS & EFFECTS --- */
         @keyframes sweepAcross {
             0% { transform: translate(100vw, -10vh) rotate(60deg) scale(0.5); }
             15% { transform: translate(-20vw, 15vh) rotate(-30deg) scale(1.5); }
@@ -310,7 +295,7 @@
             50% { transform: rotate(5deg) scale(1.05); }
             75% { transform: rotate(-5deg) scale(1.05); }
         }
-        .wiggling { animation: cuteWiggle 0.5s ease-in-out infinite; }
+        .wiggling { animation: cuteWiggle 0.5s infinite; }
 
         @keyframes warningShake {
             0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
@@ -335,16 +320,12 @@
             0% { transform: scale(0.8); opacity: 1; border-width: 4px; }
             100% { transform: scale(1.6); opacity: 0; border-width: 1px; }
         }
-        
         .aura-ripple {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 12px;
-            border: solid #fbbf24;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 12px; border: solid #fbbf24;
             box-shadow: 0 0 30px #c084fc, inset 0 0 20px #fbbf24;
             animation: auraExpand 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-            pointer-events: none;
-            z-index: 5;
+            pointer-events: none; z-index: 5;
         }
 
         @keyframes cardGlow {
@@ -352,8 +333,15 @@
             30% { box-shadow: 0 0 50px rgba(251, 191, 36, 0.8), 0 0 80px rgba(192, 132, 252, 0.5); filter: brightness(1.3); }
             100% { box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.6); filter: brightness(1); }
         }
-
         .glow-pulse { animation: flipIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both, cardGlow 1.2s ease-out forwards; }
+
+        /* Lock Art Toggle Mid-Reading */
+        .locked-toggle {
+            opacity: 0.4;
+            pointer-events: none !important;
+            filter: grayscale(80%);
+            cursor: not-allowed;
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
@@ -367,34 +355,39 @@
 <div id="app-container">
     
     <header class="sticky top-0 flex-none bg-slate-900/95 backdrop-blur-md border-b border-amber-900/40 shadow-[0_4px_30px_rgba(0,0,0,0.6)] z-50 pt-5 pb-4 px-4 md:px-8 relative">
-        <!-- Secret Admin Key in the top right corner -->
+        
+        <!-- Language Toggle -->
+        <div class="absolute top-4 right-14 flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-8 px-2 cursor-pointer transition-all z-[100]" id="lang-toggle-container" title="Switch Language">
+            <span class="text-[0.6rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-amber-300" id="label-en">EN</span>
+            <div class="relative w-8 h-4 rounded-full bg-slate-900 border border-amber-500/50 shadow-inner">
+                <div id="lang-toggle-knob" class="absolute left-0.5 top-0.5 w-3 h-3 rounded-full bg-amber-400 transition-transform duration-300 transform shadow-md"></div>
+            </div>
+            <span class="text-[0.6rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-slate-500" id="label-th">TH</span>
+        </div>
+
+        <!-- Secret Admin Key -->
         <button id="secret-api-btn" class="absolute top-4 right-4 text-xl opacity-20 hover:opacity-100 transition-opacity duration-300 z-[100] cursor-pointer" title="Admin Config">
             🗝️
         </button>
 
         <div class="max-w-6xl mx-auto flex flex-col gap-4">
-            <!-- Title -->
-            <h1 class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
+            <h1 id="app-title" class="text-2xl md:text-3xl text-center font-bold tarot-font tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 drop-shadow-md">
                 ✧ DIGITAL TAROT ✧
             </h1>
             
-            <!-- Controls Row -->
             <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
                 
                 <div class="flex items-center gap-3">
-                    <label for="spread-select" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
+                    <label for="spread-select" id="lbl-spread" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Spread</label>
                     <select id="spread-select" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer">
-                        <option value="1" selected>1 Card (Daily)</option>
-                        <option value="3">3 Cards (Past, Present, Future)</option>
-                        <option value="5">5 Cards (Story Cross)</option>
-                        <option value="10">10 Cards (Celtic Cross)</option>
+                        <!-- Populated by JS -->
                     </select>
                 </div>
 
                 <div class="h-5 w-px bg-amber-700/30 hidden md:block"></div>
 
                 <div class="flex items-center gap-3">
-                    <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
+                    <span id="lbl-status" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Status</span>
                     <div class="h-9 flex items-center justify-center bg-slate-800/50 px-5 rounded-full border border-slate-700 min-w-[160px]">
                         <span id="status-text" class="text-sm font-semibold text-amber-50 whitespace-nowrap">Drawn: 0 / 1</span>
                     </div>
@@ -404,7 +397,7 @@
 
                 <div class="flex items-center gap-3 relative">
                     <!-- Art Toggle -->
-                    <div class="flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-9 px-3 cursor-pointer" id="art-toggle-container" title="Switch Art Style">
+                    <div class="flex items-center gap-2 bg-slate-800/80 p-1 rounded-full border border-slate-700 h-9 px-3 cursor-pointer transition-all" id="art-toggle-container" title="Switch Art Style">
                         <span class="text-[0.65rem] uppercase tarot-font tracking-wider font-bold transition-colors duration-300 text-amber-300" id="label-modern">Modern</span>
                         <div class="relative w-9 h-5 rounded-full bg-slate-900 border border-amber-500/50 shadow-inner">
                             <div id="toggle-knob" class="absolute left-0.5 top-0.5 w-3.5 h-3.5 rounded-full bg-amber-400 transition-transform duration-300 transform shadow-md"></div>
@@ -416,7 +409,7 @@
                         History
                     </button>
                     <button id="btn-shuffle" class="tarot-font flex items-center justify-center gap-2 tracking-wider text-xs uppercase px-6 h-9 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all shadow-[0_0_10px_rgba(245,158,11,0.2)] hover:shadow-[0_0_15px_rgba(245,158,11,0.6)] font-bold">
-                        <span>✨</span> Shuffle
+                        <span>✨</span> <span id="txt-shuffle">Shuffle</span>
                     </button>
                     <button id="btn-reset" class="tarot-font flex items-center justify-center tracking-wider text-xs uppercase px-5 h-9 rounded-full border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-all">
                         Reset
@@ -426,11 +419,10 @@
 
             <!-- Focus Engine -->
             <div id="intention-container" class="hidden w-full flex-wrap items-center justify-center gap-3 mt-2 border-t border-amber-900/30 pt-4 transition-all">
-                <span class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
+                <span id="lbl-focus" class="text-xs text-amber-200/70 tarot-font tracking-widest uppercase">Focus</span>
                 <select id="intent-category" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer"></select>
                 <select id="intent-subcategory" class="custom-select bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full pl-5 pr-10 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all hover:bg-slate-800 cursor-pointer max-w-[300px] truncate"></select>
                 
-                <!-- Custom Input with Set Button -->
                 <div id="custom-intent-wrapper" class="hidden items-center gap-2 w-full max-w-[400px]">
                     <input type="text" id="custom-intent-input" class="bg-slate-800/80 text-amber-100 border border-amber-700/50 rounded-full px-5 h-9 text-sm focus:outline-none focus:border-amber-400 shadow-inner transition-all flex-1 placeholder-amber-700/50" placeholder="Type your specific question...">
                     <button id="btn-lock-intent" class="h-9 px-5 rounded-full border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-slate-900 transition-all text-xs uppercase font-bold tracking-wider">Set</button>
@@ -448,16 +440,16 @@
     </footer>
 </div>
 
-<!-- Giant Animated Broom Container -->
+<!-- Giant Broom -->
 <div id="broom-container" class="fixed inset-0 pointer-events-none z-[200] hidden overflow-hidden flex items-center justify-center">
     <div id="sweeping-broom" class="absolute text-[15rem] md:text-[20rem] filter drop-shadow-2xl" style="transform: translate(100vw, -10vh);">🧹</div>
 </div>
 
-<!-- Ancient Deck Download Modal -->
+<!-- Downloading Deck Modal -->
 <div id="download-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[300] hidden flex-col items-center justify-center p-4">
     <div class="text-6xl animate-pulse mb-6">🔮</div>
-    <h2 class="text-2xl tarot-font text-amber-400 font-bold mb-4 tracking-widest text-center">Summoning Ancient Visions</h2>
-    <p class="text-slate-300 text-sm mb-6 text-center max-w-md leading-relaxed">Please wait while the spirits weave the classic 1909 deck into your browser's memory. This only happens once.</p>
+    <h2 id="dl-title" class="text-2xl tarot-font text-amber-400 font-bold mb-4 tracking-widest text-center">Summoning Ancient Visions</h2>
+    <p id="dl-desc" class="text-slate-300 text-sm mb-6 text-center max-w-md leading-relaxed">Please wait while the spirits weave the classic 1909 deck into your browser's memory. This only happens once.</p>
     <div class="w-64 h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700 shadow-inner">
         <div id="download-progress-bar" class="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 w-0 transition-all duration-300 shadow-[0_0_10px_rgba(251,191,36,0.8)]"></div>
     </div>
@@ -473,7 +465,7 @@
 <div id="history-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col">
         <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 rounded-t-xl">
-            <h2 class="text-2xl tarot-font text-amber-400 font-bold">Reading History</h2>
+            <h2 id="hist-title" class="text-2xl tarot-font text-amber-400 font-bold">Reading History</h2>
             <button id="close-history" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
         </div>
         <div class="p-6 overflow-y-auto flex-1">
@@ -481,11 +473,11 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-slate-700 text-slate-400 text-sm uppercase tracking-wider">
-                            <th class="pb-3 pr-4 font-medium">Date & Time</th>
-                            <th class="pb-3 pr-4 font-medium">Spread Type & Focus</th>
-                            <th class="pb-3 pr-4 font-medium">Cards Drawn</th>
-                            <th class="pb-3 pr-4 font-medium text-center">Snapshot</th>
-                            <th class="pb-3 font-medium text-center">Action</th>
+                            <th id="hist-th-date" class="pb-3 pr-4 font-medium">Date & Time</th>
+                            <th id="hist-th-type" class="pb-3 pr-4 font-medium">Spread Type & Focus</th>
+                            <th id="hist-th-cards" class="pb-3 pr-4 font-medium">Cards Drawn</th>
+                            <th id="hist-th-snap" class="pb-3 pr-4 font-medium text-center">Snapshot</th>
+                            <th id="hist-th-act" class="pb-3 font-medium text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="history-table-body" class="text-sm"></tbody>
@@ -498,21 +490,21 @@
 
 <div id="snapshot-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[110] hidden flex-col items-center justify-center p-4">
     <button id="close-snapshot" class="absolute top-6 right-8 text-slate-400 hover:text-white text-4xl leading-none">&times;</button>
-    <h2 class="text-xl tarot-font text-amber-400 font-bold mb-6 tracking-widest">Spread Snapshot</h2>
+    <h2 id="snap-title" class="text-xl tarot-font text-amber-400 font-bold mb-6 tracking-widest">Spread Snapshot</h2>
     <div class="relative max-w-5xl w-full flex justify-center overflow-auto max-h-[80vh]">
         <img id="snapshot-image" src="" alt="Spread Snapshot" class="max-w-full h-auto rounded-xl shadow-[0_0_50px_rgba(251,191,36,0.15)] border border-slate-700">
     </div>
 </div>
 
 <button id="btn-interpret" class="fixed bottom-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-900 to-purple-900 border-2 border-amber-400 text-amber-200 tarot-font px-10 py-4 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.6)] z-[60] opacity-0 pointer-events-none transition-all duration-500 scale-90 hidden hover:scale-105 hover:shadow-[0_0_60px_rgba(167,139,250,0.8)] font-bold text-lg">
-    ✨ Reveal the Meaning ✨
+    ✨ <span id="txt-reveal">Reveal the Meaning</span> ✨
 </button>
 
 <div id="interpret-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[120] hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-amber-700/50 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden relative">
         <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
         <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/80">
-            <h2 class="text-2xl tarot-font text-amber-400 font-bold tracking-widest">Spiritual Insight</h2>
+            <h2 id="int-title" class="text-2xl tarot-font text-amber-400 font-bold tracking-widest">Spiritual Insight</h2>
             <button id="close-interpret" class="text-slate-400 hover:text-amber-200 text-3xl leading-none transition-colors">&times;</button>
         </div>
         <div class="p-8 overflow-y-auto flex-1 text-slate-300 leading-relaxed text-lg" id="interpret-content"></div>
@@ -522,8 +514,8 @@
 <!-- Admin Modal -->
 <div id="admin-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[200] hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-md p-6 relative">
-        <h2 class="text-xl tarot-font text-amber-400 font-bold mb-4">Secret Admin Configuration</h2>
-        <p class="text-sm text-slate-400 mb-4">Enter your Gemini API Key here. It will be stored securely in your browser's local storage.</p>
+        <h2 id="adm-title" class="text-xl tarot-font text-amber-400 font-bold mb-4">Secret Admin Configuration</h2>
+        <p id="adm-desc" class="text-sm text-slate-400 mb-4">Enter your Gemini API Key here. It will be stored securely in your browser's local storage.</p>
         <input type="password" id="admin-api-input" class="w-full bg-slate-800 border border-slate-600 rounded-md px-4 py-2 text-slate-200 focus:outline-none focus:border-amber-400 mb-6" placeholder="AQ.Ab8RN6...">
         <div class="flex justify-end gap-3">
             <button id="btn-admin-clear" class="px-4 py-2 rounded-md text-sm text-red-400 hover:bg-red-900/20 transition-colors">Clear Key</button>
@@ -534,6 +526,126 @@
 </div>
 
 <script>
+    // --- TRANSLATION ENGINE ---
+    let currentLang = localStorage.getItem('tarotLang') || 'en';
+
+    const translations = {
+        en: {
+            title: "✧ DIGITAL TAROT ✧", spread: "Spread", status: "Status", history: "History", shuffle: "Shuffle", reset: "Reset",
+            focus: "Focus", customQ: "Type your specific question...", set: "Set", locked: "✓ Locked", drawn: "Drawn", complete: "Reading Complete",
+            shuffling: "Shuffling... ✨", card: "Card", insight: "Spiritual Insight", communing: "Communing with the spirits...", interpreting: "Interpreting your cards",
+            simTitle: "THE SPIRITS HAVE ANSWERED", simP1: "The universe has guided your hand today. You drew",
+            simP2: "This powerful combination suggests you are entering a phase of profound transition. The energies indicate that you are shedding old patterns. Trust your intuition right now.",
+            simQuote: "\"The cosmos are aligning in your favor. Proceed with confidence and an open heart.\"",
+            waitTill: "Wait till", sp1: "1 Card (Daily Draw)", sp3: "3 Cards (Past/Present/Future)", sp5: "5 Cards (Story Cross)", sp10: "10 Cards (Celtic Cross)",
+            histTitle: "Reading History", histDate: "Date & Time", histType: "Spread Type & Focus", histCards: "Cards Drawn", histSnap: "Snapshot", histAction: "Action",
+            histEmpty: "No readings recorded yet.", btnViewImg: "View Image", snapTitle: "Spread Snapshot", btnReveal: "Reveal the Meaning",
+            admTitle: "Secret Admin Configuration", admDesc: "Enter your Gemini API Key here. It will be stored securely in your browser's local storage.",
+            btnAdminClear: "Clear Key", btnAdminCancel: "Cancel", btnAdminSave: "Save Key",
+            artModern: "Modern", artClassic: "Classic", artLockedWarn: "You can't change the deck mid-reading! Finish or Reset first.",
+            dlTitle: "Summoning Ancient Visions", dlDesc: "Please wait while the spirits weave the classic 1909 deck into your browser's memory. This only happens once.",
+            warnings: ["Hold your horses! 🐎 The reading is full!", "Greedy! You already have your cards! 🙅‍♀️", "The spirits are tired! Try resetting! 👻", "Stop clicking! 😂", "Woah there! Let's read these first! 🔮"]
+        },
+        th: {
+            title: "✧ ไพ่ทาโรต์ดิจิทัล ✧", spread: "รูปแบบ", status: "สถานะ", history: "ประวัติ", shuffle: "สับไพ่", reset: "เริ่มใหม่",
+            focus: "จุดสนใจ", customQ: "พิมพ์คำถามของคุณที่นี่...", set: "ตกลง", locked: "✓ ล็อคแล้ว", drawn: "หยิบแล้ว", complete: "หยิบไพ่ครบแล้ว",
+            shuffling: "กำลังสับไพ่... ✨", card: "ใบที่", insight: "คำทำนายทางจิตวิญญาณ", communing: "กำลังสื่อสารกับพลังวิญญาณ...", interpreting: "กำลังทำนายไพ่ของคุณ",
+            simTitle: "เสียงกระซิบจากจักรวาล", simP1: "จักรวาลได้นำพามือของคุณในวันนี้ ไพ่ที่คุณได้คือ",
+            simP2: "ไพ่ชุดนี้บ่งบอกถึงช่วงเวลาแห่งการเปลี่ยนแปลงที่สำคัญ พลังงานแสดงให้เห็นว่าคุณกำลังก้าวไปสู่การเติบโต จงเชื่อมั่นในสัญชาตญาณของคุณ",
+            simQuote: "\"จักรวาลกำลังจัดเรียงตัวเพื่อคุณ จงก้าวต่อไปด้วยความมั่นใจและเปิดใจรับสิ่งใหม่\"",
+            waitTill: "รอจนถึง", sp1: "1 ใบ (รายวัน)", sp3: "3 ใบ (อดีต/ปัจจุบัน/อนาคต)", sp5: "5 ใบ (สรุปสถานการณ์)", sp10: "10 ใบ (เซลติกครอส)",
+            histTitle: "ประวัติการเปิดไพ่", histDate: "วันและเวลา", histType: "รูปแบบและคำถาม", histCards: "ไพ่ที่ได้", histSnap: "รูปภาพ", histAction: "จัดการ",
+            histEmpty: "ยังไม่มีประวัติ", btnViewImg: "ดูรูปภาพ", snapTitle: "รูปภาพการเปิดไพ่", btnReveal: "อ่านคำทำนาย",
+            admTitle: "ตั้งค่า Admin (ความลับ)", admDesc: "ใส่ Gemini API Key ของคุณที่นี่ ระบบจะบันทึกไว้ในเบราว์เซอร์อย่างปลอดภัย",
+            btnAdminClear: "ล้างคีย์", btnAdminCancel: "ยกเลิก", btnAdminSave: "บันทึกคีย์",
+            artModern: "ยุคใหม่", artClassic: "ดั้งเดิม", artLockedWarn: "เปลี่ยนลายไพ่กลางคันไม่ได้! กรุณาเริ่มอ่านใหม่ก่อน",
+            dlTitle: "กำลังอัญเชิญภาพไพ่โบราณ...", dlDesc: "กรุณารอสักครู่ ขณะกำลังดาวน์โหลดภาพไพ่คลาสสิกลงในเครื่องของคุณ (ทำแค่ครั้งเดียว)",
+            warnings: ["เดี๋ยวก่อน! 🐎 คุณหยิบไพ่ครบแล้ว!", "โลภมาก! คุณได้ไพ่ครบแล้วนะ! 🙅‍♀️", "พอแล้วสำหรับวันนี้! 🃏", "หยุดกดได้แล้ว! 😂", "ว้าว ใจเย็น! อ่านไพ่พวกนี้ก่อน! 🔮"]
+        }
+    };
+
+    const intentionsData = {
+        en: {
+            "General / Open": ["What do I need to know right now?", "Daily Guidance", "Overcoming a Blockage", "Upcoming Challenges"],
+            "Career & Work": ["Current Job / Promotion", "Finding a New Job", "Starting a Business", "Work from Home (WFH)", "Work from Office (WFO)", "Forced Return to Office (RTO)", "Negotiating Working Conditions", "Freelance / Gig Work", "Quitting Job / Career Change", "Workplace Conflict"],
+            "Love & Relationships": ["Current Relationship", "Finding New Love", "Ex-partner", "Marriage / Commitment", "Casual Dating", "Friendship Dynamics", "Family Issues"],
+            "Money & Finances": ["Improving Cash Flow", "Making a Big Purchase", "Debt / Financial Burden", "General Wealth Outlook", "Investments"],
+            "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"],
+            "Custom Question": ["I want to ask my own question..."]
+        },
+        th: {
+            "เรื่องทั่วไป": ["สิ่งที่ฉันควรรู้ตอนนี้คืออะไร?", "คำแนะนำประจำวัน", "การก้าวข้ามอุปสรรค", "ความท้าทายที่กำลังจะมาถึง"],
+            "การงาน & อาชีพ": ["งานปัจจุบัน / การเลื่อนขั้น", "การหางานใหม่", "การเริ่มธุรกิจ", "ทำงานที่บ้าน (WFH)", "ทำงานที่ออฟฟิศ (WFO)", "ถูกบังคับให้กลับเข้าออฟฟิศ (RTO)", "การต่อรองเงื่อนไขการทำงาน", "ฟรีแลนซ์ / งานพาร์ทไทม์", "การลาออก / เปลี่ยนสายงาน", "ความขัดแย้งในที่ทำงาน"],
+            "ความรัก & ความสัมพันธ์": ["ความสัมพันธ์ปัจจุบัน", "การพบรักใหม่", "แฟนเก่า / คนคุยเก่า", "การแต่งงาน / การผูกมัด", "การเดทแบบไม่ผูกมัด", "ความสัมพันธ์ฉันท์เพื่อน", "ปัญหาครอบครัว"],
+            "เงินทอง & การเงิน": ["การเพิ่มสภาพคล่อง", "การซื้อของชิ้นใหญ่", "หนี้สิน / ภาระทางการเงิน", "ภาพรวมความมั่งคั่ง", "การลงทุน"],
+            "การพัฒนาตัวเอง": ["การค้นหาเป้าหมายชีวิต", "การเยียวยาจิตใจ / Shadow Work", "การเชื่อมต่อกับสัญชาตญาณ", "การปลดปล่อยพลังงานลบ", "ความสงบในจิตใจ"],
+            "คำถามของตัวเอง": ["ฉันอยากถามคำถามของตัวเอง..."]
+        }
+    };
+
+    function t(key) { return translations[currentLang][key]; }
+
+    function updateLangToggleUI() {
+        const knob = document.getElementById('lang-toggle-knob');
+        const lblEn = document.getElementById('label-en');
+        const lblTh = document.getElementById('label-th');
+        if(currentLang === 'th') {
+            knob.classList.add('translate-x-[1rem]');
+            lblTh.classList.replace('text-slate-500', 'text-amber-300');
+            lblEn.classList.replace('text-amber-300', 'text-slate-500');
+        } else {
+            knob.classList.remove('translate-x-[1rem]');
+            lblEn.classList.replace('text-slate-500', 'text-amber-300');
+            lblTh.classList.replace('text-amber-300', 'text-slate-500');
+        }
+    }
+
+    function updateLanguageUI() {
+        updateLangToggleUI();
+        document.getElementById('app-title').innerText = t('title');
+        document.getElementById('lbl-spread').innerText = t('spread');
+        document.getElementById('lbl-status').innerText = t('status');
+        document.getElementById('btn-history').innerText = t('history');
+        document.getElementById('txt-shuffle').innerText = t('shuffle');
+        document.getElementById('btn-reset').innerText = t('reset');
+        document.getElementById('lbl-focus').innerText = t('focus');
+        document.getElementById('custom-intent-input').placeholder = t('customQ');
+        if(document.getElementById('btn-lock-intent').innerText !== t('locked')) document.getElementById('btn-lock-intent').innerText = t('set');
+        
+        document.getElementById('hist-title').innerText = t('histTitle');
+        document.getElementById('hist-th-date').innerText = t('histDate');
+        document.getElementById('hist-th-type').innerText = t('histType');
+        document.getElementById('hist-th-cards').innerText = t('histCards');
+        document.getElementById('hist-th-snap').innerText = t('histSnap');
+        document.getElementById('hist-th-act').innerText = t('histAction');
+        document.getElementById('empty-history').innerText = t('histEmpty');
+        document.getElementById('snap-title').innerText = t('snapTitle');
+        document.getElementById('txt-reveal').innerText = t('btnReveal');
+        document.getElementById('int-title').innerText = t('insight');
+        document.getElementById('adm-title').innerText = t('admTitle');
+        document.getElementById('adm-desc').innerText = t('admDesc');
+        document.getElementById('btn-admin-clear').innerText = t('btnAdminClear');
+        document.getElementById('btn-admin-cancel').innerText = t('btnAdminCancel');
+        document.getElementById('btn-admin-save').innerText = t('btnAdminSave');
+        document.getElementById('label-modern').innerText = t('artModern');
+        document.getElementById('label-classic').innerText = t('artClassic');
+        document.getElementById('dl-title').innerText = t('dlTitle');
+        document.getElementById('dl-desc').innerText = t('dlDesc');
+
+        checkCooldowns();
+        updateCategories();
+        updateStatus();
+        if(drawnCards.length === 0) renderPlaceholders();
+        renderHistory();
+    }
+
+    document.getElementById('lang-toggle-container').addEventListener('click', () => {
+        AudioManager.playClick();
+        currentLang = currentLang === 'en' ? 'th' : 'en';
+        localStorage.setItem('tarotLang', currentLang);
+        updateLanguageUI();
+    });
+
     // --- AUDIO ENGINE ---
     const AudioManager = {
         ready: false,
@@ -542,30 +654,18 @@
             if (typeof Tone === 'undefined') return;
             await Tone.start();
             
-            this.drawSynth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "sine" },
-                envelope: { attack: 0.05, decay: 0.5, sustain: 0.2, release: 1.5 }
-            }).toDestination();
+            this.drawSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sine" }, envelope: { attack: 0.05, decay: 0.5, sustain: 0.2, release: 1.5 } }).toDestination();
             this.drawSynth.volume.value = -15;
 
-            this.hoverSynth = new Tone.MembraneSynth({
-                pitchDecay: 0.01, octaves: 1,
-                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.01 }
-            }).toDestination();
+            this.hoverSynth = new Tone.MembraneSynth({ pitchDecay: 0.01, octaves: 1, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.01 } }).toDestination();
             this.hoverSynth.volume.value = -28;
 
-            this.noiseSynth = new Tone.NoiseSynth({
-                noise: { type: "brown" }, 
-                envelope: { attack: 0.1, decay: 0.4, sustain: 0.1, release: 0.4 }
-            });
+            this.noiseSynth = new Tone.NoiseSynth({ noise: { type: "brown" }, envelope: { attack: 0.1, decay: 0.4, sustain: 0.1, release: 0.4 } });
             this.noiseFilter = new Tone.Filter(800, "lowpass").toDestination();
             this.noiseSynth.connect(this.noiseFilter);
             this.noiseSynth.volume.value = -5;
 
-            this.sweepSynth = new Tone.NoiseSynth({
-                noise: { type: "pink" },
-                envelope: { attack: 0.1, decay: 0.4, sustain: 0, release: 0.5 }
-            });
+            this.sweepSynth = new Tone.NoiseSynth({ noise: { type: "pink" }, envelope: { attack: 0.1, decay: 0.4, sustain: 0, release: 0.5 } });
             this.sweepFilter = new Tone.Filter(1000, "lowpass").toDestination();
             this.sweepSynth.connect(this.sweepFilter);
             this.sweepSynth.volume.value = -8;
@@ -601,62 +701,29 @@
     // --- TAROT DECK GENERATOR ---
     const suits = [{name: 'Wands', icon: '🔥'}, {name: 'Cups', icon: '🌊'}, {name: 'Swords', icon: '⚔️'}, {name: 'Pentacles', icon: '🪙'}];
     const ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Page', 'Knight', 'Queen', 'King'];
-    
-    const majors = [
-        {name: "The Fool", icon: '🃏'}, {name: "The Magician", icon: '🪄'}, {name: "The High Priestess", icon: '🌙'},
-        {name: "The Empress", icon: '👑'}, {name: "The Emperor", icon: '🛡️'}, {name: "The Hierophant", icon: '🗝️'},
-        {name: "The Lovers", icon: '💖'}, {name: "The Chariot", icon: '🛷'}, {name: "Strength", icon: '🦁'},
-        {name: "The Hermit", icon: '🏮'}, {name: "Wheel of Fortune", icon: '🎡'}, {name: "Justice", icon: '⚖️'},
-        {name: "The Hanged Man", icon: '🕸️'}, {name: "Death", icon: '💀'}, {name: "Temperance", icon: '🏺'},
-        {name: "The Devil", icon: '🐐'}, {name: "The Tower", icon: '⚡'}, {name: "The Star", icon: '🌟'},
-        {name: "The Moon", icon: '🐺'}, {name: "The Sun", icon: '🌞'}, {name: "Judgement", icon: '🎺'},
-        {name: "The World", icon: '🌍'}
-    ];
+    const majors = [{name: "The Fool", icon: '🃏'}, {name: "The Magician", icon: '🪄'}, {name: "The High Priestess", icon: '🌙'}, {name: "The Empress", icon: '👑'}, {name: "The Emperor", icon: '🛡️'}, {name: "The Hierophant", icon: '🗝️'}, {name: "The Lovers", icon: '💖'}, {name: "The Chariot", icon: '🛷'}, {name: "Strength", icon: '🦁'}, {name: "The Hermit", icon: '🏮'}, {name: "Wheel of Fortune", icon: '🎡'}, {name: "Justice", icon: '⚖️'}, {name: "The Hanged Man", icon: '🕸️'}, {name: "Death", icon: '💀'}, {name: "Temperance", icon: '🏺'}, {name: "The Devil", icon: '🐐'}, {name: "The Tower", icon: '⚡'}, {name: "The Star", icon: '🌟'}, {name: "The Moon", icon: '🐺'}, {name: "The Sun", icon: '🌞'}, {name: "Judgement", icon: '🎺'}, {name: "The World", icon: '🌍'}];
 
     const tarotDeck = [];
     majors.forEach(m => tarotDeck.push({ name: m.name, suit: '', rank: '', icon: m.icon, theme: 'theme-major' }));
-    suits.forEach(s => {
-        ranks.forEach(r => tarotDeck.push({ 
-            name: `${r} of ${s.name}`, 
-            suit: s.name, 
-            rank: r,
-            icon: s.icon, 
-            theme: `theme-${s.name.toLowerCase()}` 
-        }));
-    });
+    suits.forEach(s => ranks.forEach(r => tarotDeck.push({ name: `${r} of ${s.name}`, suit: s.name, rank: r, icon: s.icon, theme: `theme-${s.name.toLowerCase()}` })));
 
     let activeDeck = [...tarotDeck];
     let drawnCards = [];
-    
-    // SAFE Storage Initialization
     let readingHistory = [];
-    try {
-        readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || [];
-    } catch(e) { readingHistory = []; }
+    try { readingHistory = JSON.parse(localStorage.getItem('tarotHistory')) || []; } catch(e) {}
     
     let useClassicArt = false;
-    try {
-        useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic';
-    } catch(e) {}
-    
+    try { useClassicArt = localStorage.getItem('tarotArtStyle') === 'classic'; } catch(e) {}
+
     const spreads = {
-        '1': { count: 1, baseLabel: '1 Card (Daily)', label: '1 Card (Daily Draw)', cooldown: 24 * 60 * 60 * 1000, classes: ['cc-1-center'], names: ['Focus / Outcome'] },
-        '3': { count: 3, baseLabel: '3 Cards (Past/Present/Future)', label: '3 Cards (Past/Present/Future)', cooldown: 0, classes: ['cc-3-left', 'cc-3-center', 'cc-3-right'], names: ['Past', 'Present', 'Future'] },
-        '5': { count: 5, baseLabel: '5 Cards (Story Cross)', label: '5 Cards (Story Cross)', cooldown: 0, classes: ['cc-5-left', 'cc-5-center', 'cc-5-right', 'cc-5-top', 'cc-5-bottom'], names: ['Past', 'Present', 'Future', 'Reason', 'Potential'] },
-        '10': { count: 10, baseLabel: '10 Cards (Celtic Cross)', label: '10 Cards (Celtic Cross)', cooldown: 7 * 24 * 60 * 60 * 1000, classes: ['cc-1', 'cc-2', 'cc-3', 'cc-4', 'cc-5', 'cc-6', 'cc-7', 'cc-8', 'cc-9', 'cc-10'], names: ['Heart', 'Crossing', 'Root', 'Past', 'Crown', 'Future', 'Self', 'Environment', 'Hopes/Fears', 'Outcome'] }
+        '1': { count: 1, baseId: 'sp1', cooldown: 24 * 60 * 60 * 1000, classes: ['cc-1-center'], names_en: ['Focus / Outcome'], names_th: ['โฟกัส / ผลลัพธ์'] },
+        '3': { count: 3, baseId: 'sp3', cooldown: 0, classes: ['cc-3-left', 'cc-3-center', 'cc-3-right'], names_en: ['Past', 'Present', 'Future'], names_th: ['อดีต', 'ปัจจุบัน', 'อนาคต'] },
+        '5': { count: 5, baseId: 'sp5', cooldown: 0, classes: ['cc-5-left', 'cc-5-center', 'cc-5-right', 'cc-5-top', 'cc-5-bottom'], names_en: ['Past', 'Present', 'Future', 'Reason', 'Potential'], names_th: ['อดีต', 'ปัจจุบัน', 'อนาคต', 'เหตุผล', 'แนวโน้ม'] },
+        '10': { count: 10, baseId: 'sp10', cooldown: 7 * 24 * 60 * 60 * 1000, classes: ['cc-1', 'cc-2', 'cc-3', 'cc-4', 'cc-5', 'cc-6', 'cc-7', 'cc-8', 'cc-9', 'cc-10'], names_en: ['Heart', 'Crossing', 'Root', 'Past', 'Crown', 'Future', 'Self', 'Environment', 'Hopes/Fears', 'Outcome'], names_th: ['หัวใจ', 'อุปสรรค', 'รากฐาน', 'อดีต', 'ความคิด', 'อนาคต', 'ตัวตน', 'สภาพแวดล้อม', 'ความหวัง/ความกลัว', 'ผลลัพธ์'] }
     };
     let currentSpreadSize = '1';
 
-    // --- INTENTION ENGINE ---
-    const intentionsData = {
-        "General / Open": ["What do I need to know right now?", "Daily Guidance", "Overcoming a Blockage", "Upcoming Challenges"],
-        "Career & Work": ["Current Job / Promotion", "Finding a New Job", "Starting a Business", "Work from Home (WFH)", "Work from Office (WFO)", "Forced Return to Office (RTO)", "Negotiating Working Conditions", "Freelance / Gig Work", "Quitting Job / Career Change", "Workplace Conflict"],
-        "Love & Relationships": ["Current Relationship", "Finding New Love", "Ex-partner", "Marriage / Commitment", "Casual Dating", "Friendship Dynamics", "Family Issues"],
-        "Money & Finances": ["Improving Cash Flow", "Making a Big Purchase", "Debt / Financial Burden", "General Wealth Outlook", "Investments"],
-        "Personal Growth": ["Finding Life Purpose", "Shadow Work / Inner Healing", "Connecting with Intuition", "Releasing Negativity", "Mental Peace"],
-        "Custom Question": ["I want to ask my own question..."]
-    };
-
+    // --- DOM ELEMENTS ---
     const spreadSelect = document.getElementById('spread-select');
     const statusText = document.getElementById('status-text');
     const spreadArea = document.getElementById('spread-area');
@@ -665,7 +732,6 @@
     const toggleKnob = document.getElementById('toggle-knob');
     const lblModern = document.getElementById('label-modern');
     const lblClassic = document.getElementById('label-classic');
-    
     const catSelect = document.getElementById('intent-category');
     const subCatSelect = document.getElementById('intent-subcategory');
     const intentContainer = document.getElementById('intention-container');
@@ -673,15 +739,19 @@
     const customIntentWrapper = document.getElementById('custom-intent-wrapper');
     const btnLockIntent = document.getElementById('btn-lock-intent');
 
-    // Populate Intentions
-    Object.keys(intentionsData).forEach(cat => {
-        let opt = document.createElement('option');
-        opt.value = cat; opt.innerText = cat;
-        catSelect.appendChild(opt);
-    });
+    function updateCategories() {
+        catSelect.innerHTML = '';
+        Object.keys(intentionsData[currentLang]).forEach(cat => {
+            let opt = document.createElement('option');
+            opt.value = cat; opt.innerText = cat;
+            catSelect.appendChild(opt);
+        });
+        updateSubcategories();
+    }
 
     function updateSubcategories() {
-        if (catSelect.value === "Custom Question") {
+        const isCustom = catSelect.value === "Custom Question" || catSelect.value === "คำถามของตัวเอง";
+        if (isCustom) {
             subCatSelect.classList.add('hidden');
             customIntentWrapper.classList.remove('hidden');
             customIntentWrapper.classList.add('flex');
@@ -691,7 +761,7 @@
             customIntentWrapper.classList.add('hidden');
             customIntentWrapper.classList.remove('flex');
             subCatSelect.innerHTML = '';
-            const subs = intentionsData[catSelect.value];
+            const subs = intentionsData[currentLang][catSelect.value] || [];
             subs.forEach(sub => {
                 let opt = document.createElement('option');
                 opt.value = sub; opt.innerText = sub;
@@ -700,20 +770,16 @@
         }
     }
     catSelect.addEventListener('change', updateSubcategories);
-    updateSubcategories(); 
     
     btnLockIntent.addEventListener('click', () => {
         AudioManager.playClick();
-        if (customIntentInput.value.trim() === "") {
-            customIntentInput.focus();
-            return;
-        }
-        btnLockIntent.innerText = "✓ Locked";
+        if (customIntentInput.value.trim() === "") { customIntentInput.focus(); return; }
+        btnLockIntent.innerText = t('locked');
         btnLockIntent.classList.replace('text-amber-400', 'text-emerald-400');
         btnLockIntent.classList.replace('border-amber-500', 'border-emerald-500');
         customIntentInput.blur();
         setTimeout(() => {
-            btnLockIntent.innerText = "Set";
+            btnLockIntent.innerText = t('set');
             btnLockIntent.classList.replace('text-emerald-400', 'text-amber-400');
             btnLockIntent.classList.replace('border-emerald-500', 'border-amber-500');
         }, 2500);
@@ -721,15 +787,13 @@
 
     function toggleIntentionBar() {
         if (currentSpreadSize === '1') {
-            intentContainer.classList.add('hidden');
-            intentContainer.classList.remove('flex');
+            intentContainer.classList.add('hidden'); intentContainer.classList.remove('flex');
         } else {
-            intentContainer.classList.remove('hidden');
-            intentContainer.classList.add('flex');
+            intentContainer.classList.remove('hidden'); intentContainer.classList.add('flex');
         }
     }
 
-    // --- OFFLINE DECK STORAGE ENGINE ---
+    // --- ART ENGINE ---
     function updateToggleUI() {
         if(useClassicArt) {
             toggleKnob.classList.add('translate-x-[1.1rem]');
@@ -764,7 +828,6 @@
     const DeckStorageManager = {
         cacheName: 'tarot-classic-deck-v3',
         isDownloading: false,
-
         async getCardImage(cardData) {
             const originalUrl = getClassicImageUrl(cardData);
             try {
@@ -776,27 +839,23 @@
                         return URL.createObjectURL(blob);
                     }
                 }
-            } catch(e) { console.warn("Cache read error", e); }
-            return originalUrl; // Fallback to network if not cached
+            } catch(e) {}
+            return originalUrl; 
         },
-
         async downloadDeck() {
             if (this.isDownloading) return;
             this.isDownloading = true;
-            
             const modal = document.getElementById('download-modal');
             const bar = document.getElementById('download-progress-bar');
             const text = document.getElementById('download-progress-text');
             
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
             AudioManager.playSweep();
 
             try {
-                if (!('caches' in window)) throw new Error("Caches API not supported in this browser.");
+                if (!('caches' in window)) throw new Error("Caches API not supported");
                 const cache = await caches.open(this.cacheName);
                 let loaded = 0;
-                
                 for (const card of tarotDeck) {
                     const url = getClassicImageUrl(card);
                     const match = await cache.match(url);
@@ -804,36 +863,27 @@
                         try {
                             const res = await fetch(url);
                             if(res.ok) await cache.put(url, res);
-                            await new Promise(r => setTimeout(r, 20)); // Polite throttle
+                            await new Promise(r => setTimeout(r, 20)); 
                         } catch(e) {}
                     }
                     loaded++;
                     let pct = Math.round((loaded/78)*100);
                     bar.style.width = `${pct}%`;
                     text.innerText = `${pct}%`;
-                    
                     if (loaded % 5 === 0) AudioManager.playHover();
                 }
-                
                 text.innerText = "100% - Magically Ready ✨";
                 AudioManager.playDraw();
-                
                 confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 }, colors: ['#fbbf24', '#c084fc'] });
-                confetti({ particleCount: 30, scalar: 1.5, origin: { y: 0.5 }, shapes: ['emoji'], shapeOptions: { emoji: { value: ['✨', '🌟', '😉'] } } });
-
                 setTimeout(() => {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
+                    modal.classList.add('hidden'); modal.classList.remove('flex');
                     this.isDownloading = false;
                     redrawAllFaces();
                 }, 2000);
-
             } catch (err) {
-                console.error("Cache open failed", err);
                 text.innerText = "Summoning Failed.";
                 setTimeout(() => {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
+                    modal.classList.add('hidden'); modal.classList.remove('flex');
                     this.isDownloading = false;
                 }, 2000);
             }
@@ -841,10 +891,16 @@
     };
 
     artToggleContainer.addEventListener('click', async () => {
+        if (drawnCards.length > 0 && drawnCards.length <= parseInt(currentSpreadSize)) {
+            triggerFunnyWarningText(t('artLockedWarn'));
+            artToggleContainer.classList.add('warning-active');
+            setTimeout(() => artToggleContainer.classList.remove('warning-active'), 600);
+            return;
+        }
+
         AudioManager.playClick();
         useClassicArt = !useClassicArt;
         try { localStorage.setItem('tarotArtStyle', useClassicArt ? 'classic' : 'modern'); } catch(e){}
-        
         updateToggleUI();
 
         if (useClassicArt) {
@@ -857,7 +913,7 @@
                         return;
                     }
                 }
-            } catch(e) { console.warn(e); }
+            } catch(e) {}
         }
         redrawAllFaces();
     });
@@ -867,9 +923,7 @@
             const slot = document.getElementById(`slot-${i}`);
             if (slot) {
                 const face = slot.querySelector('.drawn-card');
-                if (face) {
-                    face.innerHTML = await renderCardContent(drawnCards[i]);
-                }
+                if (face) face.innerHTML = await renderCardContent(drawnCards[i]);
             }
         }
     }
@@ -917,11 +971,7 @@
                 </div>
             `;
         } else {
-            return `
-                <div class="w-full h-full flex flex-col items-center justify-start z-10">
-                    ${modernFace}
-                </div>
-            `;
+            return `<div class="w-full h-full flex flex-col items-center justify-start z-10">${modernFace}</div>`;
         }
     }
 
@@ -933,25 +983,23 @@
     }
 
     function renderPlaceholders() {
+        if(drawnCards.length > 0) return; 
         spreadArea.innerHTML = '';
         spreadArea.className = `spread-layout spread-${currentSpreadSize}`;
         const spread = spreads[currentSpreadSize];
+        const namesArray = currentLang === 'en' ? spread.names_en : spread.names_th;
 
         for (let i = 0; i < spread.count; i++) {
             const slot = document.createElement('div');
             slot.className = `card-placeholder ${spread.classes[i]}`;
             slot.id = `slot-${i}`;
-            
             const label = document.createElement('div');
             label.className = 'font-semibold text-amber-200/50 mb-1 tracking-wider uppercase text-[0.65rem]';
-            label.innerText = `Card ${i + 1}`;
-            
+            label.innerText = `${t('card')} ${i + 1}`;
             const meaning = document.createElement('div');
             meaning.className = 'text-slate-400 mt-2 font-bold';
-            meaning.innerText = spread.names[i];
-
-            slot.appendChild(label);
-            slot.appendChild(meaning);
+            meaning.innerText = namesArray[i];
+            slot.appendChild(label); slot.appendChild(meaning);
             spreadArea.appendChild(slot);
         }
     }
@@ -960,44 +1008,33 @@
         fanContainer.innerHTML = '';
         const cardsRemaining = activeDeck.length;
         if (cardsRemaining === 0) return;
-        
         const containerWidth = window.innerWidth;
         const spreadWidth = Math.min(containerWidth - 40, 1100); 
 
         for (let i = 0; i < cardsRemaining; i++) {
-            const cardData = activeDeck[i];
             const card = document.createElement('div');
             card.className = 'fan-card';
-            
-            let normalized = 0;
-            if (cardsRemaining > 1) {
-                normalized = (i / (cardsRemaining - 1)) * 2 - 1;
-            }
-            
+            let normalized = cardsRemaining > 1 ? (i / (cardsRemaining - 1)) * 2 - 1 : 0;
             const translateX = normalized * (spreadWidth / 2);
             const translateY = (normalized * normalized) * 60; 
             const angle = normalized * 35;
-            
             const baseTransform = `translate(${translateX}px, ${translateY}px) rotate(${angle}deg)`;
             card.style.setProperty('--base-transform', baseTransform);
             card.style.transform = baseTransform;
             card.style.zIndex = i;
-            
             card.onmouseenter = () => { if(AudioManager.ready) AudioManager.playHover(); };
             
             card.onclick = async () => {
                 if (drawnCards.length >= parseInt(currentSpreadSize)) return;
                 if(AudioManager.ready) { AudioManager.playClick(); AudioManager.playDraw(); }
+                artToggleContainer.classList.add('locked-toggle');
                 
-                // Instantly remove from fan
-                activeDeck.splice(i, 1);
+                const cardData = activeDeck.splice(i, 1)[0];
                 drawnCards.push(cardData);
-                
-                renderFan(); // Re-render missing card
+                renderFan(); 
                 
                 const slotIndex = drawnCards.length - 1;
                 const slot = document.getElementById(`slot-${slotIndex}`);
-                
                 slot.innerHTML = `<div class="text-3xl animate-spin filter drop-shadow-md">✨</div>`;
                 
                 const face = document.createElement('div');
@@ -1006,11 +1043,9 @@
                 
                 slot.innerHTML = '';
                 slot.appendChild(face);
-
                 const aura = document.createElement('div');
                 aura.className = 'aura-ripple';
                 slot.appendChild(aura);
-
                 setTimeout(() => { if (slot.contains(aura)) slot.removeChild(aura); }, 800);
                 updateStatus();
             };
@@ -1022,21 +1057,18 @@
     function updateStatus() {
         const total = parseInt(currentSpreadSize);
         if (drawnCards.length >= total) {
-            statusText.innerText = "Reading Complete";
-            statusText.classList.add('text-amber-400');
-            statusText.classList.remove('text-amber-50');
+            statusText.innerText = t('complete');
+            statusText.classList.add('text-amber-400'); statusText.classList.remove('text-amber-50');
             setTimeout(() => { saveToHistory(); }, 600);
         } else {
-            statusText.innerText = `Drawn: ${drawnCards.length} / ${total}`;
-            statusText.classList.remove('text-amber-400');
-            statusText.classList.add('text-amber-50');
+            statusText.innerText = `${t('drawn')}: ${drawnCards.length} / ${total}`;
+            statusText.classList.remove('text-amber-400'); statusText.classList.add('text-amber-50');
         }
         checkCompletionState();
     }
 
     function checkCompletionState() {
         const btnInterpret = document.getElementById('btn-interpret');
-        
         if (drawnCards.length >= parseInt(currentSpreadSize)) {
             fanContainer.classList.add('reading-complete-fan');
             btnInterpret.classList.remove('hidden');
@@ -1048,58 +1080,31 @@
             fanContainer.classList.remove('reading-complete-fan');
             btnInterpret.classList.remove('opacity-100', 'scale-100', 'animate-pulse', 'pointer-events-auto');
             btnInterpret.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-            setTimeout(() => {
-                if(drawnCards.length < parseInt(currentSpreadSize)) {
-                    btnInterpret.classList.add('hidden');
-                }
-            }, 500);
+            setTimeout(() => { if(drawnCards.length < parseInt(currentSpreadSize)) btnInterpret.classList.add('hidden'); }, 500);
         }
     }
 
     function triggerMagicalShuffle() {
         const cards = document.querySelectorAll('.fan-card');
-        cards.forEach(c => {
-            c.style.transform = 'rotate(0deg) scale(0.9)';
-            c.classList.add('wiggling');
-        });
-
-        statusText.innerText = "Shuffling... ✨";
+        cards.forEach(c => { c.style.transform = 'rotate(0deg) scale(0.9)'; c.classList.add('wiggling'); });
+        statusText.innerText = t('shuffling');
         AudioManager.playShuffle();
-        
         confetti({ particleCount: 50, spread: 120, origin: { y: 0.9 }, colors: ['#fbbf24', '#fef08a', '#818cf8', '#c084fc'], shapes: ['star', 'circle'], scalar: 1.2 });
         confetti({ particleCount: 30, scalar: 1.5, origin: { y: 0.9 }, shapes: ['emoji'], shapeOptions: { emoji: { value: ['✨', '🌟', '😉', '🔮'] } } });
-
-        setTimeout(() => {
-            resetReading();
-            cards.forEach(c => c.classList.remove('wiggling'));
-        }, 1200);
+        setTimeout(() => { resetReading(); cards.forEach(c => c.classList.remove('wiggling')); }, 1200);
     }
 
     function triggerResetSweep() {
-        if (drawnCards.length === 0) {
-            resetReading();
-            return;
-        }
-
+        if (drawnCards.length === 0) { resetReading(); return; }
         const broom = document.getElementById('sweeping-broom');
         const broomContainer = document.getElementById('broom-container');
-        
         broomContainer.classList.remove('hidden');
         void broom.offsetWidth; 
         broom.classList.add('animate-sweep');
         AudioManager.playSweep();
         
-        const poofDust = () => {
-            confetti({
-                particleCount: 30, spread: 120, origin: { y: 0.6, x: 0.5 },
-                colors: ['#cbd5e1', '#94a3b8', '#64748b'], shapes: ['circle'], scalar: 1.2
-            });
-        };
-
-        setTimeout(poofDust, 240);
-        setTimeout(poofDust, 480);
-        setTimeout(poofDust, 720);
-        setTimeout(poofDust, 960);
+        const poofDust = () => { confetti({ particleCount: 30, spread: 120, origin: { y: 0.6, x: 0.5 }, colors: ['#cbd5e1', '#94a3b8', '#64748b'], shapes: ['circle'], scalar: 1.2 }); };
+        setTimeout(poofDust, 240); setTimeout(poofDust, 480); setTimeout(poofDust, 720); setTimeout(poofDust, 960);
         
         setTimeout(() => {
             document.querySelectorAll('.drawn-card').forEach(card => {
@@ -1109,84 +1114,54 @@
                 card.classList.add('fly-away');
             });
         }, 240);
-
-        setTimeout(() => {
-            resetReading();
-            broom.classList.remove('animate-sweep');
-            broomContainer.classList.add('hidden');
-        }, 1600);
+        setTimeout(() => { resetReading(); broom.classList.remove('animate-sweep'); broomContainer.classList.add('hidden'); }, 1600);
     }
 
     function resetReading() {
         const select = document.getElementById('spread-select');
-        
         if (select.options[select.selectedIndex] && select.options[select.selectedIndex].disabled) {
             for (let i = 0; i < select.options.length; i++) {
-                if (!select.options[i].disabled) {
-                    select.selectedIndex = i;
-                    currentSpreadSize = select.options[i].value;
-                    break;
-                }
+                if (!select.options[i].disabled) { select.selectedIndex = i; currentSpreadSize = select.options[i].value; break; }
             }
         }
-        
         toggleIntentionBar();
-
-        activeDeck = [...tarotDeck];
-        drawnCards = [];
-        shuffleArray(activeDeck);
-        renderPlaceholders();
-        renderFan();
-        updateStatus();
+        artToggleContainer.classList.remove('locked-toggle');
+        activeDeck = [...tarotDeck]; drawnCards = [];
+        shuffleArray(activeDeck); renderPlaceholders(); renderFan(); updateStatus();
     }
 
     async function saveToHistory() {
         let focusText = "";
         if (currentSpreadSize !== '1') {
-            const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
+            const isCustom = catSelect.value === "Custom Question" || catSelect.value === "คำถามของตัวเอง";
+            const sub = isCustom ? (customIntentInput.value.trim() || t('customQ')) : document.getElementById('intent-subcategory').value;
             focusText = ` [Focus: ${sub}]`;
         }
-        
-        const spreadName = spreads[currentSpreadSize].label + focusText;
+        const spreadName = t(spreads[currentSpreadSize].baseId) + focusText;
         const cardNames = drawnCards.map(c => c.name).join(', ');
-        
         const timestamp = new Date().toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
         let imgData = "";
         try {
             const canvas = await html2canvas(document.getElementById('spread-area'), { backgroundColor: null, scale: 1, useCORS: true });
-            imgData = canvas.toDataURL('image/jpeg', 0.6); // Compress aggressively
-        } catch(e) {
-            console.error("Failed to capture snapshot", e);
-        }
+            imgData = canvas.toDataURL('image/jpeg', 0.6); 
+        } catch(e) {}
 
         readingHistory.unshift({ id: Date.now(), timestamp: Date.now(), spreadId: currentSpreadSize, date: timestamp, type: spreadName, cards: cardNames, image: imgData });
-        
-        try {
-            localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
-        } catch (e) {
-            console.warn("Storage full! Clearing older images...");
-            readingHistory = readingHistory.map((item, index) => {
-                if (index > 0) item.image = null;
-                return item;
-            });
-            try {
-                localStorage.setItem('tarotHistory', JSON.stringify(readingHistory));
-            } catch (e2) {}
+        try { localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); } 
+        catch (e) {
+            readingHistory = readingHistory.map((item, index) => { if (index > 0) item.image = null; return item; });
+            try { localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); } catch (e2) {}
         }
-        
-        renderHistory();
-        checkCooldowns();
+        renderHistory(); checkCooldowns();
     }
 
     function renderHistory() {
         const tbody = document.getElementById('history-table-body');
         const emptyMsg = document.getElementById('empty-history');
         tbody.innerHTML = '';
-
-        if (readingHistory.length === 0) {
-            emptyMsg.classList.remove('hidden');
-        } else {
+        if (readingHistory.length === 0) emptyMsg.classList.remove('hidden');
+        else {
             emptyMsg.classList.add('hidden');
             readingHistory.forEach(item => {
                 const tr = document.createElement('tr');
@@ -1196,14 +1171,11 @@
                     <td class="py-4 pr-4 font-medium text-slate-300">${item.type}</td>
                     <td class="py-4 pr-4 text-slate-400 italic text-xs leading-relaxed max-w-[200px] truncate" title="${item.cards}">${item.cards}</td>
                     <td class="py-4 pr-4 text-center">
-                        ${item.image ? `<button onclick="viewSnapshot('${item.id}')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-md text-amber-300 text-xs tracking-wider uppercase transition-colors shadow-lg">View Image</button>` : '<span class="text-slate-600 text-xs">N/A</span>'}
+                        ${item.image ? `<button onclick="viewSnapshot('${item.id}')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-md text-amber-300 text-xs tracking-wider uppercase transition-colors shadow-lg">${t('btnViewImg')}</button>` : '<span class="text-slate-600 text-xs">N/A</span>'}
                     </td>
                     <td class="py-4 text-center">
-                        <button onclick="deleteHistoryItem(${item.id})" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-full transition-all" title="Delete Reading">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </td>
-                `;
+                        <button onclick="deleteHistoryItem(${item.id})" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-full transition-all" title="Delete Reading"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                    </td>`;
                 tbody.appendChild(tr);
             });
         }
@@ -1213,145 +1185,97 @@
         const item = readingHistory.find(r => r.id == id);
         if(item && item.image) {
             document.getElementById('snapshot-image').src = item.image;
-            document.getElementById('snapshot-modal').classList.remove('hidden');
-            document.getElementById('snapshot-modal').classList.add('flex');
+            document.getElementById('snapshot-modal').classList.remove('hidden'); document.getElementById('snapshot-modal').classList.add('flex');
         }
     };
 
     window.deleteHistoryItem = function(id) {
         readingHistory = readingHistory.filter(item => item.id !== id);
         try { localStorage.setItem('tarotHistory', JSON.stringify(readingHistory)); } catch(e){}
-        renderHistory();
-        checkCooldowns(); 
+        renderHistory(); checkCooldowns(); 
     };
 
-    const funnyWarnings = [
-        "Hold your horses! 🐎 The reading is full!",
-        "Greedy! You already have your cards! 🙅‍♀️",
-        "The spirits are tired! Try resetting! 👻",
-        "That's enough cards for today! 🃏",
-        "Stop clicking! The spread is complete! 😂",
-        "Woah there! Let's read these first! 🔮"
-    ];
-
-    function triggerFunnyWarning() {
+    function triggerFunnyWarningText(msg) {
         const warningEl = document.getElementById('funny-warning');
         const textEl = document.getElementById('warning-text');
-        
-        textEl.innerText = funnyWarnings[Math.floor(Math.random() * funnyWarnings.length)];
-        
-        warningEl.classList.remove('warning-active');
-        document.body.classList.remove('flash-screen');
+        textEl.innerText = msg;
+        warningEl.classList.remove('warning-active'); document.body.classList.remove('flash-screen');
         void warningEl.offsetWidth; 
-        
-        warningEl.classList.add('warning-active');
-        document.body.classList.add('flash-screen');
-        
-        setTimeout(() => {
-            warningEl.classList.remove('warning-active');
-            document.body.classList.remove('flash-screen');
-        }, 1000);
+        warningEl.classList.add('warning-active'); document.body.classList.add('flash-screen');
+        setTimeout(() => { warningEl.classList.remove('warning-active'); document.body.classList.remove('flash-screen'); }, 1000);
     }
-
+    
     document.addEventListener('click', (e) => {
         const fanArea = document.getElementById('deck-area');
         if (e.target.closest('.fan-card') || (fanArea && fanArea.contains(e.target))) {
             if (drawnCards.length >= parseInt(currentSpreadSize)) {
-                e.preventDefault();
-                e.stopPropagation();
-                triggerFunnyWarning();
+                e.preventDefault(); e.stopPropagation();
+                const warnings = t('warnings');
+                triggerFunnyWarningText(warnings[Math.floor(Math.random() * warnings.length)]);
             }
         }
     }, true);
     
     // --- AI INTERPRETATION ENGINE ---
     document.getElementById('btn-interpret').addEventListener('click', async () => {
+        AudioManager.playClick();
         const modal = document.getElementById('interpret-modal');
         const content = document.getElementById('interpret-content');
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        modal.classList.remove('hidden'); modal.classList.add('flex');
         
         content.innerHTML = `
             <div class="flex flex-col items-center justify-center h-48 gap-6">
                 <div class="text-5xl animate-spin" style="animation-duration: 3s;">🔮</div>
                 <div class="tarot-font text-amber-200/80 tracking-widest animate-pulse text-center">
-                    Consulting the Akashic Records...<br>
-                    <span class="text-sm text-slate-400 font-sans mt-2 block" id="ai-status-detail">Finding an authorized AI model for your key</span>
+                    ${t('communing')}<br><span class="text-sm text-slate-400 font-sans mt-2 block" id="ai-status-detail">${t('interpreting')}</span>
                 </div>
-            </div>
-        `;
+            </div>`;
 
         const spreadInfo = spreads[currentSpreadSize];
-        let focusText = "";
-        let focusTitle = "General Reading";
-        
+        let focusText = ""; let focusTitle = "General Reading";
         if (currentSpreadSize !== '1') {
-            const sub = catSelect.value === "Custom Question" ? (customIntentInput.value.trim() || "Custom Question") : document.getElementById('intent-subcategory').value;
-            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly. Do not give a generic reading.\n`;
+            const isCustom = catSelect.value === "Custom Question" || catSelect.value === "คำถามของตัวเอง";
+            const sub = isCustom ? (customIntentInput.value.trim() || t('customQ')) : document.getElementById('intent-subcategory').value;
+            focusText = `\nCRITICAL INSTRUCTION: The user's specific question/focus is "${sub}". You MUST heavily tailor your entire interpretation to answer this specific question directly.\n`;
             focusTitle = sub;
         }
 
-        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${spreadInfo.names[i]}" position`).join(', ');
-        
-        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label} spread. ${focusText}
-        Here are the cards I pulled: ${readingContext}. 
-        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
-        Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
-        Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
-        Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.`;
+        const namesArray = currentLang === 'en' ? spreadInfo.names_en : spreadInfo.names_th;
+        const readingContext = drawnCards.map((card, i) => `"${card.name}" in the "${namesArray[i]}" position`).join(', ');
+        const languageInstruction = currentLang === 'th' ? "\nCRITICAL: You MUST write the entire response in Thai language." : "";
+
+        const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${t(spreadInfo.baseId)} spread. ${focusText} ${languageInstruction}
+        Here are the cards I pulled: ${readingContext}. Please provide a concise, insightful, and beautifully written interpretation. 
+        Format using simple HTML tags like <h3>, <p>, <ul>, and <strong>. Make headers amber colored inline (<h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">). Do not use markdown wrappers.`;
 
         try {
             let apiKey = '';
             try { apiKey = localStorage.getItem('tarotApiKey') || ''; } catch(e){}
-            
-            if (!apiKey) {
-                throw new Error("No API key provided. Click the 🗝️ icon in the top right to add it.");
-            }
+            if (!apiKey) throw new Error("No API key provided. Click the 🗝️ icon in the top right to add it.");
 
+            document.getElementById('ai-status-detail').innerText = `Checking the Akashic Records...`;
             const modelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
             const modelsResponse = await fetch(modelsUrl);
-            
-            if (!modelsResponse.ok) {
-                const errData = await modelsResponse.json();
-                throw new Error(errData.error?.message || "Invalid API Key");
-            }
+            if (!modelsResponse.ok) { const errData = await modelsResponse.json(); throw new Error(errData.error?.message || "Invalid API Key"); }
             
             const modelsData = await modelsResponse.json();
             const validModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+            if (validModels.length === 0) throw new Error("Your API key has no text generation models available.");
             
-            if (validModels.length === 0) {
-                throw new Error("Your API key has no text generation models available.");
-            }
-
             const flashModel = validModels.find(m => m.name.includes('flash'));
             const selectedModel = flashModel ? flashModel.name : validModels[0].name;
 
-            document.getElementById('ai-status-detail').innerText = `Using model: ${selectedModel.replace('models/', '')}`;
-
+            document.getElementById('ai-status-detail').innerText = `Consulting: ${selectedModel.replace('models/', '')}`;
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error?.message || "Generation failed.");
-            }
+            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+            if (!response.ok) { const errData = await response.json(); throw new Error(errData.error?.message || "Generation failed."); }
 
             const result = await response.json();
-            
             if (result.candidates && result.candidates[0].content.parts[0].text) {
                 let htmlText = result.candidates[0].content.parts[0].text;
-                htmlText = htmlText.replace(/```html/gi, '').replace(/```/g, '');
-                content.innerHTML = htmlText;
-            } else {
-                throw new Error("Invalid response format from Gemini");
-            }
+                content.innerHTML = htmlText.replace(/```html/gi, '').replace(/```/g, '');
+            } else throw new Error("Invalid response format from Gemini");
+
         } catch (error) {
             console.error("AI Reading Failed:", error);
             content.innerHTML = `
@@ -1360,135 +1284,107 @@
                     <p class="text-slate-200 font-mono text-sm mb-0">${error.message}</p>
                 </div>
                 <hr class="border-amber-900/30 mb-6">
-                <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: 0.1em; text-align: center;">SIMULATED READING (BACKUP)</h3>
+                <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-family: 'Sarabun', sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; text-align: center;">${t('simTitle')}</h3>
                 <div class="flex flex-col items-center justify-center gap-4 text-center mt-4">
                     <p class="text-slate-400 italic mb-2">Focus: ${focusTitle}</p>
-                    <p class="text-slate-200">The universe has guided your hand today. You drew <strong>${readingContext}</strong>.</p>
-                    <p class="text-slate-300 mt-2">This powerful combination suggests you are entering a phase of profound transition regarding <strong>${focusTitle.toLowerCase()}</strong>. The energies indicate that you are shedding old patterns and stepping into a period of clarity. Trust your intuition right now, for it is exceptionally sharp regarding this matter.</p>
-                    <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">"The cosmos are aligning in your favor. Proceed with confidence and an open heart."</p>
-                </div>
-            `;
+                    <p class="text-slate-200">${t('simP1')} <strong>${readingContext}</strong>.</p>
+                    <p class="text-slate-300 mt-2">${t('simP2')}</p>
+                    <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">${t('simQuote')}</p>
+                </div>`;
         }
     });
 
     document.getElementById('close-interpret').addEventListener('click', () => {
-        document.getElementById('interpret-modal').classList.add('hidden');
-        document.getElementById('interpret-modal').classList.remove('flex');
+        AudioManager.playClick();
+        document.getElementById('interpret-modal').classList.add('hidden'); document.getElementById('interpret-modal').classList.remove('flex');
     });
 
-    // Admin UI Control
+    // Admin UI
     document.getElementById('secret-api-btn').addEventListener('click', () => {
+        AudioManager.playClick();
         try { document.getElementById('admin-api-input').value = localStorage.getItem('tarotApiKey') || ''; } catch(e){}
-        document.getElementById('admin-modal').classList.remove('hidden');
-        document.getElementById('admin-modal').classList.add('flex');
+        document.getElementById('admin-modal').classList.remove('hidden'); document.getElementById('admin-modal').classList.add('flex');
     });
-
     document.getElementById('btn-admin-cancel').addEventListener('click', () => {
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
+        AudioManager.playClick();
+        document.getElementById('admin-modal').classList.add('hidden'); document.getElementById('admin-modal').classList.remove('flex');
     });
-
     document.getElementById('btn-admin-clear').addEventListener('click', () => {
+        AudioManager.playClick();
         try { localStorage.removeItem('tarotApiKey'); } catch(e){}
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
+        document.getElementById('admin-modal').classList.add('hidden'); document.getElementById('admin-modal').classList.remove('flex');
     });
-
     document.getElementById('btn-admin-save').addEventListener('click', () => {
+        AudioManager.playClick();
         const val = document.getElementById('admin-api-input').value.trim();
-        if(val) {
-            try { localStorage.setItem('tarotApiKey', val); } catch(e){}
-        }
-        document.getElementById('admin-modal').classList.add('hidden');
-        document.getElementById('admin-modal').classList.remove('flex');
+        if(val) try { localStorage.setItem('tarotApiKey', val); } catch(e){}
+        document.getElementById('admin-modal').classList.add('hidden'); document.getElementById('admin-modal').classList.remove('flex');
     });
 
     // --- COOLDOWN LOGIC ---
     function checkCooldowns() {
         const select = document.getElementById('spread-select');
         let needsToSwitch = false;
+        const previousVal = select.value;
+        select.innerHTML = '';
 
         Object.keys(spreads).forEach(key => {
             const spread = spreads[key];
-            const option = select.querySelector(`option[value="${key}"]`);
-            if (!option) return;
+            const opt = document.createElement('option');
+            opt.value = key;
+            const label = t(spread.baseId);
 
             if (spread.cooldown > 0) {
                 const lastReading = readingHistory.find(r => r.spreadId === key);
-                
                 if (lastReading && lastReading.timestamp) {
                     const timeSince = Date.now() - lastReading.timestamp;
                     if (timeSince < spread.cooldown) {
                         const unlockTime = new Date(lastReading.timestamp + spread.cooldown);
                         const timeStr = unlockTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         const dateStr = unlockTime.toLocaleDateString([], {month: 'short', day: 'numeric'});
-                        
-                        option.disabled = true;
-                        option.innerText = `${spread.baseLabel} [Wait till ${dateStr} ${timeStr}]`;
-                        
+                        opt.disabled = true; opt.innerText = `${label} [${t('waitTill')} ${dateStr} ${timeStr}]`;
                         if (currentSpreadSize === key) needsToSwitch = true;
-                    } else {
-                        option.disabled = false;
-                        option.innerText = spread.baseLabel;
-                    }
-                } else {
-                    option.disabled = false;
-                    option.innerText = spread.baseLabel;
-                }
-            }
+                    } else { opt.disabled = false; opt.innerText = label; }
+                } else { opt.disabled = false; opt.innerText = label; }
+            } else { opt.disabled = false; opt.innerText = label; }
+            select.appendChild(opt);
         });
 
-        if ((needsToSwitch || select.options[select.selectedIndex].disabled) && drawnCards.length === 0) {
+        if (!needsToSwitch) {
+            select.value = previousVal || currentSpreadSize;
+        } else if (drawnCards.length === 0) {
             for (let i = 0; i < select.options.length; i++) {
-                if (!select.options[i].disabled) {
-                    select.selectedIndex = i;
-                    currentSpreadSize = select.options[i].value;
-                    resetReading();
-                    break;
-                }
+                if (!select.options[i].disabled) { select.selectedIndex = i; currentSpreadSize = select.options[i].value; resetReading(); break; }
             }
         }
     }
 
     setInterval(checkCooldowns, 60000);
 
-    spreadSelect.addEventListener('change', (e) => {
-        currentSpreadSize = e.target.value;
-        resetReading();
-    });
-
-    // Wire up events
+    spreadSelect.addEventListener('change', (e) => { AudioManager.playClick(); currentSpreadSize = e.target.value; resetReading(); });
     document.getElementById('btn-shuffle').addEventListener('click', triggerMagicalShuffle);
     document.getElementById('btn-reset').addEventListener('click', triggerResetSweep);
     
     document.getElementById('btn-history').addEventListener('click', () => {
-        AudioManager.playClick();
-        renderHistory();
-        document.getElementById('history-modal').classList.remove('hidden');
-        document.getElementById('history-modal').classList.add('flex');
+        AudioManager.playClick(); renderHistory();
+        document.getElementById('history-modal').classList.remove('hidden'); document.getElementById('history-modal').classList.add('flex');
     });
-    
     document.getElementById('close-history').addEventListener('click', () => {
         AudioManager.playClick();
-        document.getElementById('history-modal').classList.add('hidden');
-        document.getElementById('history-modal').classList.remove('flex');
+        document.getElementById('history-modal').classList.add('hidden'); document.getElementById('history-modal').classList.remove('flex');
     });
-
     document.getElementById('close-snapshot').addEventListener('click', () => {
         AudioManager.playClick();
-        document.getElementById('snapshot-modal').classList.add('hidden');
-        document.getElementById('snapshot-modal').classList.remove('flex');
+        document.getElementById('snapshot-modal').classList.add('hidden'); document.getElementById('snapshot-modal').classList.remove('flex');
     });
 
-    // --- SAFELY RUN INITIALIZATION ---
+    window.addEventListener('resize', () => { if (drawnCards.length < parseInt(currentSpreadSize)) renderFan(); });
+
+    // --- INIT ---
     try {
-        updateToggleUI();
-        checkCooldowns();
-        resetReading();
-        renderHistory();
-    } catch (e) {
-        console.error("Fatal initialization error:", e);
-    }
+        updateLangToggleUI(); updateLanguageUI(); updateCategories(); updateToggleUI();
+        checkCooldowns(); resetReading(); renderHistory();
+    } catch (e) { console.error("Fatal initialization error:", e); }
 
 </script>
 </body>
