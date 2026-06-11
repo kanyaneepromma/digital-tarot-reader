@@ -434,7 +434,8 @@ function shuffleArray(array) {
 }
 
 function renderFocusMenus() {
-  if (currentSpreadSize === "1") {
+  // Hide focus for 1-Card and 10-Card spreads
+  if (currentSpreadSize === "1" || currentSpreadSize === "10") {
     document.getElementById("focus-container").classList.add("hidden");
     return;
   }
@@ -514,7 +515,7 @@ document.getElementById("btn-set-custom").addEventListener("click", () => {
 });
 
 function getCurrentFocusString() {
-  if (currentSpreadSize === "1") return "";
+  if (currentSpreadSize === "1" || currentSpreadSize === "10") return "";
   if (catSelect.value === "Custom")
     return customQuestionString || "General Guidance";
   const cat = catSelect.value;
@@ -702,7 +703,6 @@ async function drawCard(deckIndex) {
 }
 
 async function revealAllCards() {
-  // 1. SILENTLY PRELOAD ALL IMAGES BEFORE DOING ANYTHING
   const preparedFaces = await Promise.all(
     drawnCards.map((data, i) => {
       return new Promise((resolve) => {
@@ -738,19 +738,15 @@ async function revealAllCards() {
     }),
   );
 
-  // 2. ONCE EVERYTHING IS FULLY LOADED, REVEAL THEM ALL SIMULTANEOUSLY
   if (AudioParams.synth) {
-    // Play one grand chord for the blast reveal!
     AudioParams.synth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "2n");
   }
 
-  // Loop through and snap them all onto the screen in the same millisecond
   preparedFaces.forEach((prepared) => {
     const slot = document.getElementById(`slot-${prepared.slotIndex}`);
     finalizeCardRender(slot, prepared.faceElement);
   });
 
-  // 3. WAIT FOR BROWSER TO DRAW, THEN SNAPSHOT
   setTimeout(() => {
     saveToHistory();
   }, 1000);
@@ -1180,7 +1176,7 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
   const prompt = `Act as an expert, mystical Tarot reader. I have just drawn a ${spreadInfo.label_en} spread. 
         Here are the cards I pulled: ${readingContext}. 
         ${focusInstruction}
-        Please provide a concise, insightful, and beautifully written interpretation of this reading. 
+        Please provide a highly detailed, comprehensive, and beautifully written interpretation of this reading. Analyze the specific meaning of each card in its designated position, and then weave them together into a deep, empowering story. 
         Format the response using simple HTML tags like <h3>, <p>, <ul>, and <strong> so it displays beautifully on a webpage. 
         Make the headers amber colored using inline CSS (e.g. <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px;">).
         Do not use markdown wrappers like \`\`\`html. Make the tone mysterious but empowering.
