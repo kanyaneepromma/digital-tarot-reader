@@ -702,52 +702,58 @@ async function drawCard(deckIndex) {
 }
 
 async function revealAllCards() {
+  // 1. SILENTLY PRELOAD ALL IMAGES BEFORE DOING ANYTHING
+  const preparedFaces = await Promise.all(
+    drawnCards.map((data, i) => {
+      return new Promise((resolve) => {
+        const face = document.createElement("div");
+        face.className = "drawn-card glow-pulse";
+
+        if (isClassicStyle) {
+          getClassicImage(data.classicId)
+            .then((imgUrl) => {
+              const img = new Image();
+              img.src = imgUrl;
+              img.onload = () => {
+                face.innerHTML = `
+                <div class="classic-art-bg" style="background-image: url('${imgUrl}');"></div>
+                <div class="classic-foil"></div>
+                `;
+                resolve({ slotIndex: i, faceElement: face });
+              };
+              img.onerror = () => {
+                renderModernFace(face, data);
+                resolve({ slotIndex: i, faceElement: face });
+              };
+            })
+            .catch(() => {
+              renderModernFace(face, data);
+              resolve({ slotIndex: i, faceElement: face });
+            });
+        } else {
+          renderModernFace(face, data);
+          resolve({ slotIndex: i, faceElement: face });
+        }
+      });
+    }),
+  );
+
+  // 2. ONCE EVERYTHING IS FULLY LOADED, REVEAL THEM ALL SIMULTANEOUSLY
   if (AudioParams.synth) {
-    AudioParams.synth.triggerAttackRelease("C5", "8n");
+    // Play one grand chord for the blast reveal!
+    AudioParams.synth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "2n");
   }
 
-  for (let i = 0; i < drawnCards.length; i++) {
-    const data = drawnCards[i];
-    const slot = document.getElementById(`slot-${i}`);
-    const face = document.createElement("div");
-    face.className = "drawn-card glow-pulse";
+  // Loop through and snap them all onto the screen in the same millisecond
+  preparedFaces.forEach((prepared) => {
+    const slot = document.getElementById(`slot-${prepared.slotIndex}`);
+    finalizeCardRender(slot, prepared.faceElement);
+  });
 
-    if (AudioParams.synth) {
-      setTimeout(() => AudioParams.synth.triggerAttackRelease("E5", "16n"), 50);
-    }
-
-    await new Promise((resolve) => {
-      if (isClassicStyle) {
-        getClassicImage(data.classicId).then((imgUrl) => {
-          const img = new Image();
-          img.src = imgUrl;
-          img.onload = () => {
-            face.innerHTML = `
-                    <div class="classic-art-bg" style="background-image: url('${imgUrl}');"></div>
-                    <div class="classic-foil"></div>
-                    `;
-            finalizeCardRender(slot, face);
-            resolve();
-          };
-          img.onerror = () => {
-            renderModernFace(face, data);
-            finalizeCardRender(slot, face);
-            resolve();
-          };
-        });
-      } else {
-        renderModernFace(face, data);
-        finalizeCardRender(slot, face);
-        resolve();
-      }
-    });
-
-    await new Promise((r) => setTimeout(r, 400));
-  }
-
+  // 3. WAIT FOR BROWSER TO DRAW, THEN SNAPSHOT
   setTimeout(() => {
     saveToHistory();
-  }, 600);
+  }, 1000);
 }
 
 function renderModernFace(face, data) {
@@ -971,10 +977,25 @@ async function saveToHistory() {
 
   let imgData = "";
   try {
-    const canvas = await html2canvas(document.getElementById("spread-area"), {
+    const spreadEl = document.getElementById("spread-area");
+
+    // THE HACK: Temporarily hide problem CSS elements (like foil gradients) just for the photo
+    const problemElements = spreadEl.querySelectorAll(
+      ".classic-foil, .aura-ripple",
+    );
+    problemElements.forEach((el) => (el.style.opacity = "0"));
+
+    const canvas = await html2canvas(spreadEl, {
       backgroundColor: null,
       scale: 1.5,
+      useCORS: true, // THE FIX: Forces the browser to allow the classic art images!
+      allowTaint: true,
+      logging: false,
     });
+
+    // Put them back instantly
+    problemElements.forEach((el) => (el.style.opacity = "1"));
+
     imgData = canvas.toDataURL("image/jpeg", 0.7);
   } catch (e) {
     console.error("Snapshot fail", e);
