@@ -92,7 +92,7 @@ const translations = {
     thDate: "Date & Time",
     thType: "Spread & Focus",
     thCards: "Cards Drawn",
-    thSnap: "Snapshot",
+    thSnap: "Records",
     thAction: "Action",
     noHistory: "No readings recorded yet.",
     snapshotTitle: "Spread Snapshot",
@@ -103,6 +103,7 @@ const translations = {
     completeStr: "Reading Complete",
     waitStr: "Wait till",
     viewBtn: "View Image",
+    readBtn: "Read",
     errStyleLock:
       "You can't change the deck mid-reading! Finish or Reset first.",
   },
@@ -123,7 +124,7 @@ const translations = {
     thDate: "วันเวลา",
     thType: "รูปแบบ & คำถาม",
     thCards: "ไพ่ที่ได้",
-    thSnap: "รูปภาพ",
+    thSnap: "บันทึก",
     thAction: "ลบ",
     noHistory: "ยังไม่มีประวัติการอ่านไพ่",
     snapshotTitle: "ภาพรวมไพ่",
@@ -134,6 +135,7 @@ const translations = {
     completeStr: "เลือกไพ่ครบแล้ว",
     waitStr: "รอจนถึง",
     viewBtn: "ดูรูป",
+    readBtn: "คำทำนาย",
     errStyleLock:
       "ไม่สามารถเปลี่ยนรูปแบบไพ่ระหว่างการเลือกได้! กรุณาเลือกให้เสร็จหรือเริ่มใหม่",
   },
@@ -285,7 +287,6 @@ const intentionsData = {
 };
 
 function updateLanguageUI() {
-  // Text translations
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (translations[currentLang][key]) {
@@ -300,9 +301,8 @@ function updateLanguageUI() {
       el.placeholder = translations[currentLang][key];
   });
 
-  // Dropdown translation
   const select = document.getElementById("spread-select");
-  const val = select.value || "1"; // Default to 1-card if nothing is selected
+  const val = select.value || "1";
   select.innerHTML = "";
   Object.keys(spreadsData).forEach((key) => {
     const opt = document.createElement("option");
@@ -318,7 +318,6 @@ function updateLanguageUI() {
   renderHistory();
   checkCooldowns();
 
-  // Update the EN/TH toggle visuals
   const langToggle = document.getElementById("toggle-lang");
   const lblEn = document.getElementById("lbl-en");
   const lblTh = document.getElementById("lbl-th");
@@ -685,33 +684,70 @@ async function drawCard(deckIndex) {
   const slotIndex = drawnCards.length - 1;
   const slot = document.getElementById(`slot-${slotIndex}`);
 
-  // Show loading sparkle while the image fetches from cache
-  slot.innerHTML = `<div class="text-4xl animate-spin" style="animation-duration: 2s;">✨</div>`;
+  // Place a magical card back instead of immediately revealing
+  slot.innerHTML = `
+    <div class="drawn-card glow-pulse" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(251, 191, 36, 0.3); display: flex; align-items: center; justify-content: center;">
+        <div class="text-4xl md:text-5xl animate-pulse">🌌</div>
+    </div>`;
+
   renderFan();
+  updateStatus();
 
-  const face = document.createElement("div");
-  face.className = "drawn-card glow-pulse";
+  // Trigger reveal animation only after the final card is placed
+  if (drawnCards.length >= parseInt(currentSpreadSize)) {
+    setTimeout(() => {
+      revealAllCards();
+    }, 600);
+  }
+}
 
-  if (isClassicStyle) {
-    const imgUrl = await getClassicImage(drawnCardData.classicId);
-    const img = new Image();
-    img.src = imgUrl;
-    img.onload = () => {
-      face.innerHTML = `
+async function revealAllCards() {
+  if (AudioParams.synth) {
+    AudioParams.synth.triggerAttackRelease("C5", "8n");
+  }
+
+  for (let i = 0; i < drawnCards.length; i++) {
+    const data = drawnCards[i];
+    const slot = document.getElementById(`slot-${i}`);
+    const face = document.createElement("div");
+    face.className = "drawn-card glow-pulse";
+
+    if (AudioParams.synth) {
+      setTimeout(() => AudioParams.synth.triggerAttackRelease("E5", "16n"), 50);
+    }
+
+    await new Promise((resolve) => {
+      if (isClassicStyle) {
+        getClassicImage(data.classicId).then((imgUrl) => {
+          const img = new Image();
+          img.src = imgUrl;
+          img.onload = () => {
+            face.innerHTML = `
                     <div class="classic-art-bg" style="background-image: url('${imgUrl}');"></div>
                     <div class="classic-foil"></div>
-                `;
-      finalizeCardRender(slot, face);
-    };
-    img.onerror = () => {
-      // Seamless fallback to modern art if the network completely fails
-      renderModernFace(face, drawnCardData);
-      finalizeCardRender(slot, face);
-    };
-  } else {
-    renderModernFace(face, drawnCardData);
-    finalizeCardRender(slot, face);
+                    `;
+            finalizeCardRender(slot, face);
+            resolve();
+          };
+          img.onerror = () => {
+            renderModernFace(face, data);
+            finalizeCardRender(slot, face);
+            resolve();
+          };
+        });
+      } else {
+        renderModernFace(face, data);
+        finalizeCardRender(slot, face);
+        resolve();
+      }
+    });
+
+    await new Promise((r) => setTimeout(r, 400));
   }
+
+  setTimeout(() => {
+    saveToHistory();
+  }, 600);
 }
 
 function renderModernFace(face, data) {
@@ -756,8 +792,6 @@ function finalizeCardRender(slot, faceElement) {
   setTimeout(() => {
     if (slot.contains(aura)) slot.removeChild(aura);
   }, 800);
-
-  updateStatus();
 }
 
 function updateStatus() {
@@ -766,9 +800,6 @@ function updateStatus() {
     statusText.innerText = translations[currentLang].completeStr;
     statusText.classList.add("text-amber-400");
     statusText.classList.remove("text-amber-50");
-    setTimeout(() => {
-      saveToHistory();
-    }, 600);
   } else {
     statusText.innerText = `${translations[currentLang].drawnStr} ${drawnCards.length} / ${total}`;
     statusText.classList.remove("text-amber-400");
@@ -957,6 +988,7 @@ async function saveToHistory() {
     type: fullTypeStr,
     cards: cardNames,
     image: imgData,
+    prediction: "",
   });
 
   while (JSON.stringify(readingHistory).length > 4000000) {
@@ -989,12 +1021,18 @@ function renderHistory() {
       tr.className =
         "border-b border-slate-800 hover:bg-slate-800/50 transition-colors";
       const viewBtnTxt = translations[currentLang].viewBtn;
+      const readBtnTxt = translations[currentLang].readBtn;
+
       tr.innerHTML = `
                     <td class="py-4 pr-4 whitespace-nowrap text-amber-200/80">${item.date}</td>
                     <td class="py-4 pr-4 font-medium text-slate-300">${item.type}</td>
                     <td class="py-4 pr-4 text-slate-400 italic text-xs leading-relaxed max-w-[200px] truncate" title="${item.cards}">${item.cards}</td>
                     <td class="py-4 pr-4 text-center">
-                        ${item.image ? `<button onclick="viewSnapshot('${item.id}')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-md text-amber-300 text-xs tracking-wider uppercase transition-colors shadow-lg">${viewBtnTxt}</button>` : '<span class="text-slate-600 text-xs">N/A</span>'}
+                        <div class="flex justify-center gap-2">
+                            ${item.image ? `<button onclick="viewSnapshot('${item.id}')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-md text-amber-300 text-xs tracking-wider uppercase transition-colors shadow-lg">${viewBtnTxt}</button>` : ""}
+                            ${item.prediction ? `<button onclick="viewReading('${item.id}')" class="px-3 py-1 bg-purple-900/50 hover:bg-purple-800/50 border border-purple-500/50 rounded-md text-purple-300 text-xs tracking-wider uppercase transition-colors shadow-lg">${readBtnTxt}</button>` : ""}
+                            ${!item.image && !item.prediction ? '<span class="text-slate-600 text-xs">N/A</span>' : ""}
+                        </div>
                     </td>
                     <td class="py-4 text-center">
                         <button onclick="deleteHistoryItem(${item.id})" class="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-full transition-all" title="Delete">
@@ -1008,11 +1046,24 @@ function renderHistory() {
 }
 
 window.viewSnapshot = function (id) {
+  playClickSound();
   const item = readingHistory.find((r) => r.id == id);
   if (item && item.image) {
     document.getElementById("snapshot-image").src = item.image;
     document.getElementById("snapshot-modal").classList.remove("hidden");
     document.getElementById("snapshot-modal").classList.add("flex");
+  }
+};
+
+window.viewReading = function (id) {
+  playClickSound();
+  const item = readingHistory.find((r) => r.id == id);
+  if (item && item.prediction) {
+    const modal = document.getElementById("interpret-modal");
+    const content = document.getElementById("interpret-content");
+    content.innerHTML = item.prediction;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
   }
 };
 
@@ -1115,14 +1166,12 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
         ${langInstruction}`;
 
   try {
-    // Retrieve key securely pulled via Firebase Remote Config
     const apiKey = window.geminiApiKey || "";
     if (!apiKey)
       throw new Error(
         "API Key not found in Firebase Remote Config. Please verify settings.",
       );
 
-    // 1. DYNAMIC MODEL FETCHING (Fixing the "latest" phantom model bug)
     const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
     const listResponse = await fetch(listUrl);
     if (!listResponse.ok) {
@@ -1133,7 +1182,6 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
     }
     const listData = await listResponse.json();
 
-    // 2. FIND A VALID MODEL
     let modelPath = "";
     if (listData.models && listData.models.length > 0) {
       const validModels = listData.models.filter(
@@ -1143,7 +1191,6 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
           m.name.includes("gemini"),
       );
 
-      // STRICT FILTER: Google's API falsely returns "-latest" models that don't work. We block them here.
       const exactFlash = validModels.find(
         (m) => m.name === "models/gemini-1.5-flash",
       );
@@ -1159,7 +1206,7 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
       } else if (fallbackModel) {
         modelPath = fallbackModel.name;
       } else if (validModels.length > 0) {
-        modelPath = validModels[0].name; // Absolute last resort
+        modelPath = validModels[0].name;
       }
     }
 
@@ -1171,7 +1218,6 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
     document.getElementById("model-status").innerText =
       `Using ${modelPath.replace("models/", "")}...`;
 
-    // 3. EXECUTE GENERATION REQUEST
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/${modelPath}:generateContent?key=${apiKey}`;
 
     const payload = { contents: [{ parts: [{ text: prompt }] }] };
@@ -1194,6 +1240,13 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
       let htmlText = result.candidates[0].content.parts[0].text;
       htmlText = htmlText.replace(/```html/gi, "").replace(/```/g, "");
       content.innerHTML = htmlText;
+
+      // SAVE PREDICTION TO HISTORY
+      if (readingHistory.length > 0) {
+        readingHistory[0].prediction = htmlText;
+        localStorage.setItem("tarotHistory", JSON.stringify(readingHistory));
+        renderHistory();
+      }
     } else {
       throw new Error("Invalid response format");
     }
@@ -1215,7 +1268,7 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
         : `"The cosmos are aligning in your favor. Proceed with confidence."`;
 
     setTimeout(() => {
-      content.innerHTML = `
+      const finalHtml = `
                     <div class="flex flex-col items-center justify-center gap-4 text-center">
                         ${errHtml}
                         <h3 style="color: #fbbf24; margin-top: 15px; margin-bottom: 5px; font-size: 1.5rem; letter-spacing: 0.1em;" class="tarot-font">${simTitle}</h3>
@@ -1223,6 +1276,14 @@ document.getElementById("btn-interpret").addEventListener("click", async () => {
                         <p style="color: #c084fc; font-style: italic; margin-top: 15px;" class="text-lg">${simQuote}</p>
                     </div>
                 `;
+      content.innerHTML = finalHtml;
+
+      // SAVE SIMULATED PREDICTION TO HISTORY
+      if (readingHistory.length > 0) {
+        readingHistory[0].prediction = finalHtml;
+        localStorage.setItem("tarotHistory", JSON.stringify(readingHistory));
+        renderHistory();
+      }
     }, 1000);
   }
 });

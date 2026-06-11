@@ -32,10 +32,7 @@ window.geminiApiKey = "";
 
 fetchAndActivate(remoteConfig)
   .then(() => {
-    window.geminiApiKey = getValue(
-      remoteConfig,
-      "gemini_api_key",
-    ).asString();
+    window.geminiApiKey = getValue(remoteConfig, "gemini_api_key").asString();
     console.log("Firebase Remote Config Loaded successfully.");
   })
   .catch((err) => {
